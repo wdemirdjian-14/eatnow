@@ -14,12 +14,12 @@ export function InstallPrompt() {
 
   return (
     <section className="install-card">
-      <Logo size={44} id="install" />
+      <Logo size={36} id="install" />
       <div className="stack gap-xs" style={{ flex: 1, minWidth: 0 }}>
         <b>Installer Eatnow sur votre téléphone</b>
-        <span className="small muted">
-          Accès en un geste depuis l’écran d’accueil, en plein écran, et les cartes
-          déjà ouvertes restent lisibles sans connexion.
+        <span className="tiny muted">
+          Accès en un geste, plein écran, et les cartes déjà ouvertes restent
+          lisibles sans connexion.
         </span>
         {showSteps && (
           <ol className="small stack gap-xs" style={{ margin: '.4rem 0 0', paddingInlineStart: '1.2rem' }}>
@@ -29,7 +29,7 @@ export function InstallPrompt() {
           </ol>
         )}
       </div>
-      <div className="stack gap-xs">
+      <div className="row gap-xs">
         {canPrompt ? (
           <button className="btn sm" onClick={() => void install()}>Installer</button>
         ) : (

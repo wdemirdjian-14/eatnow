@@ -5,7 +5,9 @@ import { registerServiceWorker } from './lib/pwa'
 import { Header } from './components/Header'
 import { Logo } from './components/Logo'
 import { Footer } from './components/Footer'
+import { TabBar } from './components/TabBar'
 import { Home } from './pages/Home'
+import { Favorites } from './pages/Favorites'
 import { RestaurantDetail } from './pages/RestaurantDetail'
 import { Login } from './pages/Login'
 import { OwnerLayout } from './pages/owner/OwnerLayout'
@@ -72,6 +74,9 @@ export default function App() {
         <Boot>
         <Routes>
           <Route path="/" element={<Home />} />
+          {/* La carte est la même page, ouverte sur sa vue géographique. */}
+          <Route path="/carte" element={<Home initialView="carte" />} />
+          <Route path="/favoris" element={<Favorites />} />
           <Route path="/r/:slug" element={<RestaurantDetail />} />
 
           <Route path="/pro" element={<Login mode="owner" />} />
@@ -93,6 +98,7 @@ export default function App() {
         </Routes>
         </Boot>
         <Footer />
+        <TabBar />
       </HashRouter>
     </StoreProvider>
   )

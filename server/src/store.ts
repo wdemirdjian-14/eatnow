@@ -19,7 +19,7 @@ export interface RestaurantDTO {
   lat: number; lng: number; phone: string; website?: string
   emoji: string; hue: number; rating: number; reviews: number; hours: string
   sourceLang: string; purchasedLangs: unknown; published: boolean
-  plan: string; createdAt: string
+  plan: string; createdAt: string; photo?: string
 }
 
 interface RestaurantRow {
@@ -29,7 +29,7 @@ interface RestaurantRow {
   lat: number; lng: number; phone: string; website: string | null
   emoji: string; hue: number; rating: number; reviews: number; hours: string
   source_lang: string; purchased_langs: string; published: number
-  plan: string; created_at: string
+  plan: string; created_at: string; photo: string | null
 }
 
 function toRestaurant(r: RestaurantRow): RestaurantDTO {
@@ -42,6 +42,7 @@ function toRestaurant(r: RestaurantRow): RestaurantDTO {
     rating: r.rating, reviews: r.reviews, hours: r.hours,
     sourceLang: r.source_lang, purchasedLangs: json(r.purchased_langs, []),
     published: !!r.published, plan: r.plan, createdAt: r.created_at,
+    photo: r.photo ?? undefined,
   }
 }
 
@@ -227,6 +228,79 @@ export const purchaseLanguage = db.transaction(
     return { alreadyOwned: false }
   },
 )
+
+/** Rend un identifiant d'URL unique en le suffixant si besoin. */
+export function uniqueSlug(base: string): string {
+  const taken = (slug: string) =>
+    !!db.prepare<[string], { n: number }>('SELECT COUNT(*) AS n FROM restaurants WHERE slug = ?')
+      .get(slug)?.n
+  if (!taken(base)) return base
+  for (let i = 2; i < 500; i++) {
+    if (!taken(`${base}-${i}`)) return `${base}-${i}`
+  }
+  return `${base}-${Date.now()}`
+}
+
+export function loginExists(login: string): boolean {
+  return !!db
+    .prepare<[string], { n: number }>('SELECT COUNT(*) AS n FROM users WHERE login = ? COLLATE NOCASE')
+    .get(login)?.n
+}
+
+export interface NewRestaurantInput {
+  restaurant: {
+    name: string; slug: string; city: string; address: string; postalCode: string
+    lat: number; lng: number; phone: string; website?: string
+    cuisines: string[]; priceRange: number; emoji: string; hue: number
+    hours: string; plan: string; sourceLang: string
+  }
+  owner: { id: string; name: string; login: string; hash: string; salt: string }
+  /** Catégories créées d'emblée, pour que la carte ne soit pas vide. */
+  categories: string[]
+}
+
+/**
+ * Crée un restaurant et son compte restaurateur en une transaction.
+ *
+ * Les deux vont ensemble : un restaurant sans compte serait inadministrable,
+ * un compte sans restaurant renverrait son titulaire sur un espace vide.
+ */
+export const createRestaurantWithOwner = db.transaction((input: NewRestaurantInput) => {
+  const restaurantId = randomUUID()
+  const r = input.restaurant
+
+  db.prepare(
+    `INSERT INTO users (id, login, name, role, password_hash, password_salt, restaurant_id)
+     VALUES (?, ?, ?, 'owner', ?, ?, ?)`,
+  ).run(input.owner.id, input.owner.login, input.owner.name, input.owner.hash, input.owner.salt, restaurantId)
+
+  db.prepare(
+    `INSERT INTO restaurants (id, slug, owner_id, name, description, cuisines, price_range,
+       address, postal_code, city, lat, lng, phone, website, emoji, hue, rating, reviews,
+       hours, source_lang, purchased_langs, published, plan)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?, '[]', 0, ?)`,
+  ).run(
+    restaurantId, r.slug, input.owner.id, r.name,
+    JSON.stringify({ source: '', auto: {}, manual: {} }),
+    JSON.stringify(r.cuisines), r.priceRange, r.address, r.postalCode, r.city,
+    r.lat, r.lng, r.phone, r.website ?? null, r.emoji, r.hue, r.hours, r.sourceLang, r.plan,
+  )
+
+  const insertCat = db.prepare(
+    'INSERT INTO categories (id, restaurant_id, name, sort_order) VALUES (?, ?, ?, ?)',
+  )
+  input.categories.forEach((name, i) => {
+    insertCat.run(randomUUID(), restaurantId, JSON.stringify({ source: name, auto: {}, manual: {} }), i)
+  })
+
+  return restaurantId
+})
+
+export function setRestaurantPhoto(id: string, photo: string | null): boolean {
+  return db
+    .prepare("UPDATE restaurants SET photo = ?, updated_at = datetime('now') WHERE id = ?")
+    .run(photo, id).changes > 0
+}
 
 export function setDishPhoto(dishId: string, photo: string | null): boolean {
   return db.prepare('UPDATE dishes SET photo = ? WHERE id = ?').run(photo, dishId).changes > 0

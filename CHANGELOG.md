@@ -3,6 +3,45 @@
 Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le
 [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [0.5.0] — 2026-08-21
+
+Carte géographique, refonte de l'interface publique, création de comptes.
+
+### Ajouté
+
+- **Carte interactive** — plan OpenStreetMap via Leaflet, sans clé d'API.
+  Les restaurants y apparaissent en pastilles numérotées qui reprennent le rang
+  des vignettes de la liste : une pastille se retrouve d'un coup d'œil.
+  Déplacer la carte propose de **relancer la recherche sur la zone affichée**,
+  ce qui remplace le filtre de distance ; un bouton revient au rayon.
+  La carte est affichée en bandeau au-dessus des résultats, ou en plein écran.
+- **Barre d'onglets** en bas sur mobile — Accueil, Carte, Favoris, Compte —
+  là où le pouce tombe. Absente des espaces restaurateur et administrateur,
+  qui ont leur propre navigation.
+- **Favoris**, conservés sur l'appareil du client : un convive n'a pas de
+  compte, et ils restent consultables hors connexion.
+- **Photo de couverture** par restaurant, importée depuis sa fiche, affichée
+  dans les résultats et en haut de sa page.
+- **Vignettes refondues** — photo, note, cuisine, prix, adresse, et les
+  **drapeaux des langues publiées**, qui disent d'un regard dans quelles
+  langues la carte est lisible.
+- **Fiche restaurant restructurée** — barre de titre collante avec retour et
+  favori, contacts en accès direct, photo de couverture, pastille « La carte »,
+  langues disponibles, informations pratiques et plan de situation.
+- **Création d'un restaurant et de son accès depuis la console** — les deux
+  sont créés ensemble, dans une transaction, avec des catégories de départ pour
+  que la carte ne soit pas vide. Identifiant unique vérifié, mot de passe d'au
+  moins 8 caractères, générateur de mot de passe lisible. L'action est refusée
+  pendant un endossement : un administrateur agissant au nom d'un restaurateur
+  ne doit pas créer de compte par inadvertance.
+
+### Modifié
+
+- L'accueil va droit au but sur mobile : titre court, recherche, puis la carte
+  et les résultats sans avoir à faire défiler. Le discours reste sur grand
+  écran, les filtres se replient derrière un bouton, et le tri et le rayon
+  sont accessibles en permanence.
+
 ## [0.4.1] — 2026-08-21
 
 Corrections remontées par le premier déploiement réel.
@@ -202,6 +241,7 @@ Première version MVP.
 - **CI/CD** — typecheck et build sur chaque push, déploiement GitHub Pages et
   Release GitHub sur chaque tag `vX.Y.Z`.
 
+[0.5.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.5.0
 [0.4.1]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.4.1
 [0.4.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.4.0
 [0.3.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.3.0

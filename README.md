@@ -19,6 +19,20 @@ Trois publics, trois espaces :
 | **Restaurateur** | le client payant | Fiche restaurant, carte (catégories, plats, plat du jour, promos), **options et photos**, prix, allergènes, relecture et **forçage des traductions**, **achat de langues en ligne** |
 | **Administrateur** | Eatnow | Vue globale des restaurants inscrits, contenu de leurs cartes, couverture des traductions, conformité allergènes, revenu récurrent, **endossement d'un compte restaurateur** |
 
+### Trouver un restaurant
+
+La recherche combine trois entrées : la **géolocalisation**, les **filtres**
+(type de cuisine, tranche de prix, case « menu traduit ») et la **carte**.
+
+La carte s'affiche en bandeau au-dessus des résultats, avec des pastilles
+numérotées qui reprennent le rang des vignettes — une pastille renvoie à une
+fiche sans ambiguïté. Déplacer ou zoomer la carte propose de **relancer la
+recherche sur la zone affichée**, ce qui remplace alors le filtre de distance.
+
+Le fond de plan vient d'OpenStreetMap via Leaflet : aucune clé d'API, aucun
+compte à ouvrir. Les tuiles nécessitent le réseau ; hors connexion la liste
+reste consultable, la carte non.
+
 ### L'expérience client, sur mobile
 
 L'application est conçue pour le mobile : c'est là qu'un client la sort, à
@@ -98,6 +112,10 @@ prévisible.
 
 Les mots de passe sont hachés par **scrypt** et ne quittent jamais le serveur.
 Le bundle JavaScript n'en contient aucun — c'est vérifié par les tests.
+
+Depuis la console, **« + Nouveau restaurant »** crée en une fois la fiche du
+restaurant et l'accès de son restaurateur, avec des catégories de départ. Il
+n'y a pas d'inscription en autonomie : c'est le seul chemin d'entrée.
 
 L'administrateur donne accès à la console : tous les restaurants inscrits,
 le contenu de leurs cartes langue par langue, la couverture des traductions,

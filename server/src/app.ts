@@ -8,12 +8,12 @@ import { config } from './config.js'
 import { db, purgeExpiredSessions } from './db.js'
 import {
   SESSION_COOKIE, type SessionContext, canEditRestaurant, createSession, destroySession,
-  findUserByLogin, readSession, setImpersonation, verifyPassword,
+  findUserByLogin, hashPassword, readSession, setImpersonation, verifyPassword,
 } from './auth.js'
 import {
-  type MenuPayload, dishRestaurant, getRestaurant, listCategories, listDishes, listMenus,
-  listOwners, listPurchases, listRestaurants, purchaseLanguage, replaceMenu, setDishPhoto,
-  updateRestaurant,
+  type MenuPayload, createRestaurantWithOwner, dishRestaurant, getRestaurant, listCategories,
+  listDishes, listMenus, listOwners, listPurchases, listRestaurants, loginExists,
+  purchaseLanguage, replaceMenu, setDishPhoto, setRestaurantPhoto, uniqueSlug, updateRestaurant,
 } from './store.js'
 
 /** Tarif mensuel d'une langue supplémentaire, par plan. Autorité : le serveur. */
@@ -158,6 +158,17 @@ export function buildApp(): FastifyInstance {
     return { user: publicUser(readSession(req.ctx!.session)!) }
   })
 
+  /**
+   * Action d'administration portant sur les données : un administrateur en
+   * train d'endosser un restaurateur agit en son nom et ne doit pas pouvoir
+   * créer de compte par inadvertance.
+   */
+  const requireAdminActing = async (req: FastifyRequest, reply: FastifyReply) => {
+    if (req.ctx?.user.role !== 'admin' || req.ctx.impersonating) {
+      return reply.code(403).send({ error: 'Réservé aux administrateurs, hors endossement.' })
+    }
+  }
+
   // ============================================================
   // Données publiques
   // ============================================================
@@ -208,6 +219,96 @@ export function buildApp(): FastifyInstance {
       purchases: ctx.acting.restaurant_id ? listPurchases(ctx.acting.restaurant_id) : [],
     }
   })
+
+  // ============================================================
+  // Administration : création d'un restaurant et de son compte
+  // ============================================================
+
+  /** Catégories créées d'emblée : une carte vide n'invite pas à commencer. */
+  const DEFAULT_CATEGORIES = ['Entrées', 'Plats', 'Desserts', 'Boissons']
+
+  interface CreateBody {
+    name?: string
+    city?: string
+    address?: string
+    postalCode?: string
+    lat?: number
+    lng?: number
+    phone?: string
+    website?: string
+    cuisines?: string[]
+    priceRange?: number
+    emoji?: string
+    hours?: string
+    plan?: string
+    ownerName?: string
+    ownerLogin?: string
+    ownerPassword?: string
+  }
+
+  app.post<{ Body: CreateBody }>(
+    '/api/admin/restaurants',
+    { onRequest: [requireAuth, requireAdminActing] },
+    async (req, reply) => {
+      const b = req.body ?? {}
+      const name = (b.name ?? '').trim()
+      const ownerName = (b.ownerName ?? '').trim()
+      const ownerLogin = (b.ownerLogin ?? '').trim()
+      const ownerPassword = b.ownerPassword ?? ''
+
+      const missing: string[] = []
+      if (!name) missing.push('nom du restaurant')
+      if (!ownerName) missing.push('nom du contact')
+      if (!ownerLogin) missing.push('identifiant du restaurateur')
+      if (missing.length) {
+        return reply.code(400).send({ error: `Champ(s) requis : ${missing.join(', ')}.` })
+      }
+      if (ownerPassword.length < 8) {
+        return reply.code(400).send({ error: 'Le mot de passe doit faire au moins 8 caractères.' })
+      }
+      if (loginExists(ownerLogin)) {
+        return reply.code(409).send({ error: 'Cet identifiant est déjà utilisé par un autre compte.' })
+      }
+
+      const slugBase = name
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '') || 'restaurant'
+
+      const { hash, salt } = await hashPassword(ownerPassword)
+
+      const id = createRestaurantWithOwner({
+        restaurant: {
+          name,
+          slug: uniqueSlug(slugBase),
+          city: (b.city ?? '').trim(),
+          address: (b.address ?? '').trim(),
+          postalCode: (b.postalCode ?? '').trim(),
+          // Sans coordonnées, le restaurant serait introuvable dans la
+          // recherche par distance : on retombe sur le centre de Paris.
+          lat: Number.isFinite(b.lat) ? Number(b.lat) : 48.8566,
+          lng: Number.isFinite(b.lng) ? Number(b.lng) : 2.3522,
+          phone: (b.phone ?? '').trim(),
+          website: b.website?.trim() || undefined,
+          cuisines: Array.isArray(b.cuisines) && b.cuisines.length ? b.cuisines : ['bistrot'],
+          priceRange: [1, 2, 3, 4].includes(Number(b.priceRange)) ? Number(b.priceRange) : 2,
+          emoji: (b.emoji ?? '🍽️').slice(0, 4),
+          hue: Math.floor(Math.random() * 360),
+          hours: (b.hours ?? '').trim(),
+          plan: ['essai', 'starter', 'pro'].includes(String(b.plan)) ? String(b.plan) : 'essai',
+          sourceLang: 'fr',
+        },
+        owner: { id: randomUUID(), name: ownerName, login: ownerLogin, hash, salt },
+        categories: DEFAULT_CATEGORIES,
+      })
+
+      const created = getRestaurant(id)
+      req.log.info({ restaurant: id, by: req.ctx!.user.login }, 'restaurant créé')
+      return reply.code(201).send({ restaurant: created })
+    },
+  )
 
   // ============================================================
   // Écriture : fiche, carte, langues, photos
@@ -268,6 +369,43 @@ export function buildApp(): FastifyInstance {
     },
   )
 
+  /**
+   * Décode une image reçue en data URL et l'écrit sur disque.
+   * Renvoie l'URL publique, ou une erreur exploitable par le client.
+   */
+  async function storePhoto(
+    dataUrl: string,
+  ): Promise<{ url: string } | { status: number; error: string }> {
+    const match = /^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl)
+    if (!match) return { status: 400, error: 'Image attendue en JPEG, PNG ou WebP.' }
+    const bytes = Buffer.from(match[2], 'base64')
+    if (bytes.length > config.maxPhotoBytes) return { status: 413, error: 'Image trop lourde.' }
+    const file = `${randomUUID()}.${match[1] === 'jpeg' ? 'jpg' : match[1]}`
+    await writeFile(join(config.uploadDir, file), bytes)
+    return { url: `/uploads/${file}` }
+  }
+
+  app.post<{ Params: { id: string }; Body: { dataUrl?: string | null } }>(
+    '/api/restaurants/:id/photo',
+    { onRequest: [requireAuth] },
+    async (req, reply) => {
+      const { id } = req.params
+      if (!getRestaurant(id)) return reply.code(404).send({ error: 'Restaurant introuvable.' })
+      if (!canEditRestaurant(req.ctx!, id)) {
+        return reply.code(403).send({ error: 'Ce restaurant ne vous appartient pas.' })
+      }
+      const dataUrl = req.body?.dataUrl
+      if (!dataUrl) {
+        setRestaurantPhoto(id, null)
+        return { photo: null }
+      }
+      const out = await storePhoto(dataUrl)
+      if ('error' in out) return reply.code(out.status).send({ error: out.error })
+      setRestaurantPhoto(id, out.url)
+      return { photo: out.url }
+    },
+  )
+
   app.post<{ Params: { id: string }; Body: { dataUrl?: string | null } }>(
     '/api/dishes/:id/photo',
     { onRequest: [requireAuth] },
@@ -284,21 +422,10 @@ export function buildApp(): FastifyInstance {
         return { photo: null }
       }
 
-      const match = /^data:image\/(jpeg|png|webp);base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl)
-      if (!match) return reply.code(400).send({ error: 'Image attendue en JPEG, PNG ou WebP.' })
-
-      const bytes = Buffer.from(match[2], 'base64')
-      if (bytes.length > config.maxPhotoBytes) {
-        return reply.code(413).send({ error: 'Image trop lourde.' })
-      }
-
-      const ext = match[1] === 'jpeg' ? 'jpg' : match[1]
-      const file = `${randomUUID()}.${ext}`
-      await writeFile(join(config.uploadDir, file), bytes)
-
-      const url = `/uploads/${file}`
-      setDishPhoto(req.params.id, url)
-      return { photo: url }
+      const out = await storePhoto(dataUrl)
+      if ('error' in out) return reply.code(out.status).send({ error: out.error })
+      setDishPhoto(req.params.id, out.url)
+      return { photo: out.url }
     },
   )
 

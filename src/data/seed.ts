@@ -26,6 +26,8 @@ type DishSeed = [
 interface RestoSeed {
   name: string
   emoji: string
+  /** Illustration de couverture de démonstration. */
+  art?: ['viande' | 'poisson' | 'vegetal' | 'dessert', number]
   hue: number
   cuisines: Cuisine[]
   priceRange: 1 | 2 | 3 | 4
@@ -52,7 +54,7 @@ interface RestoSeed {
 
 const SEED: RestoSeed[] = [
   {
-    name: 'Le Comptoir Bleu', emoji: '🍷', hue: 188,
+    name: 'Le Comptoir Bleu', emoji: '🍷', hue: 188, art: ['viande', 1],
     cuisines: ['bistrot', 'francaise'], priceRange: 2,
     address: '14 rue des Lombards', postalCode: '75001', city: 'Paris',
     lat: 48.8601, lng: 2.3479, phone: '01 42 33 18 04', website: 'lecomptoirbleu.fr',
@@ -88,7 +90,7 @@ const SEED: RestoSeed[] = [
     createdAt: '2025-11-04',
   },
   {
-    name: 'Trattoria Sole', emoji: '🍝', hue: 14,
+    name: 'Trattoria Sole', emoji: '🍝', hue: 14, art: ['vegetal', 2],
     cuisines: ['italienne', 'pizza'], priceRange: 2,
     address: '5 rue Tiquetonne', postalCode: '75002', city: 'Paris',
     lat: 48.8648, lng: 2.3466, phone: '01 40 26 77 12',
@@ -116,7 +118,7 @@ const SEED: RestoSeed[] = [
     createdAt: '2026-01-19',
   },
   {
-    name: 'Sakura Izakaya', emoji: '🍣', hue: 340,
+    name: 'Sakura Izakaya', emoji: '🍣', hue: 340, art: ['poisson', 0],
     cuisines: ['japonaise', 'coreen'], priceRange: 3,
     address: '22 rue Sainte-Anne', postalCode: '75001', city: 'Paris',
     lat: 48.8664, lng: 2.3355, phone: '01 47 03 55 90', website: 'sakura-izakaya.paris',
@@ -144,7 +146,7 @@ const SEED: RestoSeed[] = [
     createdAt: '2025-09-22',
   },
   {
-    name: 'Beyrouth Café', emoji: '🥙', hue: 96,
+    name: 'Beyrouth Café', emoji: '🥙', hue: 96, art: ['vegetal', 1],
     cuisines: ['libanaise', 'vegetarien'], priceRange: 1,
     address: '31 rue Saint-Antoine', postalCode: '75004', city: 'Paris',
     lat: 48.8541, lng: 2.3651, phone: '01 44 61 09 33',
@@ -171,7 +173,7 @@ const SEED: RestoSeed[] = [
     createdAt: '2026-03-02',
   },
   {
-    name: 'La Criée d’Or', emoji: '🦞', hue: 205,
+    name: 'La Criée d’Or', emoji: '🦞', hue: 205, art: ['poisson', 2],
     cuisines: ['poisson', 'francaise'], priceRange: 4,
     address: '2 avenue de Wagram', postalCode: '75017', city: 'Paris',
     lat: 48.8748, lng: 2.2951, phone: '01 45 72 11 88', website: 'lacrieedor.com',
@@ -193,7 +195,7 @@ const SEED: RestoSeed[] = [
     createdAt: '2025-06-15',
   },
   {
-    name: 'Green & Bowl', emoji: '🥗', hue: 140,
+    name: 'Green & Bowl', emoji: '🥗', hue: 140, art: ['vegetal', 0],
     cuisines: ['vegetarien'], priceRange: 1,
     address: '9 rue de Turbigo', postalCode: '75002', city: 'Paris',
     lat: 48.8657, lng: 2.3496, phone: '01 42 21 60 30',
@@ -216,7 +218,7 @@ const SEED: RestoSeed[] = [
     createdAt: '2026-07-28',
   },
   {
-    name: 'El Burrito Loco', emoji: '🌮', hue: 30,
+    name: 'El Burrito Loco', emoji: '🌮', hue: 30, art: ['viande', 2],
     cuisines: ['mexicaine'], priceRange: 1,
     address: '48 rue de la Roquette', postalCode: '75011', city: 'Paris',
     lat: 48.8551, lng: 2.3742, phone: '01 43 57 22 41',
@@ -257,6 +259,7 @@ export function buildSeedState(): AppState {
       address: s.address, postalCode: s.postalCode, city: s.city, lat: s.lat, lng: s.lng,
       phone: s.phone, website: s.website, emoji: s.emoji, hue: s.hue,
       rating: s.rating, reviews: s.reviews, hours: s.hours, sourceLang: 'fr',
+      photo: s.art ? demoArt(s.art[0], s.art[1]) : undefined,
       purchasedLangs: s.purchased, published: s.published, plan: s.plan, createdAt: s.createdAt,
     })
 

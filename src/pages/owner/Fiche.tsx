@@ -1,10 +1,14 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useStore } from '../../store/store'
+import { fileToPhoto } from '../../lib/photo'
 import { CUISINES, CUISINE_LABEL, type Cuisine } from '../../types'
 import { priceRangeLabel } from '../../lib/format'
 
 export function OwnerFiche() {
-  const { currentOwner, updateRestaurant, setRestaurantField } = useStore()
+  const { currentOwner, updateRestaurant, setRestaurantField, setRestaurantPhoto } = useStore()
+  const fileInput = useRef<HTMLInputElement>(null)
+  const [photoBusy, setPhotoBusy] = useState(false)
+  const [photoError, setPhotoError] = useState<string | null>(null)
   const r = currentOwner()!.restaurant
   const [saved, setSaved] = useState(false)
 
@@ -26,6 +30,46 @@ export function OwnerFiche() {
       </div>
 
       <section className="card pad stack gap-m">
+        <div className="field">
+          <span>Photo de couverture</span>
+          <p className="tiny muted" style={{ marginBottom: '.3rem' }}>
+            Elle illustre votre fiche dans les résultats de recherche et en haut de votre page.
+          </p>
+          <div className="photo-box">
+            {r.photo
+              ? <img src={r.photo} alt={`Couverture de ${r.name}`} style={{ width: 140, height: 90 }} />
+              : <div className="photo-drop" style={{ width: 140, height: 90 }} aria-hidden>🏪</div>}
+            <div className="stack gap-xs">
+              <input
+                ref={fileInput} type="file" accept="image/*" className="sr-only"
+                onChange={async (e) => {
+                  const file = e.target.files?.[0]
+                  if (!file) return
+                  setPhotoBusy(true); setPhotoError(null)
+                  try {
+                    await setRestaurantPhoto(r.id, await fileToPhoto(file))
+                    flash()
+                  } catch (err) {
+                    setPhotoError(err instanceof Error ? err.message : 'Import impossible.')
+                  } finally {
+                    setPhotoBusy(false)
+                    if (fileInput.current) fileInput.current.value = ''
+                  }
+                }}
+              />
+              <button className="btn outline sm" disabled={photoBusy} onClick={() => fileInput.current?.click()}>
+                {photoBusy ? 'Import…' : r.photo ? 'Remplacer' : 'Ajouter une photo'}
+              </button>
+              {r.photo && (
+                <button className="btn danger sm" onClick={() => void setRestaurantPhoto(r.id, undefined)}>
+                  Retirer
+                </button>
+              )}
+            </div>
+          </div>
+          {photoError && <p className="notice danger">{photoError}</p>}
+        </div>
+
         <div className="grid-2">
           <label className="field">
             <span>Nom du restaurant</span>

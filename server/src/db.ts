@@ -127,6 +127,8 @@ const MIGRATIONS: string[] = [
   );
   CREATE INDEX purchases_resto ON purchases(restaurant_id);
   `,
+  // 2 — photo de couverture du restaurant
+  `ALTER TABLE restaurants ADD COLUMN photo TEXT;`,
 ]
 
 /**

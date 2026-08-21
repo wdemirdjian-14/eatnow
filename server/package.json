@@ -1,7 +1,7 @@
 {
   "name": "eatnow-server",
   "private": true,
-  "version": "0.4.1",
+  "version": "0.5.0",
   "type": "module",
   "description": "API Eatnow — authentification, cartes, traductions, achats de langues.",
   "engines": {

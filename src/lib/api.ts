@@ -68,7 +68,33 @@ export interface MenuPayload {
   menus: AppState['menus']
 }
 
+/** Création d'un restaurant et de son compte, par un administrateur. */
+export interface NewRestaurant {
+  name: string
+  city: string
+  address: string
+  postalCode: string
+  lat?: number
+  lng?: number
+  phone: string
+  website?: string
+  cuisines: string[]
+  priceRange: number
+  emoji: string
+  hours: string
+  plan: string
+  ownerName: string
+  ownerLogin: string
+  ownerPassword: string
+}
+
 export const api = {
+  createRestaurant: (payload: NewRestaurant) =>
+    request<{ restaurant: Restaurant }>('/api/admin/restaurants', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
   login: (login: string, password: string) =>
     request<{ user: SessionUser }>('/api/auth/login', {
       method: 'POST',
@@ -111,6 +137,12 @@ export const api = {
       `/api/restaurants/${id}/languages`,
       { method: 'POST', body: JSON.stringify({ lang }) },
     ),
+
+  setRestaurantPhoto: (id: string, dataUrl: string | null) =>
+    request<{ photo: string | null }>(`/api/restaurants/${id}/photo`, {
+      method: 'POST',
+      body: JSON.stringify({ dataUrl }),
+    }),
 
   setDishPhoto: (dishId: string, dataUrl: string | null) =>
     request<{ photo: string | null }>(`/api/dishes/${dishId}/photo`, {

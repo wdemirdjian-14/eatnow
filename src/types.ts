@@ -156,6 +156,8 @@ export interface Restaurant {
   phone: string
   website?: string
   emoji: string
+  /** Photo de couverture, servie depuis /uploads. */
+  photo?: string
   hue: number
   rating: number
   reviews: number

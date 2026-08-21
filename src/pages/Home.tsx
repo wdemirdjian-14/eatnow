@@ -7,10 +7,11 @@ import { t } from '../i18n/ui'
 import { RestaurantCard } from '../components/RestaurantCard'
 import { Logo } from '../components/Logo'
 import { InstallPrompt } from '../components/InstallPrompt'
+import { MapView, type Bounds } from '../components/MapView'
 
 type Sort = 'distance' | 'rating' | 'price'
 
-export function Home() {
+export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte' } = {}) {
   const { state, lang } = useStore()
 
   const [q, setQ] = useState('')
@@ -22,6 +23,12 @@ export function Home() {
   const [translatedOnly, setTranslatedOnly] = useState(false)
   const [radius, setRadius] = useState(5)
   const [sort, setSort] = useState<Sort>('distance')
+  const [view, setView] = useState<'liste' | 'carte'>(initialView)
+  /** Les filtres restent repliés par défaut : la carte et les résultats
+      doivent apparaître sans avoir à faire défiler. */
+  const [showFilters, setShowFilters] = useState(false)
+  /** Zone géographique imposée par la carte ; remplace le filtre de distance. */
+  const [area, setArea] = useState<Bounds | null>(null)
 
   const dishCount = useMemo(() => {
     const m = new Map<string, number>()
@@ -34,7 +41,12 @@ export function Home() {
     return state.restaurants
       .map((r) => ({ r, d: distanceKm(pos.lat, pos.lng, r.lat, r.lng) }))
       .filter(({ r, d }) => {
-        if (d > radius) return false
+        if (area) {
+          if (r.lat > area.north || r.lat < area.south) return false
+          if (r.lng > area.east || r.lng < area.west) return false
+        } else if (d > radius) {
+          return false
+        }
         if (translatedOnly && !r.published) return false
         if (cuisines.length && !r.cuisines.some((c) => cuisines.includes(c))) return false
         if (prices.length && !prices.includes(r.priceRange)) return false
@@ -53,7 +65,7 @@ export function Home() {
         if (sort === 'price') return a.r.priceRange - b.r.priceRange || a.d - b.d
         return a.d - b.d
       })
-  }, [state.restaurants, q, pos, radius, translatedOnly, cuisines, prices, sort])
+  }, [state.restaurants, q, pos, radius, translatedOnly, cuisines, prices, sort, area])
 
   const toggle = <T,>(list: T[], v: T, set: (x: T[]) => void) =>
     set(list.includes(v) ? list.filter((x) => x !== v) : [...list, v])
@@ -63,6 +75,7 @@ export function Home() {
     setGeoError(null)
     try {
       setPos(await locate())
+      setArea(null)
     } catch (e) {
       setGeoError(e instanceof Error ? e.message : 'Position indisponible.')
     } finally {
@@ -77,9 +90,12 @@ export function Home() {
       <section className="hero">
         <Logo size={420} id="hero" className="hero-logo" />
         <div className="wrap inner">
-          <span className="badge sun">🌍 13 langues · allergènes inclus</span>
-          <h1 style={{ marginTop: '.8rem' }}>{t('home.tagline', lang)}</h1>
-          <p className="lead">{t('home.sub', lang)}</p>
+          <span className="badge sun hide-mobile">🌍 14 langues · allergènes inclus</span>
+          <h1 className="hide-mobile" style={{ marginTop: '.8rem' }}>{t('home.tagline', lang)}</h1>
+          <p className="lead hide-mobile">{t('home.sub', lang)}</p>
+          {/* Sur mobile l'application va droit au but : une ligne, puis la
+              recherche et la carte. Le discours reste sur grand écran. */}
+          <p className="hero-mini">{t('home.tagline', lang)}</p>
 
           <div className="searchbar">
             <input
@@ -93,7 +109,7 @@ export function Home() {
             </button>
           </div>
 
-          <div className="hero-stats">
+          <div className="hero-stats hide-mobile">
             <div><b>{state.restaurants.length}</b><span>restaurants référencés</span></div>
             <div><b>{state.restaurants.filter((r) => r.published).length}</b><span>cartes traduites</span></div>
             <div><b>{state.dishes.length}</b><span>plats avec allergènes</span></div>
@@ -102,8 +118,100 @@ export function Home() {
       </section>
 
       <main className="wrap stack gap-l" style={{ paddingTop: '1.6rem' }}>
+
+        {/* Deux réglages toujours visibles, sans ouvrir les filtres. */}
+        <div className="quick-controls">
+          <label className="quick-control">
+            <span>{t('home.sort', lang)}</span>
+            <select value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
+              <option value="distance">{t('home.sort.distance', lang)}</option>
+              <option value="rating">{t('home.sort.rating', lang)}</option>
+              <option value="price">{t('home.sort.price', lang)}</option>
+            </select>
+          </label>
+          <label className="quick-control">
+            <span>{t('home.radius', lang)}</span>
+            <select
+              value={area ? 'zone' : String(radius)}
+              onChange={(e) => {
+                if (e.target.value === 'zone') return
+                setArea(null)
+                setRadius(Number(e.target.value))
+              }}
+            >
+              {area && <option value="zone">Zone de la carte</option>}
+              {[1, 2, 5, 10, 20, 30].map((km) => <option key={km} value={km}>{km} km</option>)}
+            </select>
+          </label>
+        </div>
+
+
+        <div className="row gap-s wrap-flex">
+          <h2>{results.length} {t('home.results', lang)}</h2>
+          <span className="muted small">
+            {area
+              ? '· dans la zone affichée sur la carte'
+              : `· dans un rayon de ${radius} km autour de ${pos.label}`}
+          </span>
+          {area && (
+            <button className="btn ghost sm" onClick={() => setArea(null)}>
+              ✕ revenir au rayon
+            </button>
+          )}
+          <span className="spacer" />
+          <button
+            className="chip sm" aria-pressed={showFilters} aria-expanded={showFilters}
+            onClick={() => setShowFilters((v) => !v)}
+          >
+            ⚙️ {t('home.filters', lang)}{activeFilters > 0 && ` (${activeFilters})`}
+          </button>
+          <div className="view-toggle" role="group" aria-label="Affichage">
+            <button className="chip sm" aria-pressed={view === 'liste'} onClick={() => setView('liste')}>
+              ☰ Liste
+            </button>
+            <button className="chip sm" aria-pressed={view === 'carte'} onClick={() => setView('carte')}>
+              🗺️ Carte
+            </button>
+          </div>
+        </div>
+
+        {/* La carte précède la liste : on situe les restaurants avant de les
+            lire, et les pastilles numérotées renvoient aux vignettes. */}
+        <MapView
+          restaurants={results.map((x) => x.r)}
+          center={{ lat: pos.lat, lng: pos.lng }}
+          lang={lang}
+          distances={new Map(results.map((x) => [x.r.id, x.d]))}
+          onSearchArea={setArea}
+          onLocate={() => void askLocation()}
+          locating={locating}
+          compact={view === 'liste'}
+        />
+
+        {view === 'liste' && (
+          results.length === 0 ? (
+            <p className="empty">{t('home.none', lang)}</p>
+          ) : (
+            <div className="grid-restos">
+              {results.map(({ r, d }, i) => (
+                <RestaurantCard
+                  key={r.id} r={r} distance={d} lang={lang} rank={i + 1}
+                  dishCount={dishCount.get(r.id) ?? 0}
+                />
+              ))}
+            </div>
+          )
+        )}
+
+        {view === 'carte' && results.length === 0 && (
+          <p className="notice warn">{t('home.none', lang)}</p>
+        )}
+
+        {/* Invitation à installer : utile, mais elle ne doit pas repousser
+            la carte et les résultats sous la pliure. */}
         <InstallPrompt />
 
+        {showFilters && (
         <section className="card filters" aria-label={t('home.filters', lang)}>
           <div className="line">
             <span className="lbl">{t('home.position', lang)}</span>
@@ -154,14 +262,6 @@ export function Home() {
               </button>
             ))}
             <span className="spacer" />
-            <label className="row gap-s small">
-              {t('home.sort', lang)}
-              <select className="select" style={{ width: 'auto' }} value={sort} onChange={(e) => setSort(e.target.value as Sort)}>
-                <option value="distance">{t('home.sort.distance', lang)}</option>
-                <option value="rating">{t('home.sort.rating', lang)}</option>
-                <option value="price">{t('home.sort.price', lang)}</option>
-              </select>
-            </label>
           </div>
 
           <div className="highlight-filter row gap-s wrap-flex">
@@ -186,21 +286,8 @@ export function Home() {
             )}
           </div>
         </section>
-
-        <div className="row gap-s">
-          <h2>{results.length} {t('home.results', lang)}</h2>
-          <span className="muted small">· dans un rayon de {radius} km autour de {pos.label}</span>
-        </div>
-
-        {results.length === 0 ? (
-          <p className="empty">{t('home.none', lang)}</p>
-        ) : (
-          <div className="grid-restos">
-            {results.map(({ r, d }) => (
-              <RestaurantCard key={r.id} r={r} distance={d} lang={lang} dishCount={dishCount.get(r.id) ?? 0} />
-            ))}
-          </div>
         )}
+
       </main>
     </>
   )

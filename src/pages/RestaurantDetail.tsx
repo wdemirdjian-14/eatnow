@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { activeLangs, useStore } from '../store/store'
+import { useStore } from '../store/store'
 import {
   ALLERGEN_LABEL, CUISINE_LABEL, DIET_LABEL, LANGS, LANG_META,
   type Dish, type Lang,
@@ -13,6 +13,9 @@ import { OptionPicker } from '../components/menu/OptionPicker'
 import { SelectionSheet } from '../components/menu/SelectionSheet'
 import { OrderView } from '../components/menu/OrderView'
 import { useOfflineReady, useOnline } from '../lib/pwa'
+import { FavoriteButton } from '../components/FavoriteButton'
+import { MapView } from '../components/MapView'
+import { activeLangs } from '../store/store'
 
 type Overlay = 'none' | 'selection' | 'order'
 
@@ -82,44 +85,110 @@ export function RestaurantDetail() {
 
   return (
     <>
-      <section className="resto-hero" style={{ ['--h' as string]: r.hue }}>
-        <div className="wrap stack gap-s">
-          <Link to="/" className="small" style={{ opacity: .85 }}>← {t('nav.back', shown)}</Link>
-          <div className="row gap-s" style={{ alignItems: 'flex-start' }}>
-            <span className="emoji" aria-hidden>{r.emoji}</span>
-            <div className="stack gap-xs" style={{ flex: 1, minWidth: 0 }}>
-              <h1>{r.name}</h1>
-              <div className="row gap-xs wrap-flex tiny" style={{ opacity: .9 }}>
-                <span>{r.cuisines.map((c) => CUISINE_LABEL[c]).join(' · ')}</span>
-                <span>·</span><span className="mono">{priceRangeLabel(r.priceRange)}</span>
-                <span>·</span><span>★ {r.rating.toFixed(1)} ({r.reviews})</span>
-              </div>
-            </div>
-          </div>
-          <p className="small" style={{ opacity: .92 }}>{T(r.description)}</p>
-          <div className="row gap-xs wrap-flex tiny" style={{ opacity: .9 }}>
-            <span>📍 {r.address}, {r.postalCode} {r.city}</span>
-            <span>·</span>
-            <span>🕑 {r.hours}</span>
-          </div>
-          <div className="row gap-s wrap-flex">
-            {online && offlineReady && (
-              <span className="badge mint" title="Cette carte reste lisible sans réseau">
-                📴 {t('offline.ready', shown)}
-              </span>
-            )}
-          </div>
-          <div className="row gap-s wrap-flex">
-            <a className="btn sun sm" href={`tel:${r.phone.replace(/\s/g, '')}`}>📞 {t('resto.call', shown)}</a>
-            <a
-              className="btn outline sm"
-              href={`https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=17/${r.lat}/${r.lng}`}
-              target="_blank" rel="noreferrer"
-            >
-              🗺️ {t('resto.route', shown)}
-            </a>
-          </div>
+      {/* Barre de titre collante, avec retour — repère constant pendant
+          la lecture d'une carte longue. */}
+      <div className="resto-titlebar">
+        <div className="wrap row gap-s">
+          <Link to="/" className="resto-titlebar__back" aria-label={t('nav.back', shown)}>←</Link>
+          <b style={{ flex: 1, minWidth: 0 }}>{r.name}</b>
+          <FavoriteButton id={r.id} label={r.name} />
         </div>
+      </div>
+
+      {/* Contact, immédiatement accessible. */}
+      <div className="resto-contact wrap">
+        <a href={`tel:${r.phone.replace(/\s/g, '')}`}>
+          <span className="resto-contact__icon" aria-hidden>📞</span>{r.phone || '—'}
+        </a>
+        {r.website && (
+          <a href={`https://${r.website.replace(/^https?:\/\//, '')}`} target="_blank" rel="noreferrer">
+            <span className="resto-contact__icon" aria-hidden>🌐</span>{r.website}
+          </a>
+        )}
+      </div>
+
+      <section className="resto-hero" style={{ ['--h' as string]: r.hue }}>
+        <div className="resto-hero__media">
+          {r.photo
+            ? <img src={r.photo} alt={`Photo de ${r.name}`} />
+            : <span className="resto-hero__emoji" aria-hidden>{r.emoji}</span>}
+
+          {r.published && (
+            <span className="resto-hero__state">🌍 {t('card.translated', shown)}</span>
+          )}
+
+          {/* Accès direct à la carte, quel que soit le défilement. */}
+          <a href="#carte" className="see-menu" onClick={(e) => {
+            e.preventDefault()
+            document.getElementById('carte')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }}>
+            <span>{t('resto.menu', shown)}</span>
+            <span className="see-menu__icon" aria-hidden>🍴</span>
+          </a>
+        </div>
+
+        <div className="wrap resto-hero__info">
+          <div className="resto-facts">
+            <span>📍 {[r.address, r.postalCode, r.city].filter(Boolean).join(' ')}</span>
+            <span>🍽️ {r.cuisines.map((c) => CUISINE_LABEL[c]).join(' · ')}</span>
+            <span className="mono">💶 {priceRangeLabel(r.priceRange)}</span>
+            <span>★ {r.rating.toFixed(1)} ({r.reviews} {t('card.reviews', shown)})</span>
+          </div>
+          {T(r.description) && <p className="small muted">{T(r.description)}</p>}
+        </div>
+      </section>
+
+      {/* Langues publiées : la promesse d'Eatnow, énoncée d'emblée. */}
+      {r.published && (
+        <section className="wrap resto-block">
+          <h3 className="resto-block__title">Langues disponibles</h3>
+          <div className="flag-row big">
+            {activeLangs(r).map((l) => (
+              <span key={l} className="flag-chip" title={LANG_META[l].label}>{LANG_META[l].flag}</span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="wrap resto-block">
+        <h3 className="resto-block__title">Informations pratiques</h3>
+        <dl className="resto-info">
+          <dt>Horaires</dt>
+          <dd>{r.hours || 'Non renseignés'}</dd>
+          <dt>Adresse</dt>
+          <dd>{[r.address, r.postalCode, r.city].filter(Boolean).join(', ') || 'Non renseignée'}</dd>
+          <dt>Téléphone</dt>
+          <dd>{r.phone || 'Non renseigné'}</dd>
+          {online && offlineReady && (
+            <>
+              <dt>Hors connexion</dt>
+              <dd>📴 {t('offline.ready', shown)}</dd>
+            </>
+          )}
+        </dl>
+        <div className="row gap-s wrap-flex">
+          <a className="btn sun sm" href={`tel:${r.phone.replace(/\s/g, '')}`}>📞 {t('resto.call', shown)}</a>
+          <a
+            className="btn outline sm"
+            href={`https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lng}#map=17/${r.lat}/${r.lng}`}
+            target="_blank" rel="noreferrer"
+          >
+            🗺️ {t('resto.route', shown)}
+          </a>
+        </div>
+      </section>
+
+      <section className="wrap resto-block">
+        <MapView
+          restaurants={[r]}
+          center={{ lat: r.lat, lng: r.lng }}
+          lang={shown}
+          distances={new Map()}
+          onSearchArea={() => {}}
+          onLocate={() => {}}
+          locating={false}
+          compact
+        />
       </section>
 
       {r.published && (
@@ -156,7 +225,7 @@ export function RestaurantDetail() {
           </p>
         )}
 
-        <article className="menu-sheet">
+        <article className="menu-sheet" id="carte">
           <header className="menu-sheet__head">
             <p className="eyebrow">{r.emoji} {r.city}</p>
             <h2>{t('resto.menu', shown)}</h2>

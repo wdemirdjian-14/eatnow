@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { activeLangs, LANG_PRICE, useStore } from '../../store/store'
 import { CUISINE_LABEL, LANG_META, type Lang } from '../../types'
 import { money, priceRangeLabel } from '../../lib/format'
+import { NewRestaurantForm } from './NewRestaurantForm'
 
 const PLAN_PRICE = { essai: 0, starter: 29, pro: 59 } as const
 
@@ -11,6 +12,8 @@ export function Admin() {
   const nav = useNavigate()
   const [q, setQ] = useState('')
   const [onlyPublished, setOnlyPublished] = useState(false)
+  const [creating, setCreating] = useState(false)
+  const [created, setCreated] = useState<string | null>(null)
 
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase()
@@ -63,7 +66,24 @@ export function Admin() {
           <h2>Console d’administration</h2>
           <p>Vue globale des restaurants inscrits, de leurs cartes et du chiffre d’affaires récurrent.</p>
         </div>
+        <span className="spacer" />
+        <button className="btn" onClick={() => setCreating(true)}>+ Nouveau restaurant</button>
       </div>
+
+      {created && (
+        <p className="notice">
+          ✅ Restaurant créé, avec ses catégories de départ et son accès.
+          <button
+            className="btn sm" style={{ marginLeft: '.6rem' }}
+            onClick={() => {
+              const r = state.restaurants.find((x) => x.id === created)
+              if (r) void impersonate(r.ownerId).then(() => nav('/pro/carte'))
+            }}
+          >
+            Ouvrir sa carte
+          </button>
+        </p>
+      )}
 
       <section className="stat-grid">
         <div className="stat"><b>{totals.restaurants}</b><span>restaurants référencés</span></div>
@@ -168,6 +188,12 @@ export function Admin() {
           ))}
         </div>
       </section>
+      {creating && (
+        <NewRestaurantForm
+          onClose={() => setCreating(false)}
+          onCreated={(id) => { setCreating(false); setCreated(id) }}
+        />
+      )}
     </div>
   )
 }

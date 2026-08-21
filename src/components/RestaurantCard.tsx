@@ -5,52 +5,74 @@ import { priceRangeLabel } from '../lib/format'
 import { resolve } from '../lib/translate'
 import { activeLangs } from '../store/store'
 import { t } from '../i18n/ui'
+import { FavoriteButton } from './FavoriteButton'
 
+/**
+ * Vignette d'un restaurant dans les résultats.
+ *
+ * La photo porte la reconnaissance, les drapeaux disent d'un coup d'œil dans
+ * quelles langues la carte est lisible — c'est la promesse d'Eatnow — et le
+ * numéro fait le lien avec la pastille correspondante sur la carte.
+ */
 export function RestaurantCard({
-  r, distance, lang, dishCount,
-}: { r: Restaurant; distance?: number; lang: Lang; dishCount: number }) {
+  r, distance, lang, dishCount, rank,
+}: {
+  r: Restaurant
+  distance?: number
+  lang: Lang
+  dishCount: number
+  /** Rang dans les résultats, repris sur la carte géographique. */
+  rank?: number
+}) {
   const langs = activeLangs(r)
+
   return (
     <Link to={`/r/${r.slug}`} className="resto-card" style={{ ['--h' as string]: r.hue }}>
       <div className="resto-cover">
-        <span aria-hidden>{r.emoji}</span>
+        {r.photo
+          ? <img src={r.photo} alt="" loading="lazy" />
+          : <span className="resto-cover__emoji" aria-hidden>{r.emoji}</span>}
+
+        {rank !== undefined && <span className="resto-rank">{rank}</span>}
+        <FavoriteButton id={r.id} label={r.name} />
         {distance !== undefined && <span className="dist">{formatDistance(distance)}</span>}
-        {r.published && (
-          <span className="flags" title={`Carte traduite en ${langs.length} langues`}>
-            {langs.slice(0, 5).map((l) => <span key={l}>{LANG_META[l].flag}</span>)}
-            {langs.length > 5 && <span className="tiny" style={{ color: '#fff' }}>+{langs.length - 5}</span>}
-          </span>
-        )}
       </div>
 
       <div className="resto-body">
-        <div className="row gap-s">
-          <h3 style={{ flex: 1 }}>{r.name}</h3>
+        <div className="row gap-s" style={{ alignItems: 'flex-start' }}>
+          <h3 style={{ flex: 1, minWidth: 0 }}>{r.name}</h3>
           <span className="rating"><i>★</i>{r.rating.toFixed(1)}</span>
         </div>
 
-        <div className="row gap-xs wrap-flex small muted">
-          <span>{r.cuisines.map((c) => CUISINE_LABEL[c]).join(' · ')}</span>
-          <span>·</span>
-          <span className="mono">{priceRangeLabel(r.priceRange)}</span>
-          <span>·</span>
-          <span>{r.reviews} {t('card.reviews', lang)}</span>
+        <div className="resto-meta">
+          <span>🍽️ {r.cuisines.map((c) => CUISINE_LABEL[c]).join(' · ')}</span>
+          <span className="mono">💶 {priceRangeLabel(r.priceRange)}</span>
         </div>
 
-        <p className="small muted" style={{ flex: 1 }}>
-          {resolve(r.description, lang, r.sourceLang)}
-        </p>
+        {(r.address || r.city) && (
+          <div className="resto-meta">
+            <span>📍 {[r.address, r.city].filter(Boolean).join(', ')}</span>
+          </div>
+        )}
 
-        <div className="row gap-xs wrap-flex">
-          {r.published
-            ? <span className="badge solid">🌍 {t('card.translated', lang)}</span>
-            : <span className="badge grey">Carte non traduite</span>}
-          <span className="badge">{dishCount} plats</span>
+        <p className="small muted resto-desc">{resolve(r.description, lang, r.sourceLang)}</p>
+
+        <div className="resto-foot">
+          {r.published ? (
+            <span className="flag-row" title={`Carte traduite en ${langs.length} langues`}>
+              {langs.slice(0, 7).map((l) => (
+                <span key={l} className="flag-chip">{LANG_META[l].flag}</span>
+              ))}
+              {langs.length > 7 && <span className="flag-chip more">+{langs.length - 7}</span>}
+            </span>
+          ) : (
+            <span className="badge grey">Carte non traduite</span>
+          )}
           <span className="spacer" />
-          <span className="small" style={{ color: 'var(--teal-700)', fontWeight: 700 }}>
-            {t('card.see', lang)} →
-          </span>
+          <span className="tiny muted">{dishCount} plats</span>
         </div>
+
+        <span className="resto-cta">{t('card.see', lang)} →</span>
       </div>
     </Link>
   )

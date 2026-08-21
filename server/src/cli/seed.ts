@@ -59,10 +59,10 @@ const load = db.transaction(() => {
   const insertResto = db.prepare(
     `INSERT INTO restaurants (id, slug, owner_id, name, description, cuisines, price_range,
        address, postal_code, city, lat, lng, phone, website, emoji, hue, rating, reviews,
-       hours, source_lang, purchased_langs, published, plan, created_at)
+       hours, source_lang, purchased_langs, published, plan, created_at, photo)
      VALUES (@id, @slug, @ownerId, @name, @description, @cuisines, @priceRange, @address,
        @postalCode, @city, @lat, @lng, @phone, @website, @emoji, @hue, @rating, @reviews,
-       @hours, @sourceLang, @purchasedLangs, @published, @plan, @createdAt)`,
+       @hours, @sourceLang, @purchasedLangs, @published, @plan, @createdAt, @photo)`,
   )
   for (const r of data.restaurants) {
     insertResto.run({
@@ -72,6 +72,7 @@ const load = db.transaction(() => {
       purchasedLangs: JSON.stringify(r.purchasedLangs),
       published: r.published ? 1 : 0,
       website: r.website ?? null,
+      photo: r.photo ?? null,
     })
   }
 

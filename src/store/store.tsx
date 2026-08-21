@@ -8,7 +8,7 @@ import {
 } from '../types'
 import { autoTranslate, field } from '../lib/translate'
 import { uid, slugify } from '../lib/format'
-import { ApiError, api, type SessionUser } from '../lib/api'
+import { ApiError, api, type NewRestaurant, type SessionUser } from '../lib/api'
 
 /**
  * Miroir hors connexion de l'annuaire.
@@ -86,6 +86,8 @@ interface Store {
   currentOwner: () => { owner: AppState['owners'][number]; restaurant: Restaurant } | null
   /** Vrai quand un administrateur agit au nom d'un restaurateur. */
   isImpersonating: boolean
+  /** Crée un restaurant et son compte restaurateur. Renvoie l'erreur ou null. */
+  createRestaurant: (payload: NewRestaurant) => Promise<{ error: string | null; id?: string }>
   impersonate: (ownerId: string) => Promise<void>
   stopImpersonating: () => Promise<void>
 
@@ -102,6 +104,7 @@ interface Store {
   removeDish: (id: string) => void
 
   setDishPhoto: (id: string, photo: string | undefined) => Promise<void>
+  setRestaurantPhoto: (id: string, photo: string | undefined) => Promise<void>
   addOptionGroup: (dishId: string, name: string) => void
   updateOptionGroup: (dishId: string, groupId: string, patch: { source?: string; required?: boolean; multiple?: boolean }) => void
   removeOptionGroup: (dishId: string, groupId: string) => void
@@ -425,6 +428,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
       isImpersonating: session.role === 'admin' && !!session.impersonating,
 
+      async createRestaurant(payload) {
+        try {
+          const { restaurant } = await api.createRestaurant(payload)
+          await reload()
+          return { error: null, id: restaurant.id }
+        } catch (err) {
+          return {
+            error: err instanceof ApiError && err.status === 0
+              ? 'Serveur injoignable.'
+              : err instanceof Error ? err.message : 'Création impossible.',
+          }
+        }
+      },
+
       async impersonate(ownerId) {
         const { user } = await api.impersonate(ownerId)
         setSession(toSession(user))
@@ -546,6 +563,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             delete (next as Partial<Dish> & { descSource?: string }).descSource
             return next
           }),
+        }))
+      },
+
+      async setRestaurantPhoto(id, photo) {
+        const { photo: url } = await api.setRestaurantPhoto(id, photo ?? null)
+        setState((s) => ({
+          ...s,
+          restaurants: s.restaurants.map((r) => (r.id === id ? { ...r, photo: url ?? undefined } : r)),
         }))
       },
 
