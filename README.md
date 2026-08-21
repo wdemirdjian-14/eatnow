@@ -68,9 +68,21 @@ Mot de passe pour tous : **`eatnow`**
 
 Les écrans de connexion proposent ces comptes en un clic.
 
-#### Le compte administrateur
+#### Les comptes administrateurs
 
-`admin@eatnow.app` donne accès à la console : tous les restaurants inscrits,
+| Identifiant | Mot de passe |
+| --- | --- |
+| `warren` | celui que vous avez défini |
+| `admin@eatnow.app` | `eatnow` (compte de démonstration) |
+
+> ⚠️ **L'authentification du MVP est entièrement côté navigateur.** Les mots de
+> passe se retrouvent dans le bundle JavaScript livré : n'importe quel visiteur
+> peut les lire dans les outils de développement, et le dépôt est public.
+> N'utilisez donc ici aucun mot de passe employé ailleurs. `VITE_ADMIN_PASSWORD`
+> (fichier `.env.local`, non versionné) évite au moins de l'inscrire dans
+> l'historique Git. Une protection réelle suppose un backend.
+
+L'administrateur donne accès à la console : tous les restaurants inscrits,
 le contenu de leurs cartes langue par langue, la couverture des traductions,
 la conformité allergènes et le revenu récurrent.
 
@@ -81,6 +93,39 @@ fiche, sa carte, ses prix et ses traductions en son nom. Un bandeau rayé
 rappelle en permanence au nom de qui il agit ; « Quitter » revient à la
 console. Les modifications sont bien enregistrées sur le compte du
 restaurateur.
+
+## Installation sur le téléphone
+
+Eatnow est une **application web installable** (PWA).
+
+- **Android / Chrome** — une invite « Installer Eatnow » apparaît sur la page
+  d'accueil ; sinon, menu ⋮ → *Installer l'application*.
+- **iOS / Safari** — bouton *Partager* → *Sur l'écran d'accueil*. Safari
+  n'expose pas d'invite automatique : l'application affiche la marche à suivre.
+
+Une fois installée, elle s'ouvre en plein écran, sans barre d'adresse.
+
+### Hors connexion
+
+Le service worker met en cache la coque applicative et les ressources. **Une
+carte de restaurant ouverte reste consultable sans réseau** — cas courant en
+salle, en sous-sol ou à l'étranger sans données. Un bandeau signale la perte
+de connexion, et un badge indique en ligne que la carte restera accessible.
+
+Les cartes elles-mêmes vivent dans le stockage du navigateur : elles sont donc
+disponibles hors connexion par construction, mais propres à chaque appareil.
+
+## Le QR code du restaurateur
+
+L'espace restaurateur expose une page **Mon QR code** : aperçu, lien copiable,
+export SVG (impression sans perte) et PNG, et un **chevalet de table
+imprimable** portant l'invitation à scanner dans toutes les langues publiées
+par le restaurant.
+
+Le code pointe vers la carte publique du restaurant. Il utilise le niveau de
+correction d'erreur H (30 % de redondance) pour rester lisible malgré la
+pastille Eatnow au centre et une impression médiocre. Prévoyez au moins 3 cm
+de côté pour un scan confortable.
 
 ## Architecture
 
@@ -93,6 +138,8 @@ src/
 ├── store/store.tsx       État applicatif + persistance localStorage + actions
 ├── lib/
 │   ├── translate.ts      Moteur de traduction + résolution manuel > auto > source
+│   ├── pwa.ts            Service worker, invite d'installation, connectivité
+│   ├── qr.ts             Génération des QR codes en SVG
 │   ├── selection.ts      Sélection du client : prix unitaire, options, total
 │   ├── photo.ts          Redimensionnement des photos de plats à l'import
 │   ├── geo.ts            Haversine, géolocalisation, positions de repli

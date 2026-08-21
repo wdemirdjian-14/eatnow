@@ -3,6 +3,43 @@
 Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le
 [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [0.3.0] — 2026-08-21
+
+Application installable, arménien, QR code et usage hors connexion.
+
+### Ajouté
+
+- **Installation sur l'écran d'accueil (PWA)** — manifeste, icônes 192/512 et
+  icône « maskable » respectant la zone de sécurité Android, icône Apple,
+  affichage plein écran, raccourcis vers la recherche et l'espace restaurateur.
+  Une invite d'installation apparaît sur Chromium ; sur iOS, la marche à suivre
+  par le menu Partager est expliquée, Safari n'exposant pas d'invite native.
+- **Fonctionnement hors connexion** — un service worker met en cache la coque
+  applicative et les ressources. Une fois la carte d'un restaurant ouverte,
+  elle reste consultable sans réseau, ce qui est le cas courant en salle. Un
+  bandeau signale la perte de connexion et un badge indique, en ligne, que la
+  carte restera disponible.
+- **Mise à jour signalée** — quand une nouvelle version est déployée, un
+  bandeau propose de l'appliquer sans attendre la fermeture des onglets.
+- **Arménien** — 14ᵉ langue de l'application : interface, glossaire de
+  traduction (179 entrées) et invitation du QR code.
+- **QR code du restaurateur** — page dédiée dans l'espace restaurateur :
+  aperçu, lien copiable, export SVG et PNG, et chevalet de table imprimable
+  portant l'invitation à scanner dans les langues publiées par le restaurant.
+  Correction d'erreur de niveau H, pour rester lisible malgré la pastille
+  centrale et une impression médiocre.
+- **Comptes administrateurs multiples** — connexion par identifiant libre et
+  non plus par adresse e-mail. Le mot de passe du compte principal peut être
+  défini au build via `VITE_ADMIN_PASSWORD` plutôt qu'inscrit dans le dépôt.
+
+### Corrigé
+
+- Le service worker ne s'enregistrait jamais : l'écouteur de l'évènement
+  `load` était posé depuis un effet React, donc après le déclenchement de
+  l'évènement.
+- Le vhost nginx servait `sw.js` avec le cache par défaut, ce qui aurait figé
+  l'application sur une version.
+
 ## [0.2.0] — 2026-08-21
 
 Refonte mobile-first et carte interactive.
@@ -82,5 +119,6 @@ Première version MVP.
 - **CI/CD** — typecheck et build sur chaque push, déploiement GitHub Pages et
   Release GitHub sur chaque tag `vX.Y.Z`.
 
+[0.3.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.3.0
 [0.2.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.2.0
 [0.1.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.1.0

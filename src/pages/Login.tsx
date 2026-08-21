@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useStore } from '../store/store'
-import { ADMIN } from '../data/seed'
+import { ADMINS } from '../data/seed'
 import { Logo } from '../components/Logo'
 
 export function Login({ mode }: { mode: 'owner' | 'admin' }) {
@@ -22,8 +22,8 @@ export function Login({ mode }: { mode: 'owner' | 'admin' }) {
   }
 
   const demo = mode === 'owner'
-    ? state.owners.map((o) => ({ label: o.name, email: o.email }))
-    : [{ label: 'Administrateur Eatnow', email: ADMIN.email }]
+    ? state.owners.map((o) => ({ label: o.name, email: o.email, password: 'eatnow' }))
+    : ADMINS.map((a) => ({ label: a.name, email: a.login, password: a.password }))
 
   return (
     <main className="wrap auth-shell">
@@ -44,11 +44,12 @@ export function Login({ mode }: { mode: 'owner' | 'admin' }) {
 
         <form className="stack gap-s" onSubmit={submit}>
           <label className="field">
-            <span>Adresse e-mail</span>
+            <span>{mode === 'owner' ? 'Adresse e-mail' : 'Identifiant'}</span>
             <input
-              className="input" type="email" required autoComplete="username"
+              className="input" type={mode === 'owner' ? 'email' : 'text'} required
+              autoComplete="username" autoCapitalize="none" spellCheck={false}
               value={email} onChange={(e) => setEmail(e.target.value)}
-              placeholder={mode === 'owner' ? 'camille@lecomptoirbleu.fr' : ADMIN.email}
+              placeholder={mode === 'owner' ? 'camille@lecomptoirbleu.fr' : 'warren'}
             />
           </label>
           <label className="field">
@@ -63,12 +64,16 @@ export function Login({ mode }: { mode: 'owner' | 'admin' }) {
         </form>
 
         <div className="stack gap-xs">
-          <p className="tiny muted">Comptes de démonstration — mot de passe <b>eatnow</b> :</p>
+          <p className="tiny muted">
+            {mode === 'owner'
+              ? <>Comptes de démonstration — mot de passe <b>eatnow</b> :</>
+              : <>Remplir un compte :</>}
+          </p>
           <div className="row gap-xs wrap-flex">
             {demo.map((d) => (
               <button
                 key={d.email} className="chip sm" type="button"
-                onClick={() => { setEmail(d.email); setPassword('eatnow'); setError(null) }}
+                onClick={() => { setEmail(d.email); setPassword(d.password); setError(null) }}
               >
                 {d.label}
               </button>

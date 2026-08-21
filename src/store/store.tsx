@@ -6,7 +6,7 @@ import {
   type I18nField, type Lang, type PurchaseLine, type Restaurant, type SelectionLine,
   type Session,
 } from '../types'
-import { ADMIN, buildSeedState } from '../data/seed'
+import { buildSeedState, findAdmin } from '../data/seed'
 import { autoTranslate, field } from '../lib/translate'
 import { uid, slugify } from '../lib/format'
 
@@ -65,7 +65,7 @@ interface Store {
   setLang: (l: Lang) => void
 
   loginOwner: (email: string, password: string) => string | null
-  loginAdmin: (email: string, password: string) => string | null
+  loginAdmin: (login: string, password: string) => string | null
   logout: () => void
 
   currentOwner: () => { owner: AppState['owners'][number]; restaurant: Restaurant } | null
@@ -195,11 +195,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         return null
       },
 
-      loginAdmin(email, password) {
-        if (email.trim().toLowerCase() !== ADMIN.email || password !== ADMIN.password) {
-          return 'Identifiants administrateur incorrects.'
-        }
-        setSession({ role: 'admin', email: ADMIN.email })
+      loginAdmin(login, password) {
+        const admin = findAdmin(login, password)
+        if (!admin) return 'Identifiants administrateur incorrects.'
+        setSession({ role: 'admin', login: admin.login })
         return null
       },
 
@@ -226,7 +225,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       },
 
       stopImpersonating() {
-        setSession((cur) => (cur.role === 'admin' ? { role: 'admin', email: cur.email } : cur))
+        setSession((cur) => (cur.role === 'admin' ? { role: 'admin', login: cur.login } : cur))
       },
 
       updateRestaurant(id, patch) {

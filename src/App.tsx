@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { StoreProvider } from './store/store'
+import { registerServiceWorker } from './lib/pwa'
 import { Header } from './components/Header'
 import { Footer } from './components/Footer'
 import { Home } from './pages/Home'
@@ -13,8 +14,27 @@ import { OwnerMenuEditor } from './pages/owner/MenuEditor'
 import { OwnerFormules } from './pages/owner/Formules'
 import { OwnerTranslations } from './pages/owner/Translations'
 import { OwnerLanguages } from './pages/owner/Languages'
+import { OwnerQrCode } from './pages/owner/QrCode'
 import { Admin } from './pages/admin/Admin'
 import { AdminRestaurant } from './pages/admin/AdminRestaurant'
+
+/**
+ * Enregistre le service worker et propose d'appliquer une nouvelle version
+ * dès qu'elle est prête, plutôt que d'attendre la fermeture des onglets.
+ */
+function UpdateBanner() {
+  const [apply, setApply] = useState<(() => void) | null>(null)
+  useEffect(() => {
+    registerServiceWorker((run) => setApply(() => run))
+  }, [])
+  if (!apply) return null
+  return (
+    <div className="update-bar" role="status">
+      <span style={{ flex: 1 }}>Une nouvelle version d’Eatnow est disponible.</span>
+      <button className="btn sm sun" onClick={apply}>Actualiser</button>
+    </div>
+  )
+}
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -27,6 +47,7 @@ export default function App() {
     <StoreProvider>
       <HashRouter>
         <ScrollToTop />
+        <UpdateBanner />
         <Header />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -39,6 +60,7 @@ export default function App() {
             <Route path="carte" element={<OwnerMenuEditor />} />
             <Route path="formules" element={<OwnerFormules />} />
             <Route path="traductions" element={<OwnerTranslations />} />
+            <Route path="qr-code" element={<OwnerQrCode />} />
             <Route path="langues" element={<OwnerLanguages />} />
           </Route>
 

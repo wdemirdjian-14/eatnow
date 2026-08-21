@@ -1,6 +1,6 @@
 /** Codes langue supportés par Eatnow pour la traduction des cartes. */
 export const LANGS = [
-  'fr', 'en', 'es', 'it', 'de', 'pt', 'nl', 'ru', 'tr', 'ar', 'zh', 'ja', 'ko',
+  'fr', 'en', 'es', 'it', 'de', 'pt', 'nl', 'ru', 'tr', 'hy', 'ar', 'zh', 'ja', 'ko',
 ] as const
 export type Lang = (typeof LANGS)[number]
 
@@ -14,6 +14,7 @@ export const LANG_META: Record<Lang, { label: string; native: string; flag: stri
   nl: { label: 'Néerlandais', native: 'Nederlands', flag: '🇳🇱' },
   ru: { label: 'Russe', native: 'Русский', flag: '🇷🇺' },
   tr: { label: 'Turc', native: 'Türkçe', flag: '🇹🇷' },
+  hy: { label: 'Arménien', native: 'Հայերեն', flag: '🇦🇲' },
   ar: { label: 'Arabe', native: 'العربية', flag: '🇸🇦', rtl: true },
   zh: { label: 'Chinois', native: '中文', flag: '🇨🇳' },
   ja: { label: 'Japonais', native: '日本語', flag: '🇯🇵' },
@@ -198,7 +199,7 @@ export type Session =
   | { role: 'guest' }
   | { role: 'owner'; ownerId: string }
   /** `impersonating` : identifiant du restaurateur dont l'admin endosse l'espace. */
-  | { role: 'admin'; email: string; impersonating?: string }
+  | { role: 'admin'; login: string; impersonating?: string }
 
 export interface AppState {
   restaurants: Restaurant[]

@@ -8,6 +8,7 @@ const LINKS = [
   { to: '/pro/carte', icon: '📖', label: 'Ma carte' },
   { to: '/pro/formules', icon: '🍽️', label: 'Formules & menus' },
   { to: '/pro/traductions', icon: '🌍', label: 'Traductions' },
+  { to: '/pro/qr-code', icon: '📱', label: 'Mon QR code' },
   { to: '/pro/langues', icon: '🛒', label: 'Acheter des langues' },
 ]
 

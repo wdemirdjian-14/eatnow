@@ -1,0 +1,33 @@
+{
+  "name": "Eatnow — la carte des restaurants dans votre langue",
+  "short_name": "Eatnow",
+  "description": "Trouvez les restaurants autour de vous et lisez leur carte — plats, prix et allergènes — traduite dans votre langue.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5fafb",
+  "theme_color": "#0e7c86",
+  "categories": ["food", "travel", "lifestyle"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Restaurants autour de moi",
+      "short_name": "Autour de moi",
+      "url": "./#/",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Espace restaurateur",
+      "short_name": "Ma carte",
+      "url": "./#/pro",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

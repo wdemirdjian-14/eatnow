@@ -6,6 +6,7 @@ import { priceRangeLabel } from '../lib/format'
 import { t } from '../i18n/ui'
 import { RestaurantCard } from '../components/RestaurantCard'
 import { Logo } from '../components/Logo'
+import { InstallPrompt } from '../components/InstallPrompt'
 
 type Sort = 'distance' | 'rating' | 'price'
 
@@ -101,6 +102,8 @@ export function Home() {
       </section>
 
       <main className="wrap stack gap-l" style={{ paddingTop: '1.6rem' }}>
+        <InstallPrompt />
+
         <section className="card filters" aria-label={t('home.filters', lang)}>
           <div className="line">
             <span className="lbl">{t('home.position', lang)}</span>

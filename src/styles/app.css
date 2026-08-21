@@ -611,6 +611,63 @@ table.tbl tr:last-child td { border-bottom: none; }
   display: grid; place-items: center; color: var(--ink-3); font-size: 1.5rem; background: var(--teal-50);
 }
 
+/* ---------------- Invitation à installer / mise à jour ---------------- */
+.install-card {
+  display: flex; align-items: center; gap: .8rem; flex-wrap: wrap;
+  padding: .9rem 1rem; border-radius: var(--radius);
+  border: 1px dashed var(--teal-400); background: var(--teal-50);
+}
+.install-card > svg { flex: none; }
+
+.update-bar {
+  display: flex; align-items: center; gap: .7rem; flex-wrap: wrap;
+  padding: .55rem 1rem calc(.55rem + var(--safe-b));
+  background: var(--teal-900); color: #fff; font-size: .86rem;
+  position: sticky; top: 0; z-index: 70;
+}
+
+/* ---------------- QR code ---------------- */
+.qr-layout { display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: flex-start; }
+.qr-preview {
+  width: min(240px, 100%); flex: none; padding: .6rem; border-radius: var(--radius);
+  border: 1px solid var(--line); background: #fff; margin-inline: auto;
+}
+@media (min-width: 560px) { .qr-preview { margin-inline: 0; } }
+.qr-preview svg { width: 100%; height: auto; display: block; }
+
+/* Chevalet de table : caché à l'écran, seul élément imprimé. */
+.print-only { display: none; }
+.qr-card {
+  text-align: center; background: #fff; color: var(--ink);
+  border: 2px solid var(--teal-700); border-radius: 18px; padding: 1.4rem 1.2rem;
+}
+.qr-card__eyebrow {
+  font-family: var(--font-display); font-weight: 800; font-size: 1.35rem;
+  letter-spacing: -.02em; margin-bottom: .8rem;
+}
+.qr-card__code { width: 62mm; max-width: 100%; margin: 0 auto; }
+.qr-card__code svg { width: 100%; height: auto; display: block; }
+.qr-card__lead { font-weight: 700; margin-top: .9rem; font-size: 1.02rem; }
+.qr-card__langs {
+  list-style: none; margin: .7rem 0 0; padding: 0; display: grid; gap: .18rem;
+  font-size: .82rem; color: var(--ink-2);
+}
+.qr-card__brand {
+  margin-top: 1rem; padding-top: .7rem; border-top: 1px solid var(--line);
+  font-size: .72rem; color: var(--ink-3); letter-spacing: .04em;
+}
+
+@media print {
+  /* On n'imprime que le chevalet, sans chrome ni couleurs de fond. */
+  .no-print, .site-header, .site-footer, .bo-side, .update-bar,
+  .impersonation-bar, .sel-bar, .toast { display: none !important; }
+  body { background: #fff; }
+  .bo { display: block; padding: 0; }
+  .print-only { display: block; }
+  .qr-card { border-width: 1.5px; page-break-inside: avoid; max-width: 105mm; margin: 0 auto; }
+  @page { margin: 12mm; }
+}
+
 /* ---------------- Divers ---------------- */
 .empty { padding: 2.5rem 1rem; text-align: center; color: var(--ink-3); }
 .notice {

@@ -12,6 +12,7 @@ import { t } from '../i18n/ui'
 import { OptionPicker } from '../components/menu/OptionPicker'
 import { SelectionSheet } from '../components/menu/SelectionSheet'
 import { OrderView } from '../components/menu/OrderView'
+import { useOfflineReady, useOnline } from '../lib/pwa'
 
 type Overlay = 'none' | 'selection' | 'order'
 
@@ -29,6 +30,8 @@ export function RestaurantDetail() {
   const [picking, setPicking] = useState<Dish | null>(null)
   const [overlay, setOverlay] = useState<Overlay>('none')
   const [toast, setToast] = useState<string | null>(null)
+  const online = useOnline()
+  const offlineReady = useOfflineReady()
 
   const data = useMemo(() => {
     if (!r) return null
@@ -100,6 +103,13 @@ export function RestaurantDetail() {
             <span>🕑 {r.hours}</span>
           </div>
           <div className="row gap-s wrap-flex">
+            {online && offlineReady && (
+              <span className="badge mint" title="Cette carte reste lisible sans réseau">
+                📴 {t('offline.ready', shown)}
+              </span>
+            )}
+          </div>
+          <div className="row gap-s wrap-flex">
             <a className="btn sun sm" href={`tel:${r.phone.replace(/\s/g, '')}`}>📞 {t('resto.call', shown)}</a>
             <a
               className="btn outline sm"
@@ -134,6 +144,11 @@ export function RestaurantDetail() {
         className={`wrap stack gap-m ${rtl ? 'rtl' : ''}`}
         style={{ paddingTop: '1rem', paddingBottom: count > 0 ? '6rem' : '1rem' }}
       >
+        {!online && (
+          <p className="notice warn">
+            📴 <b>{t('offline.title', shown)}</b> — {t('offline.menu', shown)}
+          </p>
+        )}
         {!r.published && <p className="notice warn">🔒 {t('resto.notTranslated', shown)}</p>}
         {r.published && !supported && (
           <p className="notice warn">

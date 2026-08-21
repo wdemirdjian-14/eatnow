@@ -2,7 +2,8 @@ import type { Lang } from '../types'
 
 const LOCALE: Record<Lang, string> = {
   fr: 'fr-FR', en: 'en-GB', es: 'es-ES', it: 'it-IT', de: 'de-DE', pt: 'pt-PT',
-  nl: 'nl-NL', ru: 'ru-RU', tr: 'tr-TR', ar: 'ar-MA', zh: 'zh-CN', ja: 'ja-JP', ko: 'ko-KR',
+  nl: 'nl-NL', ru: 'ru-RU', tr: 'tr-TR', hy: 'hy-AM', ar: 'ar-MA', zh: 'zh-CN',
+  ja: 'ja-JP', ko: 'ko-KR',
 }
 
 export function money(value: number, lang: Lang = 'fr'): string {

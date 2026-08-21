@@ -177,7 +177,7 @@ const SEED: RestoSeed[] = [
     lat: 48.8748, lng: 2.2951, phone: '01 45 72 11 88', website: 'lacrieedor.com',
     desc: 'Poissons de petits bateaux, plateaux de fruits de mer et grands blancs.',
     hours: 'Mar–Sam · 12h–14h · 19h30–22h', rating: 4.7, reviews: 328,
-    published: true, plan: 'pro', purchased: ['es', 'it', 'de', 'ru', 'zh', 'ja', 'ko', 'ar'],
+    published: true, plan: 'pro', purchased: ['es', 'it', 'de', 'ru', 'hy', 'zh', 'ja', 'ko', 'ar'],
     owner: { name: 'Hélène Vasseur', email: 'helene@lacrieedor.com' },
     categories: ['Entrées', 'Plats', 'Desserts'],
     dishes: [
@@ -305,5 +305,41 @@ export function buildSeedState(): AppState {
   return { restaurants, categories, dishes, menus, owners, purchases: [] }
 }
 
-/** Compte administrateur de démonstration. */
-export const ADMIN = { email: 'admin@eatnow.app', password: 'eatnow' }
+/**
+ * Comptes administrateurs.
+ *
+ * ⚠️ L'authentification du MVP est entièrement côté navigateur : ces valeurs
+ * sont présentes dans le bundle JavaScript livré et sont donc lisibles par
+ * quiconque ouvre les outils de développement. Elles ne protègent rien —
+ * elles séparent des rôles pour la démonstration. Une vraie protection
+ * suppose un backend qui vérifie le mot de passe côté serveur.
+ *
+ * `VITE_ADMIN_PASSWORD` permet de surcharger le mot de passe au build
+ * (fichier `.env.local`, non versionné) plutôt que de l'inscrire ici.
+ */
+export interface AdminAccount {
+  login: string
+  name: string
+  password: string
+}
+
+export const ADMINS: AdminAccount[] = [
+  {
+    login: 'warren',
+    name: 'Warren',
+    password: import.meta.env.VITE_ADMIN_PASSWORD || 'Tao31081?',
+  },
+  {
+    login: 'admin@eatnow.app',
+    name: 'Administrateur de démonstration',
+    password: 'eatnow',
+  },
+]
+
+/** Compte proposé par défaut sur l'écran de connexion. */
+export const ADMIN = ADMINS[0]
+
+export function findAdmin(login: string, password: string): AdminAccount | undefined {
+  const l = login.trim().toLowerCase()
+  return ADMINS.find((a) => a.login.toLowerCase() === l && a.password === password)
+}
