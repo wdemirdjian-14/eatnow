@@ -145,15 +145,31 @@ symbolique vers la version en cours. Chaque déploiement envoie un dossier
 horodaté dans `releases/` puis bascule le lien : la mise en ligne est
 atomique et le retour arrière immédiat.
 
-**Préparation du serveur, une seule fois** — voir
-[`deploy/serveur-preparation.md`](deploy/serveur-preparation.md) : arborescence,
-vhost nginx, certificat TLS via certbot.
+### Depuis le serveur lui-même (le plus simple)
 
-**Déploiement manuel depuis votre poste :**
+Connectez-vous en SSH au serveur, puis :
 
 ```bash
-IONOS_USER=<utilisateur> ./deploy/deploy-ionos.sh
+git clone https://github.com/wdemirdjian-14/eatnow
+cd eatnow
+git checkout claude/eatnow-mvp-first-version-n9lfbt
+
+./deploy/setup-server.sh      # une seule fois : nginx, TLS, Node, arborescence
+./deploy/deploy-local.sh      # à chaque nouvelle version
 ```
+
+`setup-server.sh` est idempotent : vous pouvez le relancer sans risque. Pour
+recevoir les alertes d'expiration du certificat :
+`EATNOW_EMAIL=vous@exemple.fr ./deploy/setup-server.sh`.
+
+### Depuis un autre poste, par SSH
+
+```bash
+IONOS_USER=lenomdutilisateur ./deploy/deploy-ionos.sh
+```
+
+Remplacez `lenomdutilisateur` par le compte SSH réel — ne tapez pas de
+chevrons, le shell les interpréterait comme une redirection.
 
 **Déploiement automatique par tag** — le workflow
 `.github/workflows/deploy-ionos.yml` se déclenche sur chaque tag `vX.Y.Z`.

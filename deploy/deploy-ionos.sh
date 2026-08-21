@@ -13,7 +13,7 @@
 set -euo pipefail
 
 HOST="${IONOS_HOST:-eatnow.walautao.fr}"
-USER="${IONOS_USER:-root}"
+SSH_USER="${IONOS_USER:-root}"
 PORT="${IONOS_PORT:-22}"
 BASE="${IONOS_PATH:-/var/www/eatnow}"
 
@@ -35,12 +35,12 @@ cat > dist/version.json <<JSON
 }
 JSON
 
-echo "▶ Envoi vers ${USER}@${HOST}:${RELEASE}"
-ssh -p "${PORT}" "${USER}@${HOST}" "mkdir -p '${RELEASE}'"
-rsync -az --delete -e "ssh -p ${PORT}" dist/ "${USER}@${HOST}:${RELEASE}/"
+echo "▶ Envoi vers ${SSH_USER}@${HOST}:${RELEASE}"
+ssh -p "${PORT}" "${SSH_USER}@${HOST}" "mkdir -p '${RELEASE}'"
+rsync -az --delete -e "ssh -p ${PORT}" dist/ "${SSH_USER}@${HOST}:${RELEASE}/"
 
 echo "▶ Bascule de current -> $(basename "${RELEASE}")"
-ssh -p "${PORT}" "${USER}@${HOST}" "
+ssh -p "${PORT}" "${SSH_USER}@${HOST}" "
   ln -sfn '${RELEASE}' '${BASE}/current'
   # Ne garder que les 5 dernières versions.
   ls -1dt '${BASE}'/releases/*/ | tail -n +6 | xargs -r rm -rf
@@ -50,4 +50,4 @@ ssh -p "${PORT}" "${USER}@${HOST}" "
 echo
 echo "✅ Version ${VERSION} en ligne : https://${HOST}/"
 echo "   Vérification : curl -s https://${HOST}/version.json"
-echo "   Retour arrière : ssh ${USER}@${HOST} \"ln -sfn ${BASE}/releases/<version> ${BASE}/current && systemctl reload nginx\""
+echo "   Retour arrière : ssh ${SSH_USER}@${HOST} \"ln -sfn ${BASE}/releases/<version> ${BASE}/current && systemctl reload nginx\""
