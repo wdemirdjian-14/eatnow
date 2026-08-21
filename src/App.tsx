@@ -1,0 +1,55 @@
+import { useEffect } from 'react'
+import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { StoreProvider } from './store/store'
+import { Header } from './components/Header'
+import { Footer } from './components/Footer'
+import { Home } from './pages/Home'
+import { RestaurantDetail } from './pages/RestaurantDetail'
+import { Login } from './pages/Login'
+import { OwnerLayout } from './pages/owner/OwnerLayout'
+import { OwnerDashboard } from './pages/owner/Dashboard'
+import { OwnerFiche } from './pages/owner/Fiche'
+import { OwnerMenuEditor } from './pages/owner/MenuEditor'
+import { OwnerFormules } from './pages/owner/Formules'
+import { OwnerTranslations } from './pages/owner/Translations'
+import { OwnerLanguages } from './pages/owner/Languages'
+import { Admin } from './pages/admin/Admin'
+import { AdminRestaurant } from './pages/admin/AdminRestaurant'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
+}
+
+export default function App() {
+  return (
+    <StoreProvider>
+      <HashRouter>
+        <ScrollToTop />
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/r/:slug" element={<RestaurantDetail />} />
+
+          <Route path="/pro" element={<Login mode="owner" />} />
+          <Route path="/pro" element={<OwnerLayout />}>
+            <Route path="tableau-de-bord" element={<OwnerDashboard />} />
+            <Route path="fiche" element={<OwnerFiche />} />
+            <Route path="carte" element={<OwnerMenuEditor />} />
+            <Route path="formules" element={<OwnerFormules />} />
+            <Route path="traductions" element={<OwnerTranslations />} />
+            <Route path="langues" element={<OwnerLanguages />} />
+          </Route>
+
+          <Route path="/admin/login" element={<Login mode="admin" />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/r/:id" element={<AdminRestaurant />} />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <Footer />
+      </HashRouter>
+    </StoreProvider>
+  )
+}
