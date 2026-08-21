@@ -53,6 +53,32 @@ const DICT = {
   'resto.call': { fr: 'Appeler', en: 'Call', es: 'Llamar', it: 'Chiama', de: 'Anrufen' },
   'resto.route': { fr: 'Itinéraire', en: 'Directions', es: 'Cómo llegar', it: 'Indicazioni', de: 'Route' },
 
+
+  'resto.tapHint': { fr: 'Touchez un plat pour voir le texte original', en: 'Tap a dish to see the original text', es: 'Toca un plato para ver el texto original', it: 'Tocca un piatto per vedere il testo originale', de: 'Tippe auf ein Gericht für den Originaltext' },
+  'resto.original': { fr: 'Texte original', en: 'Original text', es: 'Texto original', it: 'Testo originale', de: 'Originaltext' },
+
+  'opt.required': { fr: 'obligatoire', en: 'required', es: 'obligatorio', it: 'obbligatorio', de: 'erforderlich' },
+  'opt.optional': { fr: 'facultatif', en: 'optional', es: 'opcional', it: 'facoltativo', de: 'optional' },
+  'opt.multiple': { fr: 'choix multiple', en: 'multiple choice', es: 'opción múltiple', it: 'scelta multipla', de: 'Mehrfachauswahl' },
+  'opt.chooseFirst': { fr: 'Choisissez d’abord', en: 'Please choose first', es: 'Elige primero', it: 'Scegli prima', de: 'Bitte zuerst wählen' },
+
+  'sel.add': { fr: 'Ajouter à ma sélection', en: 'Add to my selection', es: 'Añadir a mi selección', it: 'Aggiungi alla selezione', de: 'Zur Auswahl hinzufügen' },
+  'sel.added': { fr: 'Ajouté à votre sélection', en: 'Added to your selection', es: 'Añadido a tu selección', it: 'Aggiunto alla selezione', de: 'Zur Auswahl hinzugefügt' },
+  'sel.title': { fr: 'Ma sélection', en: 'My selection', es: 'Mi selección', it: 'La mia selezione', de: 'Meine Auswahl' },
+  'sel.view': { fr: 'Voir ma sélection', en: 'View my selection', es: 'Ver mi selección', it: 'Vedi la selezione', de: 'Auswahl ansehen' },
+  'sel.empty': { fr: 'Votre sélection est vide. Touchez le + à côté d’un plat.', en: 'Your selection is empty. Tap the + next to a dish.', es: 'Tu selección está vacía. Toca el + junto a un plato.', it: 'La selezione è vuota. Tocca il + accanto a un piatto.', de: 'Deine Auswahl ist leer. Tippe auf das + neben einem Gericht.' },
+  'sel.total': { fr: 'Total', en: 'Total', es: 'Total', it: 'Totale', de: 'Gesamt' },
+  'sel.validate': { fr: 'Valider ma sélection', en: 'Confirm my selection', es: 'Confirmar mi selección', it: 'Conferma la selezione', de: 'Auswahl bestätigen' },
+  'sel.clear': { fr: 'Tout retirer', en: 'Clear all', es: 'Vaciar', it: 'Svuota', de: 'Alles entfernen' },
+  'sel.items': { fr: 'articles', en: 'items', es: 'artículos', it: 'articoli', de: 'Artikel' },
+
+  'order.title': { fr: 'Ma commande', en: 'My order', es: 'Mi pedido', it: 'Il mio ordine', de: 'Meine Bestellung' },
+  'order.show': { fr: 'Montrez cet écran au serveur', en: 'Show this screen to your waiter', es: 'Muestra esta pantalla al camarero', it: 'Mostra questo schermo al cameriere', de: 'Zeige diesen Bildschirm dem Kellner' },
+  'order.yours': { fr: 'Votre langue', en: 'Your language', es: 'Tu idioma', it: 'La tua lingua', de: 'Deine Sprache' },
+  'order.staff': { fr: 'Pour le restaurant', en: 'For the restaurant', es: 'Para el restaurante', it: 'Per il ristorante', de: 'Für das Restaurant' },
+  'order.back': { fr: 'Modifier ma sélection', en: 'Edit my selection', es: 'Editar mi selección', it: 'Modifica la selezione', de: 'Auswahl bearbeiten' },
+  'order.note': { fr: 'Sélection indicative — la commande reste passée auprès du serveur.', en: 'Indicative selection — the order is still placed with your waiter.', es: 'Selección indicativa — el pedido se realiza con el camarero.', it: 'Selezione indicativa — l’ordine si effettua con il cameriere.', de: 'Unverbindliche Auswahl — bestellt wird beim Kellner.' },
+
   'lang.pick': { fr: 'Langue', en: 'Language', es: 'Idioma', it: 'Lingua', de: 'Sprache' },
 } satisfies Record<string, Row>
 

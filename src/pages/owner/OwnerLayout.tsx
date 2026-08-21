@@ -1,4 +1,4 @@
-import { NavLink, Navigate, Outlet } from 'react-router-dom'
+import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { activeLangs, useStore } from '../../store/store'
 import { LANG_META } from '../../types'
 
@@ -12,17 +12,37 @@ const LINKS = [
 ]
 
 export function OwnerLayout() {
-  const { session, currentOwner } = useStore()
-  if (session.role !== 'owner') return <Navigate to="/pro" replace />
+  const { session, currentOwner, isImpersonating, stopImpersonating } = useStore()
+  const nav = useNavigate()
+
+  // L'espace est accessible au restaurateur, et à l'admin qui a endossé son compte.
+  const allowed = session.role === 'owner' || isImpersonating
+  if (!allowed) return <Navigate to={session.role === 'admin' ? '/admin' : '/pro'} replace />
   const me = currentOwner()
-  if (!me) return <Navigate to="/pro" replace />
+  if (!me) return <Navigate to={session.role === 'admin' ? '/admin' : '/pro'} replace />
 
   const langs = activeLangs(me.restaurant)
 
   return (
+    <>
+      {isImpersonating && (
+        <div className="impersonation-bar">
+          <span aria-hidden>👁️</span>
+          <span style={{ flex: 1, minWidth: 0 }}>
+            Vue administrateur — vous agissez au nom de <b>{me.owner.name}</b> ({me.restaurant.name}).
+            Toute modification est enregistrée sur son compte.
+          </span>
+          <button
+            className="btn sm outline"
+            onClick={() => { stopImpersonating(); nav('/admin') }}
+          >
+            Quitter
+          </button>
+        </div>
+      )}
     <div className="wrap bo">
       <aside className="bo-side">
-        <div className="card pad stack gap-xs" style={{ marginBottom: '.8rem' }}>
+        <div className="card pad stack gap-xs bo-ident" style={{ marginBottom: '.8rem' }}>
           <span className="tiny muted">Connecté en tant que</span>
           <b>{me.owner.name}</b>
           <span className="small">{me.restaurant.name}</span>
@@ -49,5 +69,6 @@ export function OwnerLayout() {
         <Outlet />
       </div>
     </div>
+    </>
   )
 }

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { activeLangs, LANG_PRICE, useStore } from '../../store/store'
 import { CUISINE_LABEL, LANG_META, type Lang } from '../../types'
 import { money, priceRangeLabel } from '../../lib/format'
@@ -7,7 +7,8 @@ import { money, priceRangeLabel } from '../../lib/format'
 const PLAN_PRICE = { essai: 0, starter: 29, pro: 59 } as const
 
 export function Admin() {
-  const { session, state, updateRestaurant } = useStore()
+  const { session, state, updateRestaurant, impersonate } = useStore()
+  const nav = useNavigate()
   const [q, setQ] = useState('')
   const [onlyPublished, setOnlyPublished] = useState(false)
 
@@ -128,7 +129,16 @@ export function Admin() {
                     </label>
                   </td>
                   <td>
-                    <Link className="btn outline sm" to={`/admin/r/${x.r.id}`}>Inspecter</Link>
+                    <div className="row gap-xs">
+                      <Link className="btn outline sm" to={`/admin/r/${x.r.id}`}>Inspecter</Link>
+                      <button
+                        className="btn sm"
+                        title={`Ouvrir l’espace de ${x.r.name} en tant qu’administrateur`}
+                        onClick={() => { impersonate(x.r.ownerId); nav('/pro/tableau-de-bord') }}
+                      >
+                        👁️ Ouvrir l’espace
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

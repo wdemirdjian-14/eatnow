@@ -82,6 +82,25 @@ export interface I18nField {
   manual: Partial<Record<Lang, string>>
 }
 
+/** Un choix dans un groupe d'options : « Saignant », « Frites », « Sans oignon ». */
+export interface DishOptionChoice {
+  id: string
+  label: I18nField
+  /** Supplément appliqué au prix du plat (0 = inclus). */
+  priceDelta: number
+}
+
+/** Un groupe d'options attaché à un plat : « Cuisson », « Accompagnement ». */
+export interface DishOptionGroup {
+  id: string
+  name: I18nField
+  /** Le client doit choisir avant d'ajouter le plat à sa sélection. */
+  required: boolean
+  /** Plusieurs choix possibles dans le groupe. */
+  multiple: boolean
+  choices: DishOptionChoice[]
+}
+
 export interface Category {
   id: string
   restaurantId: string
@@ -102,6 +121,9 @@ export interface Dish {
   available: boolean
   dishOfDay: boolean
   order: number
+  /** Photo du plat, optionnelle, stockée en data URL (redimensionnée à l'import). */
+  photo?: string
+  options: DishOptionGroup[]
 }
 
 /** Formule / menu à prix fixe composé de plats de la carte. */
@@ -162,10 +184,21 @@ export interface PurchaseLine {
   date: string
 }
 
+/** Une ligne de la sélection en cours d'un client. */
+export interface SelectionLine {
+  id: string
+  restaurantId: string
+  dishId: string
+  /** Identifiants des choix retenus, tous groupes confondus. */
+  choiceIds: string[]
+  qty: number
+}
+
 export type Session =
   | { role: 'guest' }
   | { role: 'owner'; ownerId: string }
-  | { role: 'admin'; email: string }
+  /** `impersonating` : identifiant du restaurateur dont l'admin endosse l'espace. */
+  | { role: 'admin'; email: string; impersonating?: string }
 
 export interface AppState {
   restaurants: Restaurant[]

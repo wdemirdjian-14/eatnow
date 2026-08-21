@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { activeLangs, useStore } from '../../store/store'
 import { ALLERGEN_LABEL, LANG_META, type Lang } from '../../types'
 import { money } from '../../lib/format'
@@ -8,7 +8,8 @@ import { originOf, resolve } from '../../lib/translate'
 /** Inspection en lecture seule de la carte d'un restaurant, langue par langue. */
 export function AdminRestaurant() {
   const { id } = useParams()
-  const { session, state } = useStore()
+  const { session, state, impersonate } = useStore()
+  const nav = useNavigate()
   const r = state.restaurants.find((x) => x.id === id)
   const [view, setView] = useState<Lang | null>(null)
 
@@ -50,6 +51,12 @@ export function AdminRestaurant() {
         </div>
         <span className="spacer" />
         <Link className="btn outline" to={`/r/${r.slug}`}>Page publique</Link>
+        <button
+          className="btn"
+          onClick={() => { impersonate(r.ownerId); nav('/pro/tableau-de-bord') }}
+        >
+          👁️ Ouvrir son espace
+        </button>
       </div>
 
       <section className="stat-grid">

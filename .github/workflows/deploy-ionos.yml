@@ -1,0 +1,96 @@
+name: Deploy Ionos
+
+# Déploiement par version sur le serveur Ionos (eatnow.walautao.fr).
+# Chaque tag vX.Y.Z envoie un build figé dans un dossier horodaté, puis
+# bascule le lien `current` dessus. Le retour arrière est immédiat.
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Tag ou branche à déployer'
+        required: true
+        default: main
+
+concurrency:
+  group: deploy-ionos
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build et déploiement
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://eatnow.walautao.fr/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+
+      - name: Vérifier la présence des secrets de déploiement
+        env:
+          HOST: ${{ secrets.IONOS_HOST }}
+          USER: ${{ secrets.IONOS_USER }}
+          KEY: ${{ secrets.IONOS_SSH_KEY }}
+        run: |
+          missing=""
+          [ -z "$HOST" ] && missing="$missing IONOS_HOST"
+          [ -z "$USER" ] && missing="$missing IONOS_USER"
+          [ -z "$KEY" ]  && missing="$missing IONOS_SSH_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Secrets manquants :$missing — voir deploy/serveur-preparation.md"
+            exit 1
+          fi
+
+      - name: Préparer la clé SSH
+        env:
+          KEY: ${{ secrets.IONOS_SSH_KEY }}
+          HOST: ${{ secrets.IONOS_HOST }}
+          PORT: ${{ secrets.IONOS_PORT }}
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${PORT:-22}" -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Envoyer et basculer la version
+        env:
+          HOST: ${{ secrets.IONOS_HOST }}
+          USER: ${{ secrets.IONOS_USER }}
+          PORT: ${{ secrets.IONOS_PORT }}
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./package.json').version")"
+          RELEASE="/var/www/eatnow/releases/v${VERSION}-$(date -u +%Y%m%d-%H%M%S)"
+          SSH="ssh -i ~/.ssh/deploy_key -p ${PORT:-22}"
+
+          $SSH "$USER@$HOST" "mkdir -p '$RELEASE'"
+          rsync -az --delete -e "$SSH" dist/ "$USER@$HOST:$RELEASE/"
+          $SSH "$USER@$HOST" "
+            ln -sfn '$RELEASE' /var/www/eatnow/current
+            ls -1dt /var/www/eatnow/releases/*/ | tail -n +6 | xargs -r rm -rf
+            nginx -t && systemctl reload nginx
+          "
+          echo "Version $VERSION déployée dans $RELEASE"
+
+      - name: Vérifier la mise en ligne
+        run: |
+          sleep 3
+          curl -fsS https://eatnow.walautao.fr/version.json || {
+            echo "::warning::version.json injoignable — vérifiez le vhost nginx et le certificat TLS."
+          }
+
+      - name: Effacer la clé
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

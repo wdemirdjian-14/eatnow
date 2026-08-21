@@ -1,14 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { activeLangs, useStore } from '../../store/store'
+import { activeLangs, useStore, type ManualTarget } from '../../store/store'
 import { LANG_META, type I18nField, type Lang } from '../../types'
 import { autoTranslate, originOf } from '../../lib/translate'
 
-type Entity = 'restaurant-desc' | 'category' | 'dish-name' | 'dish-desc' | 'menu-name' | 'menu-desc'
-
 interface Line {
   key: string
-  entity: Entity
+  entity: ManualTarget
   id: string
   group: string
   label: string
@@ -36,6 +34,12 @@ export function OwnerTranslations() {
       out.push({ key: `dn-${d.id}`, entity: 'dish-name', id: d.id, group: 'Plats', label: d.name.source, field: d.name })
       if (d.description.source) {
         out.push({ key: `dd-${d.id}`, entity: 'dish-desc', id: d.id, group: 'Plats', label: `↳ description · ${d.name.source}`, field: d.description })
+      }
+      for (const g of d.options) {
+        out.push({ key: `og-${g.id}`, entity: 'option-group', id: g.id, group: 'Options', label: `${d.name.source} · ${g.name.source}`, field: g.name })
+        for (const c of g.choices) {
+          out.push({ key: `oc-${c.id}`, entity: 'option-choice', id: c.id, group: 'Options', label: `↳ ${g.name.source} · ${c.label.source}`, field: c.label })
+        }
       }
     }
     for (const m of state.menus.filter((m) => m.restaurantId === r.id)) {
@@ -132,7 +136,7 @@ export function OwnerTranslations() {
                 </p>
               )}
               <div className="trans-row">
-                <div className="stack gap-xs">
+                <div className="trans-row__meta">
                   {l.origin === 'manuel' && <span className="badge mint">Forcé</span>}
                   {l.origin === 'auto' && l.confidence < 0.7 && <span className="badge coral">À vérifier</span>}
                   {l.origin === 'auto' && l.confidence >= 0.7 && <span className="badge">Auto</span>}

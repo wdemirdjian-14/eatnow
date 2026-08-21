@@ -1,13 +1,26 @@
 import type {
-  Allergen, AppState, Category, Cuisine, Dish, DietTag, FixedMenu, Lang, Owner, Restaurant,
+  Allergen, AppState, Category, Cuisine, Dish, DishOptionGroup, DietTag, FixedMenu,
+  Lang, Owner, Restaurant,
 } from '../types'
 import { field } from '../lib/translate'
 import { slugify } from '../lib/format'
+import { demoArt } from './dishArt'
+
+/** [libellé du choix, supplément en euros] */
+type ChoiceSeed = [string, number]
+/** [nom du groupe, choix obligatoire, choix multiple, choix possibles] */
+type GroupSeed = [string, boolean, boolean, ChoiceSeed[]]
 
 /** Tuple compact : [nom, description, prix, catégorie, allergènes, tags, options] */
 type DishSeed = [
   string, string, number, string, Allergen[], DietTag[],
-  { promo?: number; jour?: boolean; off?: boolean }?,
+  {
+    promo?: number
+    jour?: boolean
+    off?: boolean
+    groups?: GroupSeed[]
+    art?: ['viande' | 'poisson' | 'vegetal' | 'dessert', number]
+  }?,
 ]
 
 interface RestoSeed {
@@ -52,13 +65,21 @@ const SEED: RestoSeed[] = [
       ['Soupe à l’oignon gratinée', 'Oignons mijotés, pain de campagne et fromage gratiné au four.', 9.5, 'Entrées', ['gluten', 'lait', 'sulfites'], ['maison']],
       ['Tartare de bœuf au couteau', 'Bœuf taillé au couteau, câpres, échalote, jaune d’œuf.', 12, 'Entrées', ['oeufs', 'moutarde'], []],
       ['Chèvre chaud sur toast', 'Chèvre frais, miel, roquette et pain grillé.', 10.5, 'Entrées', ['lait', 'gluten', 'fruits-a-coque'], ['vegetarien']],
-      ['Entrecôte grillée et frites maison', 'Entrecôte 300 g, beurre maître d’hôtel, frites maison.', 26, 'Plats', ['lait'], ['maison']],
-      ['Magret de canard au miel', 'Magret rosé, sauce miel et légumes de saison.', 24, 'Plats', ['sulfites'], []],
-      ['Cabillaud vapeur et légumes', 'Dos de cabillaud vapeur, légumes croquants, huile d’olive.', 21, 'Plats', ['poissons'], ['sans-gluten'], { jour: true }],
+      ['Entrecôte grillée et frites maison', 'Entrecôte 300 g, beurre maître d’hôtel, frites maison.', 26, 'Plats', ['lait'], ['maison'],
+        { art: ['viande', 0], groups: [
+          ['Cuisson', true, false, [['Bleu', 0], ['Saignant', 0], ['À point', 0], ['Bien cuit', 0]]],
+          ['Accompagnement', true, false, [['Frites maison', 0], ['Légumes de saison', 0], ['Salade verte', 0], ['Gratin de pommes de terre', 3]]],
+        ] }],
+      ['Magret de canard au miel', 'Magret rosé, sauce miel et légumes de saison.', 24, 'Plats', ['sulfites'], [],
+        { groups: [['Cuisson', true, false, [['Rosé', 0], ['À point', 0]]]] }],
+      ['Cabillaud vapeur et légumes', 'Dos de cabillaud vapeur, légumes croquants, huile d’olive.', 21, 'Plats', ['poissons'], ['sans-gluten'],
+        { jour: true, art: ['poisson', 1] }],
       ['Risotto aux champignons', 'Riz carnaroli, champignons de saison, parmesan.', 18, 'Plats', ['lait', 'celeri'], ['vegetarien'], { promo: 15 }],
-      ['Tarte au chocolat', 'Tarte au chocolat noir et fleur de sel.', 8.5, 'Desserts', ['gluten', 'lait', 'oeufs'], ['maison']],
+      ['Tarte au chocolat', 'Tarte au chocolat noir et fleur de sel.', 8.5, 'Desserts', ['gluten', 'lait', 'oeufs'], ['maison'],
+        { art: ['dessert', 2] }],
       ['Glace vanille et caramel', 'Deux boules de glace vanille, caramel beurre salé.', 7, 'Desserts', ['lait', 'oeufs'], []],
-      ['Verre de vin rouge', 'Sélection du mois, vin nature.', 6.5, 'Boissons', ['sulfites'], []],
+      ['Verre de vin rouge', 'Sélection du mois, vin nature.', 6.5, 'Boissons', ['sulfites'], [],
+        { groups: [['Contenance', true, false, [['Verre 12 cl', 0], ['Verre 25 cl', 4]]]] }],
     ],
     menus: [
       { name: 'Menu du midi', desc: 'Entrée + plat + café, servi du mardi au vendredi.', price: 22, picks: ['Soupe à l’oignon gratinée', 'Cabillaud vapeur et légumes'] },
@@ -79,9 +100,13 @@ const SEED: RestoSeed[] = [
     dishes: [
       ['Burrata et tomates', 'Burrata des Pouilles, tomates, basilic et huile d’olive.', 12, 'Antipasti', ['lait'], ['vegetarien']],
       ['Salade de poulpe', 'Poulpe grillé, pommes de terre et citron.', 13.5, 'Antipasti', ['mollusques', 'celeri'], []],
-      ['Pâtes à la truffe', 'Tagliatelles fraîches, crème et truffe noire.', 23, 'Pâtes', ['gluten', 'lait', 'oeufs'], ['maison'], { jour: true }],
+      ['Pâtes à la truffe', 'Tagliatelles fraîches, crème et truffe noire.', 23, 'Pâtes', ['gluten', 'lait', 'oeufs'], ['maison'],
+        { jour: true, groups: [['Portion', true, false, [['Portion normale', 0], ['Grande portion', 4]]]] }],
       ['Pâtes aux crevettes', 'Linguine, crevettes, tomates cerises et basilic.', 19, 'Pâtes', ['gluten', 'crustaces', 'oeufs'], []],
-      ['Pizza mozzarella et basilic', 'Sauce tomate, mozzarella, basilic frais.', 13, 'Pizzas', ['gluten', 'lait'], ['vegetarien']],
+      ['Pizza mozzarella et basilic', 'Sauce tomate, mozzarella, basilic frais.', 13, 'Pizzas', ['gluten', 'lait'], ['vegetarien'],
+        { art: ['vegetal', 1], groups: [
+          ['Suppléments', false, true, [['Jambon', 2], ['Roquette', 1.5], ['Burrata', 3], ['Champignons', 1.5]]],
+        ] }],
       ['Pizza aux champignons', 'Champignons, mozzarella et parmesan.', 15, 'Pizzas', ['gluten', 'lait'], ['vegetarien'], { promo: 12 }],
       ['Tiramisu maison', 'Mascarpone, café et cacao.', 8, 'Desserts', ['lait', 'oeufs', 'gluten'], ['maison']],
     ],
@@ -103,7 +128,11 @@ const SEED: RestoSeed[] = [
     dishes: [
       ['Tartare de thon', 'Thon rouge, avocat, sésame et sauce soja.', 16, 'Petites assiettes', ['poissons', 'soja', 'sesame'], ['epice']],
       ['Saumon grillé au miel', 'Pavé de saumon laqué, sésame torréfié.', 18, 'Grillades', ['poissons', 'soja', 'sesame'], []],
-      ['Poulet grillé au charbon', 'Brochettes de poulet, sauce maison.', 14, 'Grillades', ['soja', 'gluten'], ['maison'], { jour: true }],
+      ['Poulet grillé au charbon', 'Brochettes de poulet, sauce maison.', 14, 'Grillades', ['soja', 'gluten'], ['maison'],
+        { jour: true, art: ['viande', 2], groups: [
+          ['Sauce', true, false, [['Sauce maison', 0], ['Sauce épicée', 0], ['Sans sauce', 0]]],
+          ['Suppléments', false, true, [['Riz supplémentaire', 3], ['Œuf mariné', 2]]],
+        ] }],
       ['Aubergine grillée au miso', 'Aubergine fondante, miso sucré, sésame.', 11, 'Petites assiettes', ['soja', 'sesame'], ['vegetarien', 'vegan']],
       ['Riz aux crevettes', 'Riz sauté, crevettes, œuf et légumes.', 17, 'Riz & nouilles', ['crustaces', 'oeufs', 'soja'], []],
       ['Bœuf mijoté au riz', 'Bœuf mijoté 6 h, riz vinaigré, oignon.', 21, 'Riz & nouilles', ['soja', 'gluten'], [], { promo: 18 }],
@@ -128,7 +157,11 @@ const SEED: RestoSeed[] = [
       ['Houmous aux pois chiches', 'Pois chiches, sésame, huile d’olive et citron.', 6.5, 'Mezze', ['sesame'], ['vegetarien', 'vegan', 'sans-gluten']],
       ['Salade de tomates et persil', 'Tomates, persil, boulgour fin et citron.', 7, 'Mezze', ['gluten'], ['vegetarien', 'vegan']],
       ['Aubergine au sésame', 'Aubergine fumée, crème de sésame.', 7.5, 'Mezze', ['sesame'], ['vegetarien', 'vegan']],
-      ['Agneau grillé et riz', 'Brochettes d’agneau, riz et légumes grillés.', 17, 'Grillades', ['fruits-a-coque'], [], { jour: true }],
+      ['Agneau grillé et riz', 'Brochettes d’agneau, riz et légumes grillés.', 17, 'Grillades', ['fruits-a-coque'], [],
+        { jour: true, groups: [
+          ['Accompagnement', true, false, [['Riz', 0], ['Frites maison', 0], ['Salade verte', 0]]],
+          ['Sauce', false, true, [['Sauce blanche', 0], ['Sauce piquante', 0]]],
+        ] }],
       ['Poulet grillé au citron', 'Poulet mariné au citron et ail, frites maison.', 14.5, 'Grillades', [], ['maison']],
       ['Pâtisseries au miel', 'Assortiment de pâtisseries au miel et fruits à coque.', 6, 'Desserts', ['fruits-a-coque', 'gluten', 'lait'], ['vegetarien']],
     ],
@@ -170,7 +203,11 @@ const SEED: RestoSeed[] = [
     owner: { name: 'Léa Fontaine', email: 'lea@greenandbowl.fr' },
     categories: ['Bowls', 'Desserts', 'Boissons'],
     dishes: [
-      ['Bowl aux pois chiches', 'Pois chiches rôtis, riz complet, légumes de saison.', 12.5, 'Bowls', ['sesame'], ['vegetarien', 'vegan']],
+      ['Bowl aux pois chiches', 'Pois chiches rôtis, riz complet, légumes de saison.', 12.5, 'Bowls', ['sesame'], ['vegetarien', 'vegan'],
+        { art: ['vegetal', 0], groups: [
+          ['Base', true, false, [['Riz complet', 0], ['Quinoa', 0], ['Salade verte', 0]]],
+          ['Suppléments', false, true, [['Avocat', 2], ['Œuf', 1.5], ['Graines de courge', 1]]],
+        ] }],
       ['Bowl à l’avocat', 'Avocat, quinoa, tomates et graines de sésame.', 13.5, 'Bowls', ['sesame'], ['vegetarien', 'vegan']],
       ['Gâteau au chocolat sans gluten', 'Chocolat noir, amandes, sans farine de blé.', 6.5, 'Desserts', ['fruits-a-coque', 'oeufs'], ['vegetarien', 'sans-gluten']],
       ['Jus de légumes frais', 'Pressé minute : concombre, pomme, citron.', 5.5, 'Boissons', [], ['vegetarien', 'vegan']],
@@ -190,7 +227,8 @@ const SEED: RestoSeed[] = [
     categories: ['À partager', 'Plats', 'Desserts'],
     dishes: [
       ['Guacamole et tortillas', 'Avocat écrasé, citron, coriandre et tortillas maison.', 8.5, 'À partager', ['gluten'], ['vegetarien', 'maison']],
-      ['Tacos au bœuf épicé', 'Bœuf mijoté épicé, oignon, coriandre.', 13, 'Plats', ['gluten', 'lait'], ['epice']],
+      ['Tacos au bœuf épicé', 'Bœuf mijoté épicé, oignon, coriandre.', 13, 'Plats', ['gluten', 'lait'], ['epice'],
+        { groups: [['Niveau d’épice', true, false, [['Doux', 0], ['Moyen', 0], ['Très épicé', 0]]]] }],
       ['Burrito au poulet', 'Poulet grillé, riz, haricots et fromage.', 12.5, 'Plats', ['gluten', 'lait'], []],
       ['Glace à la vanille et caramel', 'Glace vanille, caramel et cacahuètes.', 6, 'Desserts', ['lait', 'arachides'], ['vegetarien']],
     ],
@@ -234,11 +272,24 @@ export function buildSeedState(): AppState {
       const [name, desc, price, cat, allergens, tags, opts] = d
       const id = `${rid}d${di + 1}`
       dishId.set(name, id)
+      const groups: DishOptionGroup[] = (opts?.groups ?? []).map(([gName, required, multiple, choices], gi) => ({
+        id: `${id}g${gi + 1}`,
+        name: field(gName),
+        required,
+        multiple,
+        choices: choices.map(([label, priceDelta], ci) => ({
+          id: `${id}g${gi + 1}c${ci + 1}`,
+          label: field(label),
+          priceDelta,
+        })),
+      }))
       dishes.push({
         id, restaurantId: rid, categoryId: catId.get(cat)!,
         name: field(name), description: field(desc), price,
         promoPrice: opts?.promo, allergens, tags,
         available: !opts?.off, dishOfDay: !!opts?.jour, order: di,
+        photo: opts?.art ? demoArt(opts.art[0], opts.art[1]) : undefined,
+        options: groups,
       })
     })
 

@@ -10,7 +10,7 @@ export function LanguagePicker({ compact = false }: { compact?: boolean }) {
       <span className="sr-only">Langue d’affichage</span>
       <select
         className="select"
-        style={compact ? { width: 'auto', padding: '.4rem .6rem', borderRadius: 999 } : undefined}
+        style={compact ? { width: 'auto', maxWidth: 128, padding: '.4rem .5rem', borderRadius: 999, minHeight: 38 } : undefined}
         value={lang}
         onChange={(e) => setLang(e.target.value as Lang)}
       >

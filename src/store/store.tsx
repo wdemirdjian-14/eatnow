@@ -2,8 +2,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { ReactNode } from 'react'
 import {
   INCLUDED_LANGS,
-  type AppState, type Category, type Dish, type FixedMenu, type I18nField,
-  type Lang, type PurchaseLine, type Restaurant, type Session,
+  type AppState, type Category, type Dish, type DishOptionGroup, type FixedMenu,
+  type I18nField, type Lang, type PurchaseLine, type Restaurant, type SelectionLine,
+  type Session,
 } from '../types'
 import { ADMIN, buildSeedState } from '../data/seed'
 import { autoTranslate, field } from '../lib/translate'
@@ -12,6 +13,7 @@ import { uid, slugify } from '../lib/format'
 const STATE_KEY = 'eatnow.state.v1'
 const SESSION_KEY = 'eatnow.session.v1'
 const LANG_KEY = 'eatnow.lang.v1'
+const SEL_KEY = 'eatnow.selection.v1'
 
 /** Prix mensuel d'une langue supplémentaire, par plan. */
 export const LANG_PRICE: Record<Restaurant['plan'], number> = { essai: 12, starter: 12, pro: 9 }
@@ -31,6 +33,30 @@ function withAuto(f: I18nField, sourceLang: Lang, langs: Lang[]): I18nField {
   return { ...f, auto }
 }
 
+/**
+ * Cible d'un forçage manuel de traduction. Pour les options, `id` porte
+ * l'identifiant du groupe ou du choix, qui est unique dans toute la base.
+ */
+export type ManualTarget =
+  | 'restaurant-desc' | 'category'
+  | 'dish-name' | 'dish-desc'
+  | 'menu-name' | 'menu-desc'
+  | 'option-group' | 'option-choice'
+
+/** Applique une transformation de champ à tous les textes d'un plat, options comprises. */
+function mapDishFields(d: Dish, go: (f: I18nField) => I18nField): Dish {
+  return {
+    ...d,
+    name: go(d.name),
+    description: go(d.description),
+    options: d.options.map((g) => ({
+      ...g,
+      name: go(g.name),
+      choices: g.choices.map((c) => ({ ...c, label: go(c.label) })),
+    })),
+  }
+}
+
 interface Store {
   state: AppState
   session: Session
@@ -43,6 +69,10 @@ interface Store {
   logout: () => void
 
   currentOwner: () => { owner: AppState['owners'][number]; restaurant: Restaurant } | null
+  /** Vrai quand un administrateur agit au nom d'un restaurateur. */
+  isImpersonating: boolean
+  impersonate: (ownerId: string) => void
+  stopImpersonating: () => void
 
   updateRestaurant: (id: string, patch: Partial<Restaurant>) => void
   setRestaurantField: (id: string, key: 'description', source: string) => void
@@ -56,18 +86,30 @@ interface Store {
   updateDish: (id: string, patch: Partial<Dish> & { nameSource?: string; descSource?: string }) => void
   removeDish: (id: string) => void
 
+  setDishPhoto: (id: string, photo: string | undefined) => void
+  addOptionGroup: (dishId: string, name: string) => void
+  updateOptionGroup: (dishId: string, groupId: string, patch: { source?: string; required?: boolean; multiple?: boolean }) => void
+  removeOptionGroup: (dishId: string, groupId: string) => void
+  addOptionChoice: (dishId: string, groupId: string, label: string) => void
+  updateOptionChoice: (dishId: string, groupId: string, choiceId: string, patch: { source?: string; priceDelta?: number }) => void
+  removeOptionChoice: (dishId: string, groupId: string, choiceId: string) => void
+
   addMenu: (restaurantId: string) => string
   updateMenu: (id: string, patch: Partial<FixedMenu> & { nameSource?: string; descSource?: string }) => void
   removeMenu: (id: string) => void
 
   /** Force (ou efface) une traduction manuelle sur une entité. */
-  setManual: (
-    entity: 'dish-name' | 'dish-desc' | 'category' | 'menu-name' | 'menu-desc' | 'restaurant-desc',
-    id: string, lang: Lang, value: string,
-  ) => void
+  setManual: (entity: ManualTarget, id: string, lang: Lang, value: string) => void
   /** Relance la traduction automatique sur toute la carte d'un restaurant. */
   retranslate: (restaurantId: string) => void
   purchaseLang: (restaurantId: string, lang: Lang) => void
+
+  /** Sélection du client, en cours de constitution sur une carte. */
+  selection: SelectionLine[]
+  addToSelection: (dishId: string, restaurantId: string, choiceIds: string[], qty?: number) => void
+  setSelectionQty: (lineId: string, qty: number) => void
+  removeFromSelection: (lineId: string) => void
+  clearSelection: () => void
 
   resetDemo: () => void
 }
@@ -97,9 +139,7 @@ function translateAll(s: AppState): AppState {
     ...s,
     restaurants: s.restaurants.map((r) => ({ ...r, description: go(r.id, r.description) })),
     categories: s.categories.map((c) => ({ ...c, name: go(c.restaurantId, c.name) })),
-    dishes: s.dishes.map((d) => ({
-      ...d, name: go(d.restaurantId, d.name), description: go(d.restaurantId, d.description),
-    })),
+    dishes: s.dishes.map((d) => mapDishFields(d, (f) => go(d.restaurantId, f))),
     menus: s.menus.map((m) => ({
       ...m, name: go(m.restaurantId, m.name), description: go(m.restaurantId, m.description),
     })),
@@ -110,6 +150,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(() => load(STATE_KEY, null as AppState | null) ?? seedWithTranslations())
   const [session, setSession] = useState<Session>(() => load<Session>(SESSION_KEY, { role: 'guest' }))
   const [lang, setLangState] = useState<Lang>(() => load<Lang>(LANG_KEY, 'fr'))
+  const [selection, setSelection] = useState<SelectionLine[]>(() => load<SelectionLine[]>(SEL_KEY, []))
 
   useEffect(() => {
     try { localStorage.setItem(STATE_KEY, JSON.stringify(state)) } catch { /* quota */ }
@@ -117,6 +158,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)) } catch { /* quota */ }
   }, [session])
+  useEffect(() => {
+    try { localStorage.setItem(SEL_KEY, JSON.stringify(selection)) } catch { /* quota */ }
+  }, [selection])
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l)
@@ -162,12 +206,27 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       logout() { setSession({ role: 'guest' }) },
 
       currentOwner() {
-        if (session.role !== 'owner') return null
-        const owner = state.owners.find((o) => o.id === session.ownerId)
+        // Un restaurateur voit son espace ; un admin voit celui qu'il a endossé.
+        const ownerId =
+          session.role === 'owner' ? session.ownerId
+          : session.role === 'admin' ? session.impersonating
+          : undefined
+        if (!ownerId) return null
+        const owner = state.owners.find((o) => o.id === ownerId)
         if (!owner) return null
         const restaurant = state.restaurants.find((r) => r.id === owner.restaurantId)
         if (!restaurant) return null
         return { owner, restaurant }
+      },
+
+      isImpersonating: session.role === 'admin' && !!session.impersonating,
+
+      impersonate(ownerId) {
+        setSession((cur) => (cur.role === 'admin' ? { ...cur, impersonating: ownerId } : cur))
+      },
+
+      stopImpersonating() {
+        setSession((cur) => (cur.role === 'admin' ? { role: 'admin', email: cur.email } : cur))
       },
 
       updateRestaurant(id, patch) {
@@ -252,7 +311,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             {
               id, restaurantId, categoryId,
               name: field('Nouveau plat'), description: field(''),
-              price: 0, allergens: [], tags: [], available: true, dishOfDay: false,
+              price: 0, allergens: [], tags: [], available: true, dishOfDay: false, options: [],
               order: s.dishes.filter((d) => d.categoryId === categoryId).length,
             },
           ],
@@ -278,6 +337,122 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             delete (next as Partial<Dish> & { descSource?: string }).descSource
             return next
           }),
+        }))
+      },
+
+      setDishPhoto(id, photo) {
+        patchState((s) => ({ ...s, dishes: s.dishes.map((d) => (d.id === id ? { ...d, photo } : d)) }))
+      },
+
+      addOptionGroup(dishId, name) {
+        patchState((s) => ({
+          ...s,
+          dishes: s.dishes.map((d) => {
+            if (d.id !== dishId) return d
+            const group: DishOptionGroup = {
+              id: uid('grp'),
+              name: retranslateField(s, d.restaurantId, field(name)),
+              required: false, multiple: false, choices: [],
+            }
+            return { ...d, options: [...d.options, group] }
+          }),
+        }))
+      },
+
+      updateOptionGroup(dishId, groupId, patch) {
+        patchState((s) => ({
+          ...s,
+          dishes: s.dishes.map((d) => {
+            if (d.id !== dishId) return d
+            return {
+              ...d,
+              options: d.options.map((g) => {
+                if (g.id !== groupId) return g
+                const name = patch.source !== undefined
+                  ? retranslateField(s, d.restaurantId, { ...g.name, source: patch.source })
+                  : g.name
+                return {
+                  ...g, name,
+                  required: patch.required ?? g.required,
+                  multiple: patch.multiple ?? g.multiple,
+                }
+              }),
+            }
+          }),
+        }))
+      },
+
+      removeOptionGroup(dishId, groupId) {
+        patchState((s) => ({
+          ...s,
+          dishes: s.dishes.map((d) =>
+            d.id === dishId ? { ...d, options: d.options.filter((g) => g.id !== groupId) } : d,
+          ),
+        }))
+      },
+
+      addOptionChoice(dishId, groupId, label) {
+        patchState((s) => ({
+          ...s,
+          dishes: s.dishes.map((d) => {
+            if (d.id !== dishId) return d
+            return {
+              ...d,
+              options: d.options.map((g) =>
+                g.id === groupId
+                  ? {
+                      ...g,
+                      choices: [...g.choices, {
+                        id: uid('cho'),
+                        label: retranslateField(s, d.restaurantId, field(label)),
+                        priceDelta: 0,
+                      }],
+                    }
+                  : g,
+              ),
+            }
+          }),
+        }))
+      },
+
+      updateOptionChoice(dishId, groupId, choiceId, patch) {
+        patchState((s) => ({
+          ...s,
+          dishes: s.dishes.map((d) => {
+            if (d.id !== dishId) return d
+            return {
+              ...d,
+              options: d.options.map((g) => {
+                if (g.id !== groupId) return g
+                return {
+                  ...g,
+                  choices: g.choices.map((c) => {
+                    if (c.id !== choiceId) return c
+                    const label = patch.source !== undefined
+                      ? retranslateField(s, d.restaurantId, { ...c.label, source: patch.source })
+                      : c.label
+                    return { ...c, label, priceDelta: patch.priceDelta ?? c.priceDelta }
+                  }),
+                }
+              }),
+            }
+          }),
+        }))
+      },
+
+      removeOptionChoice(dishId, groupId, choiceId) {
+        patchState((s) => ({
+          ...s,
+          dishes: s.dishes.map((d) =>
+            d.id === dishId
+              ? {
+                  ...d,
+                  options: d.options.map((g) =>
+                    g.id === groupId ? { ...g, choices: g.choices.filter((c) => c.id !== choiceId) } : g,
+                  ),
+                }
+              : d,
+          ),
         }))
       },
 
@@ -351,6 +526,25 @@ export function StoreProvider({ children }: { children: ReactNode }) {
               return { ...s, menus: s.menus.map((m) => (m.id === id ? { ...m, name: apply(m.name) } : m)) }
             case 'menu-desc':
               return { ...s, menus: s.menus.map((m) => (m.id === id ? { ...m, description: apply(m.description) } : m)) }
+            case 'option-group':
+              return {
+                ...s,
+                dishes: s.dishes.map((d) => ({
+                  ...d,
+                  options: d.options.map((g) => (g.id === id ? { ...g, name: apply(g.name) } : g)),
+                })),
+              }
+            case 'option-choice':
+              return {
+                ...s,
+                dishes: s.dishes.map((d) => ({
+                  ...d,
+                  options: d.options.map((g) => ({
+                    ...g,
+                    choices: g.choices.map((c) => (c.id === id ? { ...c, label: apply(c.label) } : c)),
+                  })),
+                })),
+              }
           }
         })
       },
@@ -365,9 +559,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             ...s,
             restaurants: s.restaurants.map((x) => (x.id === r.id ? { ...x, description: go(x.description) } : x)),
             categories: s.categories.map((c) => (c.restaurantId === r.id ? { ...c, name: go(c.name) } : c)),
-            dishes: s.dishes.map((d) =>
-              d.restaurantId === r.id ? { ...d, name: go(d.name), description: go(d.description) } : d,
-            ),
+            dishes: s.dishes.map((d) => (d.restaurantId === r.id ? mapDishFields(d, go) : d)),
             menus: s.menus.map((m) =>
               m.restaurantId === r.id ? { ...m, name: go(m.name), description: go(m.description) } : m,
             ),
@@ -391,9 +583,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             purchases: [...s.purchases, line],
             restaurants: s.restaurants.map((x) => (x.id === r.id ? { ...next, description: go(next.description) } : x)),
             categories: s.categories.map((c) => (c.restaurantId === r.id ? { ...c, name: go(c.name) } : c)),
-            dishes: s.dishes.map((d) =>
-              d.restaurantId === r.id ? { ...d, name: go(d.name), description: go(d.description) } : d,
-            ),
+            dishes: s.dishes.map((d) => (d.restaurantId === r.id ? mapDishFields(d, go) : d)),
             menus: s.menus.map((m) =>
               m.restaurantId === r.id ? { ...m, name: go(m.name), description: go(m.description) } : m,
             ),
@@ -401,12 +591,42 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         })
       },
 
+      selection,
+
+      addToSelection(dishId, restaurantId, choiceIds, qty = 1) {
+        setSelection((cur) => {
+          // La sélection porte sur une seule carte à la fois.
+          const base = cur.length && cur[0].restaurantId !== restaurantId ? [] : cur
+          const key = [...choiceIds].sort().join('|')
+          const existing = base.find(
+            (l) => l.dishId === dishId && [...l.choiceIds].sort().join('|') === key,
+          )
+          if (existing) {
+            return base.map((l) => (l.id === existing.id ? { ...l, qty: l.qty + qty } : l))
+          }
+          return [...base, { id: uid('sel'), restaurantId, dishId, choiceIds, qty }]
+        })
+      },
+
+      setSelectionQty(lineId, qty) {
+        setSelection((cur) =>
+          qty <= 0 ? cur.filter((l) => l.id !== lineId) : cur.map((l) => (l.id === lineId ? { ...l, qty } : l)),
+        )
+      },
+
+      removeFromSelection(lineId) {
+        setSelection((cur) => cur.filter((l) => l.id !== lineId))
+      },
+
+      clearSelection() { setSelection([]) },
+
       resetDemo() {
         setState(seedWithTranslations())
         setSession({ role: 'guest' })
+        setSelection([])
       },
     }
-  }, [state, session, lang, setLang, retranslateField])
+  }, [state, session, lang, setLang, selection, retranslateField])
 
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>
 }
