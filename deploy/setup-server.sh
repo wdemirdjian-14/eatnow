@@ -42,14 +42,26 @@ if ! command -v nginx >/dev/null 2>&1; then
   warn "nginx n'est pas installé. Installation…"
   $SUDO apt-get update -qq && $SUDO apt-get install -y nginx
 fi
-$SUDO cp "${HERE}/nginx-eatnow.conf" /etc/nginx/sites-available/eatnow
-$SUDO ln -sf /etc/nginx/sites-available/eatnow /etc/nginx/sites-enabled/eatnow
 
-# Le vhost livré référence des certificats qui n'existent pas encore : au
-# premier passage on ne garde que le bloc HTTP, certbot ajoutera le HTTPS.
-if [ ! -d "/etc/letsencrypt/live/${DOMAIN}" ]; then
-  warn "Pas encore de certificat : mise en place d'un vhost HTTP temporaire."
-  $SUDO tee /etc/nginx/sites-available/eatnow >/dev/null <<NGINX
+VHOST=/etc/nginx/sites-available/eatnow
+CERTDIR="/etc/letsencrypt/live/${DOMAIN}"
+
+# Sauvegarde du vhost en place : en cas de configuration invalide, on le
+# restaure plutôt que de laisser un fichier cassé sur un site en production.
+if [ -f "$VHOST" ]; then
+  $SUDO cp "$VHOST" "${VHOST}.bak"
+fi
+
+restore_vhost() {
+  if [ -f "${VHOST}.bak" ]; then
+    warn "Configuration invalide : restauration du vhost précédent."
+    $SUDO cp "${VHOST}.bak" "$VHOST"
+  fi
+}
+
+# Vhost minimal en HTTP, le temps d'obtenir un certificat.
+install_vhost_http() {
+  $SUDO tee "$VHOST" >/dev/null <<NGINX
 server {
     listen 80;
     listen [::]:80;
@@ -57,16 +69,43 @@ server {
     root ${BASE}/current;
     index index.html;
     location /.well-known/acme-challenge/ { root /var/www/certbot; }
+    location /api/ { proxy_pass http://127.0.0.1:3001; proxy_set_header Host \$host; }
     location / { try_files \$uri \$uri/ /index.html; }
 }
 NGINX
+}
+
+# Vhost complet (cache, CSP, relais API), avec les chemins de certificat
+# injectés à la place du marqueur laissé pour certbot.
+install_vhost_full() {
+  $SUDO cp "${HERE}/nginx-eatnow.conf" "$VHOST"
+  $SUDO sed -i \
+    "s|# --- certbot insère ici ssl_certificate / ssl_certificate_key ---|ssl_certificate ${CERTDIR}/fullchain.pem;\n    ssl_certificate_key ${CERTDIR}/privkey.pem;\n    include /etc/letsencrypt/options-ssl-nginx.conf;\n    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;|" \
+    "$VHOST"
+}
+
+$SUDO ln -sf "$VHOST" /etc/nginx/sites-enabled/eatnow
+
+if [ -d "$CERTDIR" ]; then
+  echo "Certificat présent : installation du vhost complet."
+  install_vhost_full
+else
+  warn "Pas encore de certificat : vhost HTTP temporaire."
+  install_vhost_http
 fi
 
-$SUDO nginx -t && $SUDO systemctl reload nginx
-echo "nginx rechargé."
+if $SUDO nginx -t; then
+  $SUDO systemctl reload nginx
+  echo "nginx rechargé."
+else
+  restore_vhost
+  $SUDO nginx -t && $SUDO systemctl reload nginx
+  echo "Le vhost précédent a été remis en place. Corrigez avant de relancer." >&2
+  exit 1
+fi
 
 say "5/7 · Certificat TLS"
-if [ -d "/etc/letsencrypt/live/${DOMAIN}" ]; then
+if [ -d "$CERTDIR" ]; then
   echo "Certificat déjà présent pour ${DOMAIN}."
 else
   if ! command -v certbot >/dev/null 2>&1; then
@@ -82,13 +121,17 @@ else
   fi
   if $SUDO certbot --nginx -d "${DOMAIN}" --non-interactive --agree-tos \
        "${CERTBOT_MAIL[@]}" --redirect; then
-    # Certbot a produit un vhost minimal : on remet le nôtre (cache, CSP…),
-    # en réinjectant les lignes de certificat qu'il vient de créer.
-    $SUDO cp "${HERE}/nginx-eatnow.conf" /etc/nginx/sites-available/eatnow
-    $SUDO sed -i "s|# --- certbot insère ici ssl_certificate / ssl_certificate_key ---|ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;\n    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;\n    include /etc/letsencrypt/options-ssl-nginx.conf;\n    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;|" /etc/nginx/sites-available/eatnow
-    $SUDO nginx -t && $SUDO systemctl reload nginx
+    # certbot a produit un vhost minimal : on remet le nôtre, désormais
+    # complétable puisque le certificat existe.
+    install_vhost_full
+    if $SUDO nginx -t; then
+      $SUDO systemctl reload nginx
+    else
+      restore_vhost
+      warn "Vhost complet invalide, configuration précédente restaurée."
+    fi
   else
-    warn "Certbot a échoué. Le site restera en HTTP le temps de régler le DNS."
+    warn "Certbot a échoué. Le site reste en HTTP le temps de régler le DNS."
     warn "Relancez : sudo certbot --nginx -d ${DOMAIN}"
   fi
 fi
