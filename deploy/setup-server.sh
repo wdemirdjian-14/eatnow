@@ -19,11 +19,14 @@ warn() { printf '\033[1;33m⚠ %s\033[0m\n' "$*"; }
 
 if [ "$(id -u)" -eq 0 ]; then SUDO=""; else SUDO="sudo"; fi
 
-say "1/5 · Arborescence des versions dans ${BASE}"
+say "1/7 · Arborescence des versions dans ${BASE}"
+$SUDO mkdir -p "${BASE}/releases"
+
+say "2/7 · Utilisateur de service"
 $SUDO mkdir -p "${BASE}/releases" /var/www/certbot
 $SUDO chown -R "$(id -un)":www-data "${BASE}" 2>/dev/null || $SUDO chown -R "$(id -un)" "${BASE}"
 
-say "2/5 · Page d'attente (pour que nginx démarre avant le 1er déploiement)"
+say "3/7 · Page d'attente (pour que nginx démarre avant le 1er déploiement)"
 if [ ! -e "${BASE}/current" ]; then
   mkdir -p "${BASE}/releases/bootstrap"
   cat > "${BASE}/releases/bootstrap/index.html" <<'HTML'
@@ -34,7 +37,7 @@ HTML
   ln -sfn "${BASE}/releases/bootstrap" "${BASE}/current"
 fi
 
-say "3/5 · Vhost nginx pour ${DOMAIN}"
+say "4/7 · Vhost nginx pour ${DOMAIN}"
 if ! command -v nginx >/dev/null 2>&1; then
   warn "nginx n'est pas installé. Installation…"
   $SUDO apt-get update -qq && $SUDO apt-get install -y nginx
@@ -62,7 +65,7 @@ fi
 $SUDO nginx -t && $SUDO systemctl reload nginx
 echo "nginx rechargé."
 
-say "4/5 · Certificat TLS"
+say "5/7 · Certificat TLS"
 if [ -d "/etc/letsencrypt/live/${DOMAIN}" ]; then
   echo "Certificat déjà présent pour ${DOMAIN}."
 else
@@ -90,13 +93,45 @@ else
   fi
 fi
 
-say "5/5 · Node.js"
+say "6/7 · Service API"
+$SUDO mkdir -p /etc/eatnow /var/lib/eatnow/uploads "${BASE}/api"
+$SUDO chown -R www-data:www-data /var/lib/eatnow
+
+if [ ! -f /etc/eatnow/api.env ]; then
+  $SUDO cp "${HERE}/api.env.example" /etc/eatnow/api.env
+  $SUDO chmod 600 /etc/eatnow/api.env
+  $SUDO chown www-data /etc/eatnow/api.env
+  warn "/etc/eatnow/api.env créé depuis l'exemple."
+  warn "MODIFIEZ EATNOW_ADMIN_PASSWORD avant le premier démarrage :"
+  warn "  sudo nano /etc/eatnow/api.env"
+else
+  echo "/etc/eatnow/api.env déjà présent, laissé tel quel."
+fi
+
+$SUDO cp "${HERE}/eatnow-api.service" /etc/systemd/system/eatnow-api.service
+$SUDO systemctl daemon-reload
+$SUDO systemctl enable eatnow-api >/dev/null 2>&1 || true
+echo "Service eatnow-api installé (démarré au premier déploiement)."
+
+say "7/7 · Node.js"
 if command -v node >/dev/null 2>&1 && [ "$(node -p 'process.versions.node.split(".")[0]')" -ge 20 ]; then
   echo "Node $(node -v) — OK."
 else
-  warn "Node 20+ est requis pour construire l'application. Installation…"
+  warn "Node 20+ est requis. Installation…"
   curl -fsSL https://deb.nodesource.com/setup_20.x | $SUDO -E bash -
   $SUDO apt-get install -y nodejs
 fi
 
-printf '\n\033[1;32m✅ Serveur prêt.\033[0m Déployez maintenant avec :\n\n    ./deploy/deploy-local.sh\n\n'
+# better-sqlite3 récupère un binaire précompilé quand il existe ; sinon il
+# compile, ce qui suppose ces paquets.
+if ! dpkg -s build-essential >/dev/null 2>&1; then
+  warn "Installation des outils de compilation (pour better-sqlite3)…"
+  $SUDO apt-get install -y build-essential python3
+fi
+
+printf '\n\033[1;32m✅ Serveur prêt.\033[0m\n\n'
+printf 'Étapes suivantes :\n'
+printf '  1. sudo nano /etc/eatnow/api.env      # définir le mot de passe administrateur\n'
+printf '  2. ./deploy/deploy-local.sh            # construire et déployer\n'
+printf '  3. npm --prefix %s/api run seed        # charger les données de démonstration\n' "${BASE}"
+printf '\n'

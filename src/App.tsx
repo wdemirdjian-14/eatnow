@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { HashRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
-import { StoreProvider } from './store/store'
+import { StoreProvider, useStore } from './store/store'
 import { registerServiceWorker } from './lib/pwa'
 import { Header } from './components/Header'
+import { Logo } from './components/Logo'
 import { Footer } from './components/Footer'
 import { Home } from './pages/Home'
 import { RestaurantDetail } from './pages/RestaurantDetail'
@@ -36,6 +37,23 @@ function UpdateBanner() {
   )
 }
 
+/**
+ * Écran d'attente pendant le premier chargement.
+ *
+ * L'annuaire vient du serveur : afficher l'interface avant son arrivée
+ * donnerait un instant de « aucun restaurant trouvé » trompeur.
+ */
+function Boot({ children }: { children: React.ReactNode }) {
+  const { ready } = useStore()
+  if (ready) return <>{children}</>
+  return (
+    <div className="boot">
+      <Logo size={72} id="boot" />
+      <p>Chargement de l’annuaire…</p>
+    </div>
+  )
+}
+
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => { window.scrollTo(0, 0) }, [pathname])
@@ -49,6 +67,7 @@ export default function App() {
         <ScrollToTop />
         <UpdateBanner />
         <Header />
+        <Boot>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/r/:slug" element={<RestaurantDetail />} />
@@ -70,6 +89,7 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Boot>
         <Footer />
       </HashRouter>
     </StoreProvider>

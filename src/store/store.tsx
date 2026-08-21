@@ -1,19 +1,27 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import {
   INCLUDED_LANGS,
   type AppState, type Category, type Dish, type DishOptionGroup, type FixedMenu,
-  type I18nField, type Lang, type PurchaseLine, type Restaurant, type SelectionLine,
+  type I18nField, type Lang, type Restaurant, type SelectionLine,
   type Session,
 } from '../types'
-import { buildSeedState, findAdmin } from '../data/seed'
 import { autoTranslate, field } from '../lib/translate'
 import { uid, slugify } from '../lib/format'
+import { ApiError, api, type SessionUser } from '../lib/api'
 
-const STATE_KEY = 'eatnow.state.v1'
-const SESSION_KEY = 'eatnow.session.v1'
+/**
+ * Miroir hors connexion de l'annuaire.
+ *
+ * La source de vérité est le serveur. Cette copie locale ne sert qu'à afficher
+ * quelque chose quand le réseau manque — cas courant en salle de restaurant.
+ */
+const CACHE_KEY = 'eatnow.cache.v2'
 const LANG_KEY = 'eatnow.lang.v1'
 const SEL_KEY = 'eatnow.selection.v1'
+
+/** Délai avant envoi des modifications, pour regrouper les frappes clavier. */
+const PUSH_DELAY = 700
 
 /** Prix mensuel d'une langue supplémentaire, par plan. */
 export const LANG_PRICE: Record<Restaurant['plan'], number> = { essai: 12, starter: 12, pro: 9 }
@@ -64,15 +72,22 @@ interface Store {
   lang: Lang
   setLang: (l: Lang) => void
 
-  loginOwner: (email: string, password: string) => string | null
-  loginAdmin: (login: string, password: string) => string | null
-  logout: () => void
+  /** Chargement initial terminé (succès ou repli sur le cache). */
+  ready: boolean
+  /** État de l'enregistrement des modifications sur le serveur. */
+  syncStatus: SyncStatus
+  /** Recharge l'annuaire depuis le serveur. */
+  reload: () => Promise<void>
+
+  loginOwner: (email: string, password: string) => Promise<string | null>
+  loginAdmin: (login: string, password: string) => Promise<string | null>
+  logout: () => Promise<void>
 
   currentOwner: () => { owner: AppState['owners'][number]; restaurant: Restaurant } | null
   /** Vrai quand un administrateur agit au nom d'un restaurateur. */
   isImpersonating: boolean
-  impersonate: (ownerId: string) => void
-  stopImpersonating: () => void
+  impersonate: (ownerId: string) => Promise<void>
+  stopImpersonating: () => Promise<void>
 
   updateRestaurant: (id: string, patch: Partial<Restaurant>) => void
   setRestaurantField: (id: string, key: 'description', source: string) => void
@@ -86,7 +101,7 @@ interface Store {
   updateDish: (id: string, patch: Partial<Dish> & { nameSource?: string; descSource?: string }) => void
   removeDish: (id: string) => void
 
-  setDishPhoto: (id: string, photo: string | undefined) => void
+  setDishPhoto: (id: string, photo: string | undefined) => Promise<void>
   addOptionGroup: (dishId: string, name: string) => void
   updateOptionGroup: (dishId: string, groupId: string, patch: { source?: string; required?: boolean; multiple?: boolean }) => void
   removeOptionGroup: (dishId: string, groupId: string) => void
@@ -102,7 +117,7 @@ interface Store {
   setManual: (entity: ManualTarget, id: string, lang: Lang, value: string) => void
   /** Relance la traduction automatique sur toute la carte d'un restaurant. */
   retranslate: (restaurantId: string) => void
-  purchaseLang: (restaurantId: string, lang: Lang) => void
+  purchaseLang: (restaurantId: string, lang: Lang) => Promise<string | null>
 
   /** Sélection du client, en cours de constitution sur une carte. */
   selection: SelectionLine[]
@@ -111,8 +126,14 @@ interface Store {
   removeFromSelection: (lineId: string) => void
   clearSelection: () => void
 
-  resetDemo: () => void
 }
+
+export type SyncStatus =
+  | { kind: 'idle' }
+  | { kind: 'saving' }
+  /** Modifications conservées localement, en attente de réseau. */
+  | { kind: 'offline'; pending: number }
+  | { kind: 'error'; message: string }
 
 const Ctx = createContext<Store | null>(null)
 
@@ -125,42 +146,189 @@ function load<T>(key: string, fallback: T): T {
   }
 }
 
-/** Prépare l'état de démo : les traductions auto sont calculées une fois au seed. */
-function seedWithTranslations(): AppState {
-  const s = buildSeedState()
-  return translateAll(s)
+const EMPTY_STATE: AppState = {
+  restaurants: [], categories: [], dishes: [], menus: [], owners: [], purchases: [],
 }
 
-function translateAll(s: AppState): AppState {
-  const langsOf = new Map(s.restaurants.map((r) => [r.id, activeLangs(r)] as const))
-  const srcOf = new Map(s.restaurants.map((r) => [r.id, r.sourceLang] as const))
-  const go = (rid: string, f: I18nField) => withAuto(f, srcOf.get(rid) ?? 'fr', langsOf.get(rid) ?? [])
-  return {
-    ...s,
-    restaurants: s.restaurants.map((r) => ({ ...r, description: go(r.id, r.description) })),
-    categories: s.categories.map((c) => ({ ...c, name: go(c.restaurantId, c.name) })),
-    dishes: s.dishes.map((d) => mapDishFields(d, (f) => go(d.restaurantId, f))),
-    menus: s.menus.map((m) => ({
-      ...m, name: go(m.restaurantId, m.name), description: go(m.restaurantId, m.description),
-    })),
+/**
+ * Convertit l'utilisateur renvoyé par l'API en session utilisable par l'app.
+ *
+ * Pendant un endossement, l'API décrit le compte *endossé* — donc de rôle
+ * `owner` — et place le titulaire réel dans `realUser`. L'endossement doit
+ * donc être testé en premier : le tester après le rôle ferait passer un
+ * administrateur pour un simple restaurateur, sans bandeau ni retour possible
+ * vers la console.
+ */
+function toSession(user: SessionUser | null): Session {
+  if (!user) return { role: 'guest' }
+  if (user.impersonating && user.realUser) {
+    return { role: 'admin', login: user.realUser.login, impersonating: user.id }
   }
+  if (user.role === 'owner') return { role: 'owner', ownerId: user.id }
+  return { role: 'admin', login: user.login }
 }
+
+interface Changes { profile: Set<string>; menu: Set<string> }
+
+/**
+ * Repère les restaurants touchés par une mutation.
+ *
+ * Toutes les mutations du store sont immuables : seuls les objets réellement
+ * modifiés changent d'identité. Une comparaison de références suffit donc, et
+ * évite d'annoter chaque action — un oubli signifierait une modification
+ * jamais enregistrée.
+ */
+function diffRestaurants(prev: AppState, next: AppState): Changes {
+  const profile = new Set<string>()
+  const menu = new Set<string>()
+
+  const before = new Map(prev.restaurants.map((r) => [r.id, r] as const))
+  for (const r of next.restaurants) if (before.get(r.id) !== r) profile.add(r.id)
+
+  const scan = <T extends { id: string; restaurantId: string }>(a: T[], b: T[]) => {
+    const seen = new Map(a.map((x) => [x.id, x] as const))
+    for (const x of b) if (seen.get(x.id) !== x) menu.add(x.restaurantId)
+    const kept = new Set(b.map((x) => x.id))
+    for (const x of a) if (!kept.has(x.id)) menu.add(x.restaurantId)
+  }
+  scan(prev.categories, next.categories)
+  scan(prev.dishes, next.dishes)
+  scan(prev.menus, next.menus)
+
+  return { profile, menu }
+}
+
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<AppState>(() => load(STATE_KEY, null as AppState | null) ?? seedWithTranslations())
-  const [session, setSession] = useState<Session>(() => load<Session>(SESSION_KEY, { role: 'guest' }))
+  const [state, setState] = useState<AppState>(EMPTY_STATE)
+  const [session, setSession] = useState<Session>({ role: 'guest' })
+  const [ready, setReady] = useState(false)
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>({ kind: 'idle' })
   const [lang, setLangState] = useState<Lang>(() => load<Lang>(LANG_KEY, 'fr'))
   const [selection, setSelection] = useState<SelectionLine[]>(() => load<SelectionLine[]>(SEL_KEY, []))
 
-  useEffect(() => {
-    try { localStorage.setItem(STATE_KEY, JSON.stringify(state)) } catch { /* quota */ }
-  }, [state])
-  useEffect(() => {
-    try { localStorage.setItem(SESSION_KEY, JSON.stringify(session)) } catch { /* quota */ }
-  }, [session])
+  /** État courant, lisible depuis les envois différés sans capture périmée. */
+  const stateRef = useRef(state)
+  stateRef.current = state
+
+  /** Restaurants modifiés localement et pas encore enregistrés. */
+  const dirty = useRef(new Map<string, { profile: boolean; menu: boolean }>())
+  const pushTimer = useRef<number | null>(null)
+
   useEffect(() => {
     try { localStorage.setItem(SEL_KEY, JSON.stringify(selection)) } catch { /* quota */ }
   }, [selection])
+
+  /** Enregistre le miroir hors connexion (annuaire seul, sans données privées). */
+  const cacheLocally = useCallback((s: AppState) => {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        restaurants: s.restaurants, categories: s.categories, dishes: s.dishes, menus: s.menus,
+      }))
+    } catch { /* quota dépassé : le mode hors ligne sera simplement indisponible */ }
+  }, [])
+
+  /**
+   * Envoie au serveur les restaurants modifiés.
+   *
+   * On pousse la fiche et la carte entières plutôt qu'un différentiel : c'est
+   * idempotent, insensible à l'ordre des modifications, et le volume reste
+   * négligeable à l'échelle d'une carte de restaurant.
+   */
+  const flush = useCallback(async () => {
+    if (dirty.current.size === 0) return
+    const batch = new Map(dirty.current)
+    dirty.current.clear()
+    setSyncStatus({ kind: 'saving' })
+
+    const failed = new Map<string, { profile: boolean; menu: boolean }>()
+    let lastError: string | null = null
+    let offline = false
+
+    for (const [rid, what] of batch) {
+      const s = stateRef.current
+      const r = s.restaurants.find((x) => x.id === rid)
+      if (!r) continue
+      try {
+        if (what.profile) {
+          const { purchasedLangs: _skip, ...profile } = r
+          await api.updateRestaurant(rid, profile)
+        }
+        if (what.menu) {
+          await api.replaceMenu(rid, {
+            categories: s.categories.filter((c) => c.restaurantId === rid),
+            dishes: s.dishes.filter((d) => d.restaurantId === rid),
+            menus: s.menus.filter((m) => m.restaurantId === rid),
+          })
+        }
+      } catch (err) {
+        failed.set(rid, what)
+        if (err instanceof ApiError && err.status === 0) offline = true
+        else lastError = err instanceof Error ? err.message : 'Enregistrement impossible.'
+      }
+    }
+
+    // Les modifications non enregistrées restent en attente : rien n'est perdu.
+    for (const [rid, what] of failed) {
+      const prev = dirty.current.get(rid)
+      dirty.current.set(rid, {
+        profile: what.profile || !!prev?.profile,
+        menu: what.menu || !!prev?.menu,
+      })
+    }
+
+    if (failed.size === 0) setSyncStatus({ kind: 'idle' })
+    else if (offline) setSyncStatus({ kind: 'offline', pending: failed.size })
+    else setSyncStatus({ kind: 'error', message: lastError ?? 'Enregistrement impossible.' })
+  }, [])
+
+  const markDirty = useCallback((restaurantId: string, what: 'profile' | 'menu') => {
+    const prev = dirty.current.get(restaurantId) ?? { profile: false, menu: false }
+    dirty.current.set(restaurantId, { ...prev, [what]: true })
+    if (pushTimer.current !== null) window.clearTimeout(pushTimer.current)
+    pushTimer.current = window.setTimeout(() => { void flush() }, PUSH_DELAY)
+  }, [flush])
+
+  /** Recharge l'annuaire et, si une session existe, ses données privées. */
+  const reload = useCallback(async () => {
+    try {
+      const [pub, user] = await Promise.all([api.publicState(), api.me()])
+      let priv = { owners: [], purchases: [] } as Pick<AppState, 'owners' | 'purchases'>
+      if (user.user) priv = await api.sessionState()
+      const next: AppState = { ...pub, ...priv }
+      setState(next)
+      setSession(toSession(user.user))
+      cacheLocally(next)
+      setSyncStatus((cur) => (cur.kind === 'offline' ? { kind: 'idle' } : cur))
+    } catch {
+      // Serveur injoignable : on repart du miroir local s'il existe.
+      const cached = load<Pick<AppState, 'restaurants' | 'categories' | 'dishes' | 'menus'> | null>(
+        CACHE_KEY, null,
+      )
+      if (cached) setState({ ...cached, owners: [], purchases: [] })
+      setSyncStatus({ kind: 'offline', pending: dirty.current.size })
+    } finally {
+      setReady(true)
+    }
+  }, [cacheLocally])
+
+  useEffect(() => { void reload() }, [reload])
+
+  // Retente l'enregistrement dès le retour du réseau.
+  useEffect(() => {
+    const retry = () => { if (dirty.current.size > 0) void flush() }
+    window.addEventListener('online', retry)
+    return () => window.removeEventListener('online', retry)
+  }, [flush])
+
+  // Prévient avant de fermer l'onglet s'il reste des modifications en attente.
+  useEffect(() => {
+    const guard = (e: BeforeUnloadEvent) => {
+      if (dirty.current.size > 0) e.preventDefault()
+    }
+    window.addEventListener('beforeunload', guard)
+    return () => window.removeEventListener('beforeunload', guard)
+  }, [])
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l)
@@ -177,32 +345,69 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [],
   )
 
-  const api = useMemo<Store>(() => {
-    const patchState = (fn: (s: AppState) => AppState) => setState((s) => fn(s))
+  const store = useMemo<Store>(() => {
+    const patchState = (fn: (s: AppState) => AppState) =>
+      setState((s) => {
+        const next = fn(s)
+        if (next === s) return s
+        // `markDirty` est idempotent : la double exécution des mises à jour en
+        // mode strict n'a pas d'effet observable.
+        const { profile, menu } = diffRestaurants(s, next)
+        for (const rid of profile) markDirty(rid, 'profile')
+        for (const rid of menu) markDirty(rid, 'menu')
+        return next
+      })
 
     return {
       state,
       session,
+      ready,
+      syncStatus,
+      reload,
       lang,
       setLang,
 
-      loginOwner(email, password) {
-        const o = state.owners.find(
-          (x) => x.email.toLowerCase() === email.trim().toLowerCase() && x.password === password,
-        )
-        if (!o) return 'Identifiants incorrects. Essayez le compte de démonstration.'
-        setSession({ role: 'owner', ownerId: o.id })
-        return null
+      async loginOwner(email, password) {
+        try {
+          const { user } = await api.login(email, password)
+          if (user.role !== 'owner') {
+            await api.logout()
+            return 'Ce compte n’est pas un compte restaurateur.'
+          }
+          setSession(toSession(user))
+          await reload()
+          return null
+        } catch (err) {
+          return err instanceof ApiError && err.status === 0
+            ? 'Serveur injoignable. Vérifiez votre connexion.'
+            : 'Identifiants incorrects.'
+        }
       },
 
-      loginAdmin(login, password) {
-        const admin = findAdmin(login, password)
-        if (!admin) return 'Identifiants administrateur incorrects.'
-        setSession({ role: 'admin', login: admin.login })
-        return null
+      async loginAdmin(login, password) {
+        try {
+          const { user } = await api.login(login, password)
+          if (user.role !== 'admin') {
+            await api.logout()
+            return 'Ce compte n’est pas un compte administrateur.'
+          }
+          setSession(toSession(user))
+          await reload()
+          return null
+        } catch (err) {
+          return err instanceof ApiError && err.status === 0
+            ? 'Serveur injoignable. Vérifiez votre connexion.'
+            : 'Identifiants administrateur incorrects.'
+        }
       },
 
-      logout() { setSession({ role: 'guest' }) },
+      async logout() {
+        // Les modifications en attente partent avant de perdre la session.
+        await flush().catch(() => {})
+        await api.logout().catch(() => {})
+        setSession({ role: 'guest' })
+        await reload()
+      },
 
       currentOwner() {
         // Un restaurateur voit son espace ; un admin voit celui qu'il a endossé.
@@ -220,12 +425,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
       isImpersonating: session.role === 'admin' && !!session.impersonating,
 
-      impersonate(ownerId) {
-        setSession((cur) => (cur.role === 'admin' ? { ...cur, impersonating: ownerId } : cur))
+      async impersonate(ownerId) {
+        const { user } = await api.impersonate(ownerId)
+        setSession(toSession(user))
+        await reload()
       },
 
-      stopImpersonating() {
-        setSession((cur) => (cur.role === 'admin' ? { role: 'admin', login: cur.login } : cur))
+      async stopImpersonating() {
+        await flush().catch(() => {})
+        const { user } = await api.stopImpersonating()
+        setSession(toSession(user))
+        await reload()
       },
 
       updateRestaurant(id, patch) {
@@ -339,8 +549,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         }))
       },
 
-      setDishPhoto(id, photo) {
-        patchState((s) => ({ ...s, dishes: s.dishes.map((d) => (d.id === id ? { ...d, photo } : d)) }))
+      async setDishPhoto(id, photo) {
+        // Le serveur écrit le fichier et renvoie son URL : la carte ne
+        // transporte plus l'image elle-même, seulement un lien.
+        const { photo: url } = await api.setDishPhoto(id, photo ?? null)
+        setState((s) => ({
+          ...s,
+          dishes: s.dishes.map((d) => (d.id === id ? { ...d, photo: url ?? undefined } : d)),
+        }))
       },
 
       addOptionGroup(dishId, name) {
@@ -566,28 +782,39 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         })
       },
 
-      purchaseLang(restaurantId, l) {
-        patchState((s) => {
-          const r = s.restaurants.find((x) => x.id === restaurantId)
-          if (!r || activeLangs(r).includes(l)) return s
-          const next: Restaurant = { ...r, purchasedLangs: [...r.purchasedLangs, l] }
-          const line: PurchaseLine = {
-            id: uid('inv'), restaurantId, lang: l,
-            amount: LANG_PRICE[r.plan], date: new Date().toISOString().slice(0, 10),
-          }
-          const langs = activeLangs(next)
-          const go = (f: I18nField) => withAuto(f, next.sourceLang, langs)
-          return {
-            ...s,
-            purchases: [...s.purchases, line],
-            restaurants: s.restaurants.map((x) => (x.id === r.id ? { ...next, description: go(next.description) } : x)),
-            categories: s.categories.map((c) => (c.restaurantId === r.id ? { ...c, name: go(c.name) } : c)),
-            dishes: s.dishes.map((d) => (d.restaurantId === r.id ? mapDishFields(d, go) : d)),
-            menus: s.menus.map((m) =>
-              m.restaurantId === r.id ? { ...m, name: go(m.name), description: go(m.description) } : m,
-            ),
-          }
-        })
+      async purchaseLang(restaurantId, l) {
+        try {
+          // Le serveur fixe le prix et refuse les doublons : le client ne fait
+          // qu'appliquer le résultat.
+          const { alreadyOwned, restaurant } = await api.purchaseLang(restaurantId, l)
+          if (alreadyOwned) return null
+
+          setState((s) => {
+            const langs = activeLangs(restaurant)
+            const go = (f: I18nField) => withAuto(f, restaurant.sourceLang, langs)
+            return {
+              ...s,
+              restaurants: s.restaurants.map((x) =>
+                x.id === restaurantId ? { ...restaurant, description: go(restaurant.description) } : x,
+              ),
+              categories: s.categories.map((c) =>
+                c.restaurantId === restaurantId ? { ...c, name: go(c.name) } : c,
+              ),
+              dishes: s.dishes.map((d) => (d.restaurantId === restaurantId ? mapDishFields(d, go) : d)),
+              menus: s.menus.map((m) =>
+                m.restaurantId === restaurantId
+                  ? { ...m, name: go(m.name), description: go(m.description) }
+                  : m,
+              ),
+            }
+          })
+          // Les traductions fraîchement calculées doivent rejoindre le serveur.
+          markDirty(restaurantId, 'menu')
+          await api.sessionState().then((priv) => setState((s) => ({ ...s, ...priv }))).catch(() => {})
+          return null
+        } catch (err) {
+          return err instanceof Error ? err.message : 'Achat impossible.'
+        }
       },
 
       selection,
@@ -619,15 +846,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
       clearSelection() { setSelection([]) },
 
-      resetDemo() {
-        setState(seedWithTranslations())
-        setSession({ role: 'guest' })
-        setSelection([])
-      },
     }
-  }, [state, session, lang, setLang, selection, retranslateField])
+  }, [
+    state, session, ready, syncStatus, lang, setLang, selection,
+    retranslateField, markDirty, flush, reload,
+  ])
 
-  return <Ctx.Provider value={api}>{children}</Ctx.Provider>
+  return <Ctx.Provider value={store}>{children}</Ctx.Provider>
 }
 
 export function useStore(): Store {

@@ -39,11 +39,31 @@ table, devant une carte qu'il ne comprend pas.
 Le modèle économique est vendu au restaurateur : un plan mensuel + des langues
 supplémentaires facturées à l'unité.
 
+## Architecture d'ensemble
+
+```
+Navigateur ──► nginx ─┬─► /            fichiers statiques (client React)
+                      ├─► /api/        service Node (Fastify) ──► SQLite
+                      └─► /uploads/    photos de plats sur disque
+```
+
+Le client et l'API partagent la même origine : le cookie de session reste
+`SameSite=Strict` et aucune configuration CORS n'est nécessaire.
+
 ## Démarrer
 
+Deux processus : l'API et le client.
+
 ```bash
+# 1. API
+cd server
 npm install
-npm run dev        # http://localhost:5173
+EATNOW_ADMIN_PASSWORD=choisissez-en-un npm run seed   # données de démonstration
+EATNOW_ADMIN_PASSWORD=choisissez-en-un EATNOW_SECURE_COOKIES=false npm run dev
+
+# 2. Client, dans un autre terminal
+npm install
+npm run dev        # http://localhost:5173, /api est relayé vers le port 3001
 ```
 
 Autres commandes :
@@ -68,19 +88,16 @@ Mot de passe pour tous : **`eatnow`**
 
 Les écrans de connexion proposent ces comptes en un clic.
 
-#### Les comptes administrateurs
+#### Le compte administrateur
 
-| Identifiant | Mot de passe |
-| --- | --- |
-| `warren` | celui que vous avez défini |
-| `admin@eatnow.app` | `eatnow` (compte de démonstration) |
+Il est créé au tout premier démarrage de l'API, à partir de
+`EATNOW_ADMIN_LOGIN` et `EATNOW_ADMIN_PASSWORD` définis dans
+`/etc/eatnow/api.env`. Sans mot de passe défini, **aucun compte n'est créé** :
+mieux vaut un serveur sans administrateur qu'un administrateur au mot de passe
+prévisible.
 
-> ⚠️ **L'authentification du MVP est entièrement côté navigateur.** Les mots de
-> passe se retrouvent dans le bundle JavaScript livré : n'importe quel visiteur
-> peut les lire dans les outils de développement, et le dépôt est public.
-> N'utilisez donc ici aucun mot de passe employé ailleurs. `VITE_ADMIN_PASSWORD`
-> (fichier `.env.local`, non versionné) évite au moins de l'inscrire dans
-> l'historique Git. Une protection réelle suppose un backend.
+Les mots de passe sont hachés par **scrypt** et ne quittent jamais le serveur.
+Le bundle JavaScript n'en contient aucun — c'est vérifié par les tests.
 
 L'administrateur donne accès à la console : tous les restaurants inscrits,
 le contenu de leurs cartes langue par langue, la couverture des traductions,
@@ -137,6 +154,7 @@ src/
 │   └── dishArt.ts        Illustrations de démonstration pour le champ photo
 ├── store/store.tsx       État applicatif + persistance localStorage + actions
 ├── lib/
+│   ├── api.ts            Client de l'API (cookie de session, en-tête anti-CSRF)
 │   ├── translate.ts      Moteur de traduction + résolution manuel > auto > source
 │   ├── pwa.ts            Service worker, invite d'installation, connectivité
 │   ├── qr.ts             Génération des QR codes en SVG
@@ -150,7 +168,29 @@ src/
 │   └── …                 Logo, header, footer, carte restaurant
 ├── pages/                Public · owner/ (back-office) · admin/ (console)
 └── styles/app.css        Design system « bleu canard », mobile first
+
+server/
+├── src/
+│   ├── config.ts         Configuration par variables d'environnement
+│   ├── db.ts             SQLite, migrations versionnées
+│   ├── auth.ts           scrypt, sessions, contrôle d'accès
+│   ├── store.ts          Lignes SQL ⇄ objets du client
+│   ├── app.ts            Routes HTTP
+│   └── cli/seed.ts       Chargement des données de démonstration
+├── test/api.sh           33 tests d'intégration
+└── seed-data.json        Produit par `npm run export:seed` à la racine
 ```
+
+### Le moteur de synchronisation
+
+Le client garde une copie complète de l'annuaire en mémoire et applique les
+modifications immédiatement : l'interface reste instantanée. Un mécanisme de
+détection par comparaison de références repère les restaurants touchés, puis
+envoie leur fiche et leur carte entières après 700 ms de calme — c'est
+idempotent et insensible à l'ordre des modifications.
+
+Hors connexion, les modifications restent en attente, un indicateur les
+signale dans l'en-tête, et elles repartent dès le retour du réseau.
 
 ### Le champ multilingue
 
@@ -259,16 +299,21 @@ multilingue, carte par catégories, plat du jour, promos, formules, 14 allergèn
 réglementaires, back-office restaurateur complet, forçage des traductions, achat
 de langues, console d'administration, CI/CD versionnée.
 
-**Volontairement bouchonné** — persistance dans le `localStorage` du navigateur
-(pas de backend), authentification en clair côté client, paiement simulé,
+**Volontairement bouchonné** — paiement simulé (aucune transaction réelle) et
 traduction par glossaire.
 
-> Conséquence directe de l'absence de backend : **les données ne sont pas
-> partagées entre appareils**. Une carte modifiée sur un ordinateur n'apparaît
-> pas modifiée sur un téléphone, et « Réinitialiser la démo » remet les données
-> de départ. C'est le premier chantier à ouvrir pour une mise en production.
+**Prochaines étapes** — paiement (Stripe), traduction via DeepL, création de
+compte restaurateur en autonomie, réinitialisation de mot de passe, envoi de la
+commande en cuisine, avis clients.
 
-**Prochaines étapes** — API et base de données (prérequis au partage entre
-appareils), authentification réelle, paiement (Stripe), traduction via DeepL,
-carte interactive géographique, QR code de table, envoi de la commande en
-cuisine, avis clients.
+## Tests
+
+```bash
+# API : 33 tests d'intégration contre un serveur lancé sur une base neuve
+cd server && npm run seed -- --force && npm run dev &
+cd server && npm test
+```
+
+Ils couvrent l'accès public, l'authentification, le cloisonnement entre
+restaurateurs, l'endossement administrateur, l'autorité du serveur sur les
+tarifs, le remplacement de carte et le téléversement de photos.

@@ -146,9 +146,14 @@ export function registerServiceWorker(onUpdate: (apply: () => void) => void): vo
       })
       .catch(() => { /* l'application reste utilisable sans cache hors ligne */ })
 
+    // À la toute première visite, le service worker s'active et prend le
+    // contrôle : `controllerchange` se déclenche alors qu'il n'y a rien à
+    // remplacer. Recharger dans ce cas vide l'écran sans raison — on ne
+    // recharge donc que si un contrôleur précédent existait vraiment.
+    const hadController = !!navigator.serviceWorker.controller
     let reloading = false
     navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (reloading) return
+      if (!hadController || reloading) return
       reloading = true
       window.location.reload()
     })

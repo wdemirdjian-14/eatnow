@@ -1,33 +1,106 @@
 # Préparer le serveur Ionos (une seule fois)
 
-À exécuter en SSH sur le serveur, avant le premier déploiement.
+Eatnow comprend trois éléments servis par nginx :
+
+```
+/          fichiers statiques du client React
+/api/      service Node (systemd : eatnow-api) ──► SQLite
+/uploads/  photos de plats, sur disque
+```
+
+## En une commande, depuis le serveur
 
 ```bash
-# 1. Arborescence des versions
-sudo mkdir -p /var/www/eatnow/releases /var/www/certbot
-sudo chown -R "$USER":www-data /var/www/eatnow
+git clone https://github.com/wdemirdjian-14/eatnow && cd eatnow
+git checkout claude/eatnow-mvp-first-version-n9lfbt
 
-# 2. Vhost nginx
-sudo cp deploy/nginx-eatnow.conf /etc/nginx/sites-available/eatnow
-sudo ln -sf /etc/nginx/sites-available/eatnow /etc/nginx/sites-enabled/eatnow
-
-# 3. Placeholder pour que nginx démarre avant le premier déploiement
-sudo mkdir -p /var/www/eatnow/releases/bootstrap
-echo '<h1>Eatnow — déploiement en cours</h1>' | sudo tee /var/www/eatnow/releases/bootstrap/index.html
-sudo ln -sfn /var/www/eatnow/releases/bootstrap /var/www/eatnow/current
-
-# 4. Certificat TLS (le DNS de eatnow.walautao.fr doit déjà pointer sur ce serveur)
-sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d eatnow.walautao.fr
-
-# 5. Vérification
-sudo nginx -t && sudo systemctl reload nginx
+./deploy/setup-server.sh
 ```
+
+Le script est idempotent. Il installe nginx et Node 20 si besoin, crée
+l'arborescence des versions, pose le vhost, obtient le certificat TLS,
+installe le service systemd et crée `/etc/eatnow/api.env`.
+
+## Définir le mot de passe administrateur
+
+**Avant le premier démarrage**, ouvrez le fichier de configuration :
+
+```bash
+sudo nano /etc/eatnow/api.env
+```
+
+et renseignez :
+
+```
+EATNOW_ADMIN_LOGIN=warren
+EATNOW_ADMIN_PASSWORD=votre-mot-de-passe
+```
+
+Ce compte est créé au tout premier démarrage de l'API, **uniquement si aucun
+administrateur n'existe déjà en base**. Le mot de passe est immédiatement haché
+par scrypt ; il ne quitte jamais le serveur et n'apparaît dans aucune page.
+
+Sans `EATNOW_ADMIN_PASSWORD`, aucun compte n'est créé : mieux vaut un serveur
+sans administrateur qu'un administrateur au mot de passe prévisible.
+
+## Déployer
+
+```bash
+./deploy/deploy-local.sh
+```
+
+Le script construit le client et l'API, installe la nouvelle version dans un
+dossier horodaté, bascule le lien `current`, redémarre `eatnow-api` et recharge
+nginx. Si l'API refuse de démarrer, le script s'arrête et affiche son journal.
+
+## Charger les données de démonstration (facultatif)
+
+À faire une fois, sur une base vide :
+
+```bash
+sudo -u www-data npm --prefix /var/www/eatnow/api run seed
+```
+
+Sept restaurants, 43 plats, leurs options et sept comptes restaurateurs
+(mot de passe `eatnow`). Ajoutez `-- --force` pour repartir d'une base propre.
+
+## Vérifier
+
+```bash
+curl -s https://eatnow.walautao.fr/version.json     # version du client
+curl -s https://eatnow.walautao.fr/api/version      # version de l'API
+systemctl status eatnow-api
+journalctl -u eatnow-api -n 50 --no-pager
+```
+
+## Sauvegarder
+
+Tout tient dans un dossier :
+
+```bash
+sudo tar czf eatnow-$(date +%F).tar.gz -C /var/lib eatnow
+```
+
+`/var/lib/eatnow` contient la base SQLite et les photos. Il est délibérément
+placé hors du dossier applicatif : un déploiement remplace le code sans jamais
+toucher aux données.
+
+## Retour arrière
+
+```bash
+ls -1dt /var/www/eatnow/releases/*/          # versions conservées (les 5 dernières)
+sudo ln -sfn /var/www/eatnow/releases/<version> /var/www/eatnow/current
+sudo systemctl reload nginx
+```
+
+Le retour arrière ne concerne que le client statique. L'API et la base
+suivent le code déployé : en cas de changement de schéma, un retour arrière
+suppose de restaurer aussi la sauvegarde correspondante.
 
 ## Déploiement automatique depuis GitHub
 
-Le workflow `.github/workflows/deploy-ionos.yml` déploie à chaque tag `vX.Y.Z`.
-Il faut créer trois secrets dans le dépôt
+Le workflow `.github/workflows/deploy-ionos.yml` se déclenche sur chaque tag
+`vX.Y.Z`. Créez trois secrets dans le dépôt
 (*Settings → Secrets and variables → Actions*) :
 
 | Secret | Valeur |
@@ -36,16 +109,8 @@ Il faut créer trois secrets dans le dépôt
 | `IONOS_USER` | l'utilisateur SSH de déploiement |
 | `IONOS_SSH_KEY` | la **clé privée** SSH complète, autorisée sur le serveur |
 
-Générer la paire de clés dédiée :
-
 ```bash
 ssh-keygen -t ed25519 -C "github-actions-eatnow" -f ~/.ssh/eatnow_deploy -N ""
 ssh-copy-id -i ~/.ssh/eatnow_deploy.pub <user>@eatnow.walautao.fr
-cat ~/.ssh/eatnow_deploy      # -> contenu à coller dans le secret IONOS_SSH_KEY
-```
-
-## Déploiement manuel depuis votre poste
-
-```bash
-IONOS_USER=<user> ./deploy/deploy-ionos.sh
+cat ~/.ssh/eatnow_deploy      # -> contenu du secret IONOS_SSH_KEY
 ```

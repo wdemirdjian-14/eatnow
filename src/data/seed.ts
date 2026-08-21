@@ -306,40 +306,11 @@ export function buildSeedState(): AppState {
 }
 
 /**
- * Comptes administrateurs.
+ * Mots de passe des comptes de démonstration.
  *
- * ⚠️ L'authentification du MVP est entièrement côté navigateur : ces valeurs
- * sont présentes dans le bundle JavaScript livré et sont donc lisibles par
- * quiconque ouvre les outils de développement. Elles ne protègent rien —
- * elles séparent des rôles pour la démonstration. Une vraie protection
- * suppose un backend qui vérifie le mot de passe côté serveur.
- *
- * `VITE_ADMIN_PASSWORD` permet de surcharger le mot de passe au build
- * (fichier `.env.local`, non versionné) plutôt que de l'inscrire ici.
+ * Ils ne servent qu'au chargement initial de la base par le serveur
+ * (`npm run export:seed` puis `npm run seed`). L'application, elle, ne connaît
+ * aucun mot de passe : l'authentification est vérifiée côté serveur, contre
+ * des empreintes scrypt.
  */
-export interface AdminAccount {
-  login: string
-  name: string
-  password: string
-}
-
-export const ADMINS: AdminAccount[] = [
-  {
-    login: 'warren',
-    name: 'Warren',
-    password: import.meta.env.VITE_ADMIN_PASSWORD || 'Tao31081?',
-  },
-  {
-    login: 'admin@eatnow.app',
-    name: 'Administrateur de démonstration',
-    password: 'eatnow',
-  },
-]
-
-/** Compte proposé par défaut sur l'écran de connexion. */
-export const ADMIN = ADMINS[0]
-
-export function findAdmin(login: string, password: string): AdminAccount | undefined {
-  const l = login.trim().toLowerCase()
-  return ADMINS.find((a) => a.login.toLowerCase() === l && a.password === password)
-}
+export const DEMO_OWNER_PASSWORD = 'eatnow'

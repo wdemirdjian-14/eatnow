@@ -12,8 +12,6 @@ export function Admin() {
   const [q, setQ] = useState('')
   const [onlyPublished, setOnlyPublished] = useState(false)
 
-  if (session.role !== 'admin') return <Navigate to="/admin/login" replace />
-
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase()
     return state.restaurants
@@ -53,6 +51,10 @@ export function Admin() {
     for (const r of state.restaurants) for (const l of r.purchasedLangs) m.set(l, (m.get(l) ?? 0) + 1)
     return [...m.entries()].sort((a, b) => b[1] - a[1])
   }, [state.restaurants])
+
+  // La redirection vient après tous les hooks : la session arrive du serveur,
+  // donc ce composant est d'abord rendu sans session puis avec.
+  if (session.role !== 'admin') return <Navigate to="/admin/login" replace />
 
   return (
     <div className="wrap stack gap-l" style={{ padding: '1.6rem 0 4rem' }}>
@@ -134,7 +136,7 @@ export function Admin() {
                       <button
                         className="btn sm"
                         title={`Ouvrir l’espace de ${x.r.name} en tant qu’administrateur`}
-                        onClick={() => { impersonate(x.r.ownerId); nav('/pro/tableau-de-bord') }}
+                        onClick={() => { void impersonate(x.r.ownerId).then(() => nav('/pro/tableau-de-bord')) }}
                       >
                         👁️ Ouvrir l’espace
                       </button>

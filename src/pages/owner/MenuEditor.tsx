@@ -225,7 +225,7 @@ function PhotoEditor({ dish }: { dish: Dish }) {
     setError(null)
     setBusy(true)
     try {
-      setDishPhoto(dish.id, await fileToPhoto(file))
+      await setDishPhoto(dish.id, await fileToPhoto(file))
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Import impossible.')
     } finally {
@@ -250,7 +250,7 @@ function PhotoEditor({ dish }: { dish: Dish }) {
             {busy ? 'Import…' : dish.photo ? 'Remplacer la photo' : 'Ajouter une photo'}
           </button>
           {dish.photo && (
-            <button className="btn danger sm" onClick={() => setDishPhoto(dish.id, undefined)}>
+            <button className="btn danger sm" onClick={() => void setDishPhoto(dish.id, undefined)}>
               Retirer la photo
             </button>
           )}

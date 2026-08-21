@@ -10,6 +10,9 @@
  *    version déployée est ainsi prise en compte dès que le réseau répond.
  *  - assets hachés (/assets/…) : cache d'abord, ils sont immuables.
  *  - polices Google : cache d'abord, rafraîchies en arrière-plan.
+ *  - annuaire /api/public/state : réseau d'abord, cache en repli. C'est ce
+ *    qui rend les cartes lisibles sans réseau une fois l'application ouverte.
+ *  - photos /uploads : cache d'abord, elles ne changent jamais d'URL.
  *
  * `__APP_VERSION__` est remplacé au build par scripts/gen-sw.mjs : changer de
  * version invalide les anciens caches.
@@ -18,6 +21,9 @@ const VERSION = '__APP_VERSION__'
 const SHELL_CACHE = `eatnow-shell-${VERSION}`
 const ASSET_CACHE = `eatnow-assets-${VERSION}`
 const FONT_CACHE = 'eatnow-fonts'
+/** Non versionnés : ces caches doivent survivre à une mise à jour applicative. */
+const DATA_CACHE = 'eatnow-data'
+const MEDIA_CACHE = 'eatnow-media'
 
 /** Ressources indispensables au premier affichage hors connexion. */
 const SHELL = [
@@ -48,7 +54,11 @@ self.addEventListener('activate', (event) => {
       .then((keys) =>
         Promise.all(
           keys
-            .filter((k) => k.startsWith('eatnow-') && k !== SHELL_CACHE && k !== ASSET_CACHE && k !== FONT_CACHE)
+            .filter(
+              (k) =>
+                k.startsWith('eatnow-') &&
+                ![SHELL_CACHE, ASSET_CACHE, FONT_CACHE, DATA_CACHE, MEDIA_CACHE].includes(k),
+            )
             .map((k) => caches.delete(k)),
         ),
       )
@@ -68,8 +78,14 @@ async function networkFirst(request, cacheName) {
     if (fresh && fresh.ok) cache.put(request, fresh.clone())
     return fresh
   } catch {
-    const cached = (await cache.match(request)) || (await cache.match('./index.html'))
+    const cached = await cache.match(request)
     if (cached) return cached
+    // Repli sur la coque uniquement pour une navigation : une requête de
+    // données doit échouer franchement plutôt que recevoir du HTML.
+    if (request.mode === 'navigate') {
+      const shell = await (await caches.open(SHELL_CACHE)).match('./index.html')
+      if (shell) return shell
+    }
     throw new Error('hors connexion et absent du cache')
   }
 }
@@ -100,6 +116,21 @@ self.addEventListener('fetch', (event) => {
 
   // Toujours aller au réseau pour connaître la version déployée.
   if (url.pathname.endsWith('/version.json')) return
+
+  // Annuaire : réseau d'abord pour rester à jour, cache en repli hors ligne.
+  if (url.pathname === '/api/public/state') {
+    event.respondWith(networkFirst(request, DATA_CACHE))
+    return
+  }
+
+  // Le reste de l'API touche à la session : jamais de cache.
+  if (url.pathname.startsWith('/api/')) return
+
+  // Photos de plats : URL immuable, donc cache d'abord.
+  if (url.pathname.startsWith('/uploads/')) {
+    event.respondWith(cacheFirst(request, MEDIA_CACHE))
+    return
+  }
 
   if (request.mode === 'navigate') {
     event.respondWith(networkFirst(request, SHELL_CACHE))

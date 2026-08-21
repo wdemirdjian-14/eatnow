@@ -3,6 +3,7 @@ import { Logo } from './Logo'
 import { useStore } from '../store/store'
 import { t } from '../i18n/ui'
 import { LanguagePicker } from './LanguagePicker'
+import { SyncStatus } from './SyncStatus'
 
 export function Header() {
   const { session, logout, lang, isImpersonating } = useStore()
@@ -17,6 +18,7 @@ export function Header() {
         </Link>
 
         <nav className="nav-links">
+          <SyncStatus />
           <LanguagePicker compact />
           {session.role === 'guest' && (
             <>
@@ -35,7 +37,7 @@ export function Header() {
                 <span aria-hidden>📖</span>
                 <span className="hide-mobile">Ma carte</span>
               </NavLink>
-              <button className="btn outline sm" onClick={() => { logout(); nav('/') }} title={t('nav.logout', lang)}>
+              <button className="btn outline sm" onClick={() => { void logout().finally(() => nav('/')) }} title={t('nav.logout', lang)}>
                 <span aria-hidden>⏻</span>
                 <span className="hide-mobile">{t('nav.logout', lang)}</span>
               </button>
@@ -53,7 +55,7 @@ export function Header() {
                 <span aria-hidden>📊</span>
                 <span className="hide-mobile">Console</span>
               </NavLink>
-              <button className="btn outline sm" onClick={() => { logout(); nav('/') }} title={t('nav.logout', lang)}>
+              <button className="btn outline sm" onClick={() => { void logout().finally(() => nav('/')) }} title={t('nav.logout', lang)}>
                 <span aria-hidden>⏻</span>
                 <span className="hide-mobile">{t('nav.logout', lang)}</span>
               </button>

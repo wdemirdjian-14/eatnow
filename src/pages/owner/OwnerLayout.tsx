@@ -35,7 +35,7 @@ export function OwnerLayout() {
           </span>
           <button
             className="btn sm outline"
-            onClick={() => { stopImpersonating(); nav('/admin') }}
+            onClick={() => { void stopImpersonating().finally(() => nav('/admin')) }}
           >
             Quitter
           </button>

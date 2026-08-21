@@ -668,6 +668,23 @@ table.tbl tr:last-child td { border-bottom: none; }
   @page { margin: 12mm; }
 }
 
+/* ---------------- Synchronisation ---------------- */
+.sync-pill {
+  display: inline-flex; align-items: center; gap: .25rem; padding: .3rem .6rem;
+  border-radius: 999px; font-size: .76rem; font-weight: 700; white-space: nowrap;
+}
+.sync-pill.saving { background: var(--teal-100); color: var(--teal-800); }
+.sync-pill.offline { background: #fff8e6; color: #6b4d00; }
+.sync-pill.error { background: #ffe6e1; color: var(--coral-dark); }
+
+.boot {
+  display: grid; place-items: center; gap: 1rem; min-height: 60vh;
+  color: var(--ink-3); font-size: .92rem;
+}
+.boot svg { animation: boot-spin 2.4s linear infinite; }
+@keyframes boot-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .boot svg { animation: none; } }
+
 /* ---------------- Divers ---------------- */
 .empty { padding: 2.5rem 1rem; text-align: center; color: var(--ink-3); }
 .notice {

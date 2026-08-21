@@ -1,7 +1,7 @@
 {
   "name": "eatnow",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "description": "Eatnow — trouvez les restaurants autour de vous, avec leur carte traduite dans votre langue.",
   "scripts": {
@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "lint": "tsc --noEmit -p tsconfig.app.json",
     "logo": "node scripts/gen-logo.mjs",
-    "icons": "node scripts/gen-icons.mjs"
+    "icons": "node scripts/gen-icons.mjs",
+    "export:seed": "tsx scripts/export-seed.mjs"
   },
   "dependencies": {
     "qrcode-generator": "^2.0.4",

@@ -11,3 +11,10 @@ dist-ssr
 
 # artefacts de compilation TypeScript
 *.tsbuildinfo
+
+# Artefacts et données du serveur
+server/node_modules
+server/dist
+server/data
+*.sqlite
+*.db

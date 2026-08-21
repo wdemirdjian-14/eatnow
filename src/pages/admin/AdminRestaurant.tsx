@@ -53,7 +53,7 @@ export function AdminRestaurant() {
         <Link className="btn outline" to={`/r/${r.slug}`}>Page publique</Link>
         <button
           className="btn"
-          onClick={() => { impersonate(r.ownerId); nav('/pro/tableau-de-bord') }}
+          onClick={() => { void impersonate(r.ownerId).then(() => nav('/pro/tableau-de-bord')) }}
         >
           👁️ Ouvrir son espace
         </button>

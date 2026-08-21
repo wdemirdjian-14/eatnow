@@ -1,0 +1,47 @@
+# Service systemd de l'API Eatnow.
+#
+#   sudo cp deploy/eatnow-api.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now eatnow-api
+#
+# La configuration sensible (mot de passe administrateur initial) vit dans
+# /etc/eatnow/api.env, lisible du seul utilisateur du service.
+
+[Unit]
+Description=API Eatnow
+Documentation=https://github.com/wdemirdjian-14/eatnow
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/eatnow/api
+ExecStart=/usr/bin/node dist/index.js
+EnvironmentFile=/etc/eatnow/api.env
+Environment=NODE_ENV=production
+Restart=always
+RestartSec=3
+
+# La base et les photos sont hors du dossier applicatif : un déploiement
+# remplace le code sans jamais toucher aux données.
+Environment=EATNOW_DB=/var/lib/eatnow/eatnow.db
+Environment=EATNOW_UPLOADS=/var/lib/eatnow/uploads
+StateDirectory=eatnow
+
+# Durcissement : le service n'a besoin de rien d'autre que ses données.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadWritePaths=/var/lib/eatnow
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryMax=512M
+
+[Install]
+WantedBy=multi-user.target

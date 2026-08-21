@@ -20,9 +20,16 @@ export function OwnerLanguages() {
   const invoices = state.purchases.filter((p) => p.restaurantId === r.id)
   const monthly = (PLANS.find((p) => p.id === r.plan)?.price ?? 0) + invoices.reduce((n, p) => n + p.amount, 0)
 
-  function confirmBuy() {
+  const [error, setError] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  async function confirmBuy() {
     if (!pending) return
-    purchaseLang(r.id, pending)
+    setBusy(true)
+    setError(null)
+    const err = await purchaseLang(r.id, pending)
+    setBusy(false)
+    if (err) { setError(err); return }
     setDone(pending)
     setPending(null)
     window.setTimeout(() => setDone(null), 2600)
@@ -117,9 +124,12 @@ export function OwnerLanguages() {
             immédiatement. Facturation : {money(unit)} / mois, résiliable à tout moment.
           </p>
           <div className="row gap-s">
-            <button className="btn" onClick={confirmBuy}>💳 Payer {money(unit)} / mois</button>
-            <button className="btn outline" onClick={() => setPending(null)}>Annuler</button>
+            <button className="btn" onClick={() => void confirmBuy()} disabled={busy}>
+              {busy ? 'Activation…' : `💳 Payer ${money(unit)} / mois`}
+            </button>
+            <button className="btn outline" onClick={() => setPending(null)} disabled={busy}>Annuler</button>
           </div>
+          {error && <p className="notice danger">{error}</p>}
           <p className="tiny muted">
             Démo : aucun paiement réel n’est effectué. Le module de paiement se branche ici.
           </p>

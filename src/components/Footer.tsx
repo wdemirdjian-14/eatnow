@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom'
-import { useStore } from '../store/store'
 import { APP_VERSION } from '../version'
 
 export function Footer() {
-  const { resetDemo } = useStore()
   return (
     <footer className="site-footer">
       <div className="wrap stack gap-m">
@@ -18,9 +16,6 @@ export function Footer() {
           <div className="stack gap-xs">
             <Link to="/pro">Espace restaurateur</Link>
             <Link to="/admin/login">Administration</Link>
-            <button className="btn ghost sm" style={{ color: 'inherit', paddingInline: 0 }} onClick={resetDemo}>
-              Réinitialiser la démo
-            </button>
           </div>
         </div>
         <div className="row gap-s tiny" style={{ opacity: .6 }}>
@@ -28,7 +23,7 @@ export function Footer() {
           <span>·</span>
           <span>MVP v{APP_VERSION}</span>
           <span>·</span>
-          <span>Données de démonstration stockées dans votre navigateur</span>
+          <span>Données hébergées sur le serveur Eatnow</span>
         </div>
       </div>
     </footer>
