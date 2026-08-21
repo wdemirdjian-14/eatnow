@@ -309,9 +309,10 @@ commande en cuisine, avis clients.
 ## Tests
 
 ```bash
-# API : 33 tests d'intégration contre un serveur lancé sur une base neuve
-cd server && npm run seed -- --force && npm run dev &
-cd server && npm test
+cd server
+npm run seed -- --force
+EATNOW_ADMIN_PASSWORD=eatnow-test EATNOW_SECURE_COOKIES=false npm run dev &
+npm test          # 33 tests d'intégration
 ```
 
 Ils couvrent l'accès public, l'authentification, le cloisonnement entre

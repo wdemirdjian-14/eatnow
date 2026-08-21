@@ -101,8 +101,9 @@ if [ ! -f /etc/eatnow/api.env ]; then
   $SUDO cp "${HERE}/api.env.example" /etc/eatnow/api.env
   $SUDO chmod 600 /etc/eatnow/api.env
   $SUDO chown www-data /etc/eatnow/api.env
-  warn "/etc/eatnow/api.env créé depuis l'exemple."
-  warn "MODIFIEZ EATNOW_ADMIN_PASSWORD avant le premier démarrage :"
+  warn "/etc/eatnow/api.env créé depuis l'exemple, SANS mot de passe."
+  warn "Renseignez EATNOW_ADMIN_PASSWORD avant le premier démarrage, sinon"
+  warn "aucun compte administrateur ne sera créé :"
   warn "  sudo nano /etc/eatnow/api.env"
 else
   echo "/etc/eatnow/api.env déjà présent, laissé tel quel."

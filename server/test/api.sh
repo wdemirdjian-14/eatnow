@@ -2,13 +2,19 @@
 # Tests d'intégration de l'API, exécutés contre un serveur lancé sur une base
 # fraîchement chargée par `npm run seed`.
 #
-#   API=http://127.0.0.1:3001 ./test/api.sh
+#   EATNOW_ADMIN_PASSWORD=eatnow-test npm run dev      # dans un terminal
+#   API=http://127.0.0.1:3001 ./test/api.sh            # dans un autre
+#
+# Le mot de passe administrateur est paramétrable : les tests ne doivent
+# contenir aucun secret réel.
 #
 # Couvre : accès public, authentification, cloisonnement entre restaurateurs,
 # endossement administrateur, autorité du serveur sur les tarifs, remplacement
 # de carte et téléversement de photos.
 set -u
 API=${API:-http://127.0.0.1:3001}
+ADMIN_LOGIN=${ADMIN_LOGIN:-warren}
+ADMIN_PW=${ADMIN_PW:-eatnow-test}
 J=$(mktemp -d)
 trap 'rm -rf "$J"' EXIT
 pass=0; fail=0
@@ -27,7 +33,7 @@ echo "— Sécurité"
 check "état privé refusé sans session" 401 "$(code $API/api/state)"
 check "écriture refusée sans session" 401 "$(code -X PATCH -H 'Content-Type: application/json' -H 'X-Eatnow-Client: 1' -d '{}' $API/api/restaurants/r1)"
 check "écriture refusée sans en-tête client (CSRF)" 403 "$(code -X PATCH -H 'Content-Type: application/json' -d '{}' $API/api/restaurants/r1)"
-check "mauvais mot de passe rejeté" 401 "$(code -X POST -H 'Content-Type: application/json' -d '{"login":"warren","password":"faux"}' $API/api/auth/login)"
+check "mauvais mot de passe rejeté" 401 "$(code -X POST -H 'Content-Type: application/json' -d "{\"login\":\"$ADMIN_LOGIN\",\"password\":\"faux\"}" $API/api/auth/login)"
 check "compte inexistant rejeté" 401 "$(code -X POST -H 'Content-Type: application/json' -d '{"login":"personne","password":"x"}' $API/api/auth/login)"
 
 echo "— Connexion restaurateur"
@@ -56,7 +62,7 @@ DUP=$(curl -s -b $J/camille.txt -X POST -H 'Content-Type: application/json' -H '
 check "achat en double ignoré" "True" "$DUP"
 
 echo "— Administrateur et endossement"
-check "connexion warren" 200 "$(code -c $J/warren.txt -X POST -H 'Content-Type: application/json' -d '{"login":"warren","password":"EatNow14"}' $API/api/auth/login)"
+check "connexion warren" 200 "$(code -c $J/warren.txt -X POST -H 'Content-Type: application/json' -d "{\"login\":\"$ADMIN_LOGIN\",\"password\":\"$ADMIN_PW\"}" $API/api/auth/login)"
 check "admin voit tous les comptes" 200 "$(code -b $J/warren.txt $API/api/state)"
 OW=$(curl -s -b $J/warren.txt $API/api/state | python3 -c 'import sys,json;print(len(json.load(sys.stdin)["owners"]))')
 echo "  restaurateurs visibles : $OW"
