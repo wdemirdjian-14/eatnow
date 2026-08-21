@@ -1,8 +1,10 @@
 name: Deploy Ionos
 
 # Déploiement par version sur le serveur Ionos (eatnow.walautao.fr).
-# Chaque tag vX.Y.Z envoie un build figé dans un dossier horodaté, puis
-# bascule le lien `current` dessus. Le retour arrière est immédiat.
+#
+# Chaque tag vX.Y.Z envoie un build figé du client dans un dossier horodaté,
+# installe l'API, bascule le lien `current` et redémarre le service. Le retour
+# arrière consiste à refaire pointer `current` sur la version précédente.
 on:
   push:
     tags: ['v*.*.*']
@@ -11,7 +13,7 @@ on:
       ref:
         description: 'Tag ou branche à déployer'
         required: true
-        default: main
+        default: claude/eatnow-mvp-first-version-n9lfbt
 
 concurrency:
   group: deploy-ionos
@@ -32,26 +34,37 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm run build
-
+      # --- Vérifications avant toute action sur le serveur ---
       - name: Vérifier la présence des secrets de déploiement
         env:
           HOST: ${{ secrets.IONOS_HOST }}
-          USER: ${{ secrets.IONOS_USER }}
+          SSH_USER: ${{ secrets.IONOS_USER }}
           KEY: ${{ secrets.IONOS_SSH_KEY }}
         run: |
           missing=""
           [ -z "$HOST" ] && missing="$missing IONOS_HOST"
-          [ -z "$USER" ] && missing="$missing IONOS_USER"
-          [ -z "$KEY" ]  && missing="$missing IONOS_SSH_KEY"
+          [ -z "$SSH_USER" ] && missing="$missing IONOS_USER"
+          [ -z "$KEY" ] && missing="$missing IONOS_SSH_KEY"
           if [ -n "$missing" ]; then
-            echo "::error::Secrets manquants :$missing — voir deploy/serveur-preparation.md"
+            echo "::error::Secrets manquants :$missing"
+            echo "Créez-les dans Settings → Secrets and variables → Actions."
+            echo "Voir deploy/serveur-preparation.md."
             exit 1
           fi
+
+      - name: Construire le client
+        run: |
+          npm ci
+          npm run typecheck
+          npm run build
+
+      - name: Construire l'API
+        working-directory: server
+        run: |
+          npm ci
+          npm run typecheck
+          npm run build
 
       - name: Préparer la clé SSH
         env:
@@ -64,32 +77,59 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -p "${PORT:-22}" -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
-      - name: Envoyer et basculer la version
+      - name: Déployer
         env:
           HOST: ${{ secrets.IONOS_HOST }}
-          USER: ${{ secrets.IONOS_USER }}
+          SSH_USER: ${{ secrets.IONOS_USER }}
           PORT: ${{ secrets.IONOS_PORT }}
         run: |
           set -euo pipefail
           VERSION="$(node -p "require('./package.json').version")"
-          RELEASE="/var/www/eatnow/releases/v${VERSION}-$(date -u +%Y%m%d-%H%M%S)"
+          BASE=/var/www/eatnow
+          RELEASE="$BASE/releases/v${VERSION}-$(date -u +%Y%m%d-%H%M%S)"
           SSH="ssh -i ~/.ssh/deploy_key -p ${PORT:-22}"
 
-          $SSH "$USER@$HOST" "mkdir -p '$RELEASE'"
-          rsync -az --delete -e "$SSH" dist/ "$USER@$HOST:$RELEASE/"
-          $SSH "$USER@$HOST" "
-            ln -sfn '$RELEASE' /var/www/eatnow/current
-            ls -1dt /var/www/eatnow/releases/*/ | tail -n +6 | xargs -r rm -rf
-            nginx -t && systemctl reload nginx
+          echo "▶ Client → $RELEASE"
+          $SSH "$SSH_USER@$HOST" "mkdir -p '$RELEASE'"
+          rsync -az --delete -e "$SSH" dist/ "$SSH_USER@$HOST:$RELEASE/"
+
+          echo "▶ API → $BASE/api"
+          $SSH "$SSH_USER@$HOST" "mkdir -p '$BASE/api'"
+          rsync -az --delete -e "$SSH" server/dist/ "$SSH_USER@$HOST:$BASE/api/dist/"
+          rsync -az -e "$SSH" server/package.json server/package-lock.json server/seed-data.json \
+            "$SSH_USER@$HOST:$BASE/api/"
+
+          echo "▶ Dépendances de production, bascule et redémarrage"
+          # better-sqlite3 récupère son binaire natif sur la machine cible.
+          # `sudo` seulement si le compte de déploiement n'est pas root ; il
+          # doit alors pouvoir lancer systemctl et nginx sans mot de passe.
+          $SSH "$SSH_USER@$HOST" "set -e
+            if [ \"\$(id -u)\" -eq 0 ]; then SUDO=''; else SUDO='sudo -n'; fi
+            npm --prefix '$BASE/api' ci --omit=dev
+            ln -sfn '$RELEASE' '$BASE/current'
+            ls -1dt '$BASE'/releases/*/ | tail -n +6 | xargs -r rm -rf
+            \$SUDO systemctl restart eatnow-api
+            sleep 3
+            \$SUDO systemctl is-active --quiet eatnow-api || {
+              echo 'ERREUR : l API n a pas démarré'
+              \$SUDO journalctl -u eatnow-api -n 40 --no-pager || true
+              exit 1
+            }
+            \$SUDO nginx -t && \$SUDO systemctl reload nginx
           "
-          echo "Version $VERSION déployée dans $RELEASE"
+          echo "Version $VERSION déployée."
 
       - name: Vérifier la mise en ligne
         run: |
+          set -e
           sleep 3
-          curl -fsS https://eatnow.walautao.fr/version.json || {
-            echo "::warning::version.json injoignable — vérifiez le vhost nginx et le certificat TLS."
-          }
+          echo "— client —"
+          curl -fsS https://eatnow.walautao.fr/version.json
+          echo "— API —"
+          curl -fsS https://eatnow.walautao.fr/api/version
+          echo "— annuaire —"
+          curl -fsS https://eatnow.walautao.fr/api/public/state | head -c 120
+          echo
 
       - name: Effacer la clé
         if: always()

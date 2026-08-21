@@ -1,57 +1,34 @@
-name: Release & Deploy
+name: Release
 
-# Déploiement par version : chaque tag `vX.Y.Z` produit un build figé,
-# publié sur GitHub Pages et attaché à une Release GitHub.
+# Chaque tag vX.Y.Z produit une archive figée du client et une Release GitHub.
+# Le déploiement, lui, est assuré par le workflow « Deploy Ionos ».
 on:
   push:
     tags: ['v*.*.*']
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: 'Tag ou branche à déployer'
-        required: true
-        default: main
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: release
   cancel-in-progress: false
 
 jobs:
-  build:
-    name: Build de la version
+  release:
+    name: Publier la Release
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.meta.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.ref || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-
-      - run: npm ci
 
       - name: Déterminer la version
         id: meta
-        run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            VERSION="${GITHUB_REF#refs/tags/v}"
-          else
-            VERSION="$(node -p "require('./package.json').version")"
-          fi
-          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "Version déployée : ${VERSION}"
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
 
       - name: Vérifier la cohérence package.json / tag
-        if: startsWith(github.ref, 'refs/tags/')
         run: |
           PKG="$(node -p "require('./package.json').version")"
           if [ "$PKG" != "${{ steps.meta.outputs.version }}" ]; then
@@ -59,51 +36,15 @@ jobs:
             exit 1
           fi
 
+      - run: npm ci
       - run: npm run typecheck
-
-      - name: Build
-        env:
-          BASE_PATH: /${{ github.event.repository.name }}/
-        run: npm run build
+      - run: npm run build
 
       - name: Archiver la version
-        run: |
-          tar -czf eatnow-v${{ steps.meta.outputs.version }}.tar.gz -C dist .
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: eatnow-v${{ steps.meta.outputs.version }}
-          path: eatnow-v${{ steps.meta.outputs.version }}.tar.gz
-
-  deploy:
-    name: Déployer sur GitHub Pages
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
-
-  release:
-    name: Publier la Release
-    needs: [build, deploy]
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: eatnow-v${{ needs.build.outputs.version }}
+        run: tar -czf eatnow-v${{ steps.meta.outputs.version }}.tar.gz -C dist .
 
       - uses: softprops/action-gh-release@v2
         with:
-          name: Eatnow v${{ needs.build.outputs.version }}
+          name: Eatnow v${{ steps.meta.outputs.version }}
           generate_release_notes: true
-          files: eatnow-v${{ needs.build.outputs.version }}.tar.gz
+          files: eatnow-v${{ steps.meta.outputs.version }}.tar.gz
