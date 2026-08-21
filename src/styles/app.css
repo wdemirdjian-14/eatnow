@@ -53,7 +53,13 @@
   --font-menu: 'Fraunces', 'Iowan Old Style', Georgia, serif;
 
   --header-h: 58px;
+  /* Encoche et barre d'état : en mode plein écran (application installée),
+     la page s'étend dessous. Sans cette réserve, l'en-tête devient
+     inatteignable — et avec lui le sélecteur de langue. */
+  --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
+  /* Hauteur réellement occupée par l'en-tête, zone de sécurité comprise. */
+  --header-total: calc(var(--header-h) + var(--safe-t));
 }
 
 * { box-sizing: border-box; }
@@ -115,6 +121,7 @@ button { touch-action: manipulation; }
   background: rgba(255, 255, 255, .9);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--line);
+  padding-top: var(--safe-t);
 }
 .site-header .inner { display: flex; align-items: center; gap: .5rem; height: var(--header-h); }
 .brand { display: flex; align-items: center; gap: .5rem; font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; letter-spacing: -.03em; }
@@ -348,7 +355,7 @@ button { touch-action: manipulation; }
 
 .cat-tabs {
   display: flex; gap: .35rem; overflow-x: auto; scrollbar-width: none;
-  padding: .75rem 0; position: sticky; top: var(--header-h); z-index: 20;
+  padding: .75rem 0; position: sticky; top: var(--header-total); z-index: 20;
   background: var(--paper); margin-inline: -.9rem; padding-inline: .9rem;
   border-bottom: 1px solid var(--paper-line);
 }
@@ -535,7 +542,7 @@ button { touch-action: manipulation; }
 
 /* Bandeau affiché quand un administrateur agit au nom d'un restaurateur. */
 .impersonation-bar {
-  position: sticky; top: var(--header-h); z-index: 40;
+  position: sticky; top: var(--header-total); z-index: 40;
   display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
   padding: .6rem 1rem; font-size: .84rem;
   background: repeating-linear-gradient(45deg, #7a5b00, #7a5b00 12px, #8a6800 12px, #8a6800 24px);
@@ -560,7 +567,7 @@ button { touch-action: manipulation; }
 
 @media (min-width: 860px) {
   .bo { grid-template-columns: 232px 1fr; gap: 1.6rem; padding: 1.6rem 0 4rem; }
-  .bo-side { position: sticky; top: calc(var(--header-h) + 16px); flex-direction: column; align-items: stretch; overflow: visible; }
+  .bo-side { position: sticky; top: calc(var(--header-total) + 16px); flex-direction: column; align-items: stretch; overflow: visible; }
   .bo-side a { border-radius: var(--radius-sm); border-color: transparent; background: transparent; font-size: .9rem; }
   .bo-side a:hover { background: var(--teal-50); color: var(--teal-700); }
   .bo-side .grp {
@@ -621,9 +628,9 @@ table.tbl tr:last-child td { border-bottom: none; }
 
 .update-bar {
   display: flex; align-items: center; gap: .7rem; flex-wrap: wrap;
-  padding: .55rem 1rem calc(.55rem + var(--safe-b));
+  padding: .55rem 1rem;
   background: var(--teal-900); color: #fff; font-size: .86rem;
-  position: sticky; top: 0; z-index: 70;
+  position: sticky; top: var(--header-total); z-index: 45;
 }
 
 /* ---------------- QR code ---------------- */
@@ -708,7 +715,7 @@ table.tbl tr:last-child td { border-bottom: none; }
 .site-footer { background: var(--teal-950); color: rgba(255, 255, 255, .72); padding: 2rem 0; margin-top: 2.5rem; font-size: .84rem; }
 .site-footer a:hover { color: #fff; text-decoration: underline; }
 
-.auth-shell { display: grid; place-items: center; min-height: calc(100vh - var(--header-h)); padding: 1.5rem 0; }
+.auth-shell { display: grid; place-items: center; min-height: calc(100vh - var(--header-total)); padding: 1.5rem 0; }
 .auth-card { width: min(430px, 100%); padding: 1.4rem; }
 
 .rtl { direction: rtl; text-align: right; }

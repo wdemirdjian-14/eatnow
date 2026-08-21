@@ -3,6 +3,34 @@
 Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le
 [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [0.4.1] — 2026-08-21
+
+Corrections remontées par le premier déploiement réel.
+
+### Corrigé
+
+- **En-tête inatteignable en plein écran sur mobile.** Une fois l'application
+  installée, `viewport-fit=cover` étend la page sous la barre d'état : l'en-tête
+  passait dessous, emportant avec lui le sélecteur de langue. Seule la zone de
+  sécurité basse était gérée ; la zone haute l'est désormais, et tous les
+  éléments collants en tiennent compte.
+- **Conflit de port avec une autre application.** Le port 3001, très souvent
+  déjà occupé sur un serveur mutualisé, recevait les requêtes d'Eatnow et
+  répondait 404 — d'où l'échec de connexion, sans rapport avec le mot de passe.
+  Le port par défaut devient 3011, il est piloté par une seule variable qui
+  alimente à la fois `api.env` et le vhost nginx, et `setup-server.sh` refuse
+  de continuer si un autre programme l'occupe.
+- **Panne silencieuse impossible à diagnostiquer.** Après redémarrage,
+  `deploy-local.sh` interroge l'API sur son port et vérifie que la réponse
+  vient bien d'Eatnow ; sinon il s'arrête en nommant le programme fautif.
+- `/api/version` annonçait « dev » : la version est désormais lue dans
+  `package.json`, systemd lançant `node` sans passer par npm.
+
+### Modifié
+
+- Le bandeau de nouvelle version s'affiche sous l'en-tête, qui reste le premier
+  élément de la page et donc le seul à réserver la zone de sécurité haute.
+
 ## [0.4.0] — 2026-08-21
 
 Backend : données partagées, comptes réels, mots de passe hors du navigateur.
@@ -174,6 +202,7 @@ Première version MVP.
 - **CI/CD** — typecheck et build sur chaque push, déploiement GitHub Pages et
   Release GitHub sur chaque tag `vX.Y.Z`.
 
+[0.4.1]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.4.1
 [0.4.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.4.0
 [0.3.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.3.0
 [0.2.0]: https://github.com/wdemirdjian-14/eatnow/releases/tag/v0.2.0

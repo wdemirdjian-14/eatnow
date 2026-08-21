@@ -4,9 +4,20 @@ Eatnow comprend trois éléments servis par nginx :
 
 ```
 /          fichiers statiques du client React
-/api/      service Node (systemd : eatnow-api) ──► SQLite
+/api/      service Node (systemd : eatnow-api, port 3011) ──► SQLite
 /uploads/  photos de plats, sur disque
 ```
+
+> **Port de l'API** : 3011 par défaut. Si un autre programme l'occupe déjà,
+> choisissez-en un autre — une seule variable pilote `api.env` et le vhost :
+>
+> ```bash
+> EATNOW_PORT=3012 ./deploy/setup-server.sh
+> ```
+>
+> `setup-server.sh` refuse de continuer si le port est déjà pris, et
+> `deploy-local.sh` vérifie après redémarrage que la réponse vient bien
+> d'Eatnow.
 
 ## En une commande, depuis le serveur
 

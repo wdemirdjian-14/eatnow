@@ -8,8 +8,8 @@ import react from '@vitejs/plugin-react'
  * transmis et l'authentification échouerait sans raison apparente.
  */
 const apiProxy = {
-  '/api': { target: process.env.API_TARGET ?? 'http://127.0.0.1:3001', changeOrigin: false },
-  '/uploads': { target: process.env.API_TARGET ?? 'http://127.0.0.1:3001', changeOrigin: false },
+  '/api': { target: process.env.API_TARGET ?? 'http://127.0.0.1:3011', changeOrigin: false },
+  '/uploads': { target: process.env.API_TARGET ?? 'http://127.0.0.1:3011', changeOrigin: false },
 }
 
 // `base` est surchargeable au build (GitHub Pages sert le site sous /<repo>/).

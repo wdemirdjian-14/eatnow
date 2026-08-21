@@ -65,8 +65,10 @@ export default function App() {
     <StoreProvider>
       <HashRouter>
         <ScrollToTop />
-        <UpdateBanner />
+        {/* L'en-tête reste le premier élément : c'est lui qui réserve la
+            zone de sécurité haute en mode plein écran. */}
         <Header />
+        <UpdateBanner />
         <Boot>
         <Routes>
           <Route path="/" element={<Home />} />

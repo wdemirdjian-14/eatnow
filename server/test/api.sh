@@ -3,7 +3,7 @@
 # fraîchement chargée par `npm run seed`.
 #
 #   EATNOW_ADMIN_PASSWORD=eatnow-test npm run dev      # dans un terminal
-#   API=http://127.0.0.1:3001 ./test/api.sh            # dans un autre
+#   API=http://127.0.0.1:3011 ./test/api.sh            # dans un autre
 #
 # Le mot de passe administrateur est paramétrable : les tests ne doivent
 # contenir aucun secret réel.
@@ -12,7 +12,7 @@
 # endossement administrateur, autorité du serveur sur les tarifs, remplacement
 # de carte et téléversement de photos.
 set -u
-API=${API:-http://127.0.0.1:3001}
+API=${API:-http://127.0.0.1:3011}
 ADMIN_LOGIN=${ADMIN_LOGIN:-warren}
 ADMIN_PW=${ADMIN_PW:-eatnow-test}
 J=$(mktemp -d)

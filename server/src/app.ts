@@ -180,7 +180,7 @@ export function buildApp(): FastifyInstance {
   })
 
   app.get('/api/version', async () => ({
-    version: process.env.npm_package_version ?? 'dev',
+    version: config.version,
     time: new Date().toISOString(),
   }))
 

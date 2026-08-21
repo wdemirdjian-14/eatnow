@@ -12,6 +12,9 @@ set -euo pipefail
 
 DOMAIN="${EATNOW_DOMAIN:-eatnow.walautao.fr}"
 BASE="${EATNOW_PATH:-/var/www/eatnow}"
+# Port d'écoute de l'API. Il pilote à la fois api.env et le vhost nginx :
+# une seule valeur, donc pas de désaccord possible entre les deux.
+API_PORT="${EATNOW_PORT:-3011}"
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 say() { printf '\n\033[1;36m▶ %s\033[0m\n' "$*"; }
@@ -69,7 +72,7 @@ server {
     root ${BASE}/current;
     index index.html;
     location /.well-known/acme-challenge/ { root /var/www/certbot; }
-    location /api/ { proxy_pass http://127.0.0.1:3001; proxy_set_header Host \$host; }
+    location /api/ { proxy_pass http://127.0.0.1:${API_PORT}; proxy_set_header Host \$host; }
     location / { try_files \$uri \$uri/ /index.html; }
 }
 NGINX
@@ -79,6 +82,7 @@ NGINX
 # injectés à la place du marqueur laissé pour certbot.
 install_vhost_full() {
   $SUDO cp "${HERE}/nginx-eatnow.conf" "$VHOST"
+  $SUDO sed -i "s|proxy_pass http://127.0.0.1:[0-9]*;|proxy_pass http://127.0.0.1:${API_PORT};|" "$VHOST"
   $SUDO sed -i \
     "s|# --- certbot insère ici ssl_certificate / ssl_certificate_key ---|ssl_certificate ${CERTDIR}/fullchain.pem;\n    ssl_certificate_key ${CERTDIR}/privkey.pem;\n    include /etc/letsencrypt/options-ssl-nginx.conf;\n    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;|" \
     "$VHOST"
@@ -137,11 +141,29 @@ else
 fi
 
 say "6/7 · Service API"
+
+# Un port déjà occupé par une autre application enverrait silencieusement les
+# requêtes d'Eatnow au mauvais programme : on le détecte avant de configurer.
+if command -v ss >/dev/null 2>&1; then
+  HOLDER=$($SUDO ss -lptn "sport = :${API_PORT}" 2>/dev/null | tail -n +2)
+  if [ -n "$HOLDER" ] && ! echo "$HOLDER" | grep -q 'eatnow'; then
+    if $SUDO systemctl is-active --quiet eatnow-api; then
+      echo "Port ${API_PORT} occupé par eatnow-api lui-même : normal."
+    else
+      warn "Le port ${API_PORT} est DÉJÀ UTILISÉ par un autre programme :"
+      echo "$HOLDER" | sed 's/^/    /'
+      warn "Choisissez-en un autre et relancez :"
+      warn "  EATNOW_PORT=3012 ./deploy/setup-server.sh"
+      exit 1
+    fi
+  fi
+fi
 $SUDO mkdir -p /etc/eatnow /var/lib/eatnow/uploads "${BASE}/api"
 $SUDO chown -R www-data:www-data /var/lib/eatnow
 
 if [ ! -f /etc/eatnow/api.env ]; then
   $SUDO cp "${HERE}/api.env.example" /etc/eatnow/api.env
+  $SUDO sed -i "s|^PORT=.*|PORT=${API_PORT}|" /etc/eatnow/api.env
   $SUDO chmod 600 /etc/eatnow/api.env
   $SUDO chown www-data /etc/eatnow/api.env
   warn "/etc/eatnow/api.env créé depuis l'exemple, SANS mot de passe."
@@ -149,7 +171,9 @@ if [ ! -f /etc/eatnow/api.env ]; then
   warn "aucun compte administrateur ne sera créé :"
   warn "  sudo nano /etc/eatnow/api.env"
 else
-  echo "/etc/eatnow/api.env déjà présent, laissé tel quel."
+  # Le port doit rester aligné sur le vhost, même sur un fichier existant.
+  $SUDO sed -i "s|^PORT=.*|PORT=${API_PORT}|" /etc/eatnow/api.env
+  echo "/etc/eatnow/api.env déjà présent : seul PORT (${API_PORT}) a été aligné."
 fi
 
 $SUDO cp "${HERE}/eatnow-api.service" /etc/systemd/system/eatnow-api.service
@@ -177,5 +201,6 @@ printf '\n\033[1;32m✅ Serveur prêt.\033[0m\n\n'
 printf 'Étapes suivantes :\n'
 printf '  1. sudo nano /etc/eatnow/api.env      # définir le mot de passe administrateur\n'
 printf '  2. ./deploy/deploy-local.sh            # construire et déployer\n'
-printf '  3. npm --prefix %s/api run seed        # charger les données de démonstration\n' "${BASE}"
+printf '  3. sudo -u www-data npm --prefix %s/api run seed   # données de démonstration\n' "${BASE}"
+printf '\nAPI attendue sur le port %s.\n' "${API_PORT}"
 printf '\n'

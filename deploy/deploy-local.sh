@@ -54,12 +54,30 @@ $SUDO ln -sfn "${RELEASE}" "${BASE}/current"
 # Ne conserver que les 5 dernières versions.
 $SUDO bash -c "ls -1dt '${BASE}'/releases/*/ | tail -n +6 | xargs -r rm -rf"
 
-say "Redémarrage de l'API"
+API_PORT=$(grep -E '^PORT=' /etc/eatnow/api.env 2>/dev/null | cut -d= -f2 | tr -d ' ' || true)
+API_PORT="${API_PORT:-3011}"
+
+say "Redémarrage de l'API (port ${API_PORT})"
 if systemctl list-unit-files 2>/dev/null | grep -q '^eatnow-api.service'; then
   $SUDO systemctl restart eatnow-api
   sleep 2
   if $SUDO systemctl is-active --quiet eatnow-api; then
     echo "API active."
+    # Le service tourne, mais répond-il vraiment sur ce port ? Si un autre
+    # programme l'occupe, nginx lui transmettrait silencieusement les
+    # requêtes d'Eatnow — panne difficile à diagnostiquer depuis l'extérieur.
+    BODY=$(curl -fsS --max-time 5 "http://127.0.0.1:${API_PORT}/api/version" 2>/dev/null || true)
+    if printf '%s' "$BODY" | grep -q '"version"'; then
+      echo "Réponse de l'API : $BODY"
+    else
+      printf '\033[1;31m✗ Le port %s ne répond pas comme l'"'"'API Eatnow.\033[0m\n' "${API_PORT}"
+      echo "  Reçu : ${BODY:-<vide>}"
+      echo "  Un autre programme occupe probablement ce port :"
+      $SUDO ss -lptn "sport = :${API_PORT}" 2>/dev/null | sed 's/^/    /' || true
+      echo "  Choisissez un port libre et relancez la préparation :"
+      echo "    EATNOW_PORT=3012 ./deploy/setup-server.sh && ./deploy/deploy-local.sh"
+      exit 1
+    fi
   else
     printf '\033[1;31m✗ L'"'"'API n'"'"'a pas démarré. Journal :\033[0m\n'
     $SUDO journalctl -u eatnow-api -n 30 --no-pager || true
