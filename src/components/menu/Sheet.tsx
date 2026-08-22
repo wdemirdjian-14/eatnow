@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 
 /** Panneau glissant depuis le bas sur mobile, fenêtre centrée à partir de 640 px. */
@@ -16,12 +16,23 @@ export function Sheet({
     }
   }, [onClose])
 
+  /* Même garde que le sélecteur de langue : sur iOS le clic de compatibilité
+     qui suit une tape retombe sur le fond du panneau qui vient de s'ouvrir et
+     le referme aussitôt. On exige que l'appui et le clic aient eu lieu tous
+     les deux sur le fond. */
+  const downOnBackdrop = useRef(false)
+
   return (
     <div
       className="sheet-backdrop"
       role="dialog"
       aria-modal="true"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      onPointerDown={(e) => { downOnBackdrop.current = e.target === e.currentTarget }}
+      onClick={(e) => {
+        const legitimate = e.target === e.currentTarget && downOnBackdrop.current
+        downOnBackdrop.current = false
+        if (legitimate) onClose()
+      }}
     >
       <div className={`sheet ${tone === 'paper' ? 'order-sheet' : ''}`}>
         <div className="sheet__head">

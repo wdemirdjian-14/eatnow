@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { LANGS, LANG_META, type Lang } from '../types'
 import { useStore } from '../store/store'
@@ -15,6 +15,16 @@ import { useStore } from '../store/store'
 export function LanguagePicker({ compact = false }: { compact?: boolean }) {
   const { lang, setLang } = useStore()
   const [open, setOpen] = useState(false)
+  /**
+   * Le geste de fermeture a-t-il vraiment commencé sur le fond ?
+   *
+   * Sur iOS, une tape produit un `click` de compatibilité après les
+   * évènements tactiles. Ce clic fantôme retombe à l'endroit du doigt — donc
+   * sur le fond du panneau qui vient de s'ouvrir — et le refermait aussitôt :
+   * le menu semblait ne pas répondre. On n'accepte la fermeture que si
+   * l'appui *et* le clic ont eu lieu sur le fond.
+   */
+  const downOnBackdrop = useRef(false)
 
   useEffect(() => {
     if (!open) return
@@ -60,7 +70,12 @@ export function LanguagePicker({ compact = false }: { compact?: boolean }) {
           role="dialog"
           aria-modal="true"
           aria-label="Choisir la langue"
-          onClick={(e) => { if (e.target === e.currentTarget) setOpen(false) }}
+          onPointerDown={(e) => { downOnBackdrop.current = e.target === e.currentTarget }}
+          onClick={(e) => {
+            const legitimate = e.target === e.currentTarget && downOnBackdrop.current
+            downOnBackdrop.current = false
+            if (legitimate) setOpen(false)
+          }}
         >
           <div className="lang-sheet">
             <div className="lang-sheet__head">
