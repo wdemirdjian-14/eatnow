@@ -63,23 +63,27 @@ l'application :
 cd /var/www/eatnow/api
 
 # Connexion et authentification seulement, aucun message envoyé
-sudo -u www-data env $(grep -v '^#' /etc/eatnow/api.env | xargs) \
-  node dist/cli/mail-test.js
+sudo -u www-data node dist/cli/mail-test.js
 
 # Envoi réel à une adresse
-sudo -u www-data env $(grep -v '^#' /etc/eatnow/api.env | xargs) \
-  node dist/cli/mail-test.js vous@exemple.fr
+sudo -u www-data node dist/cli/mail-test.js vous@exemple.fr
 ```
 
-Elle affiche d'abord les réglages effectivement chargés — hôte, port,
-compte, présence d'un mot de passe, expéditeur — ce qui écarte d'emblée le
-piège le plus courant : un fichier correct que le service n'a jamais relu.
-En cas d'échec, le message du serveur SMTP est repris tel quel, accompagné
-des causes correspondantes.
+Elle lit `/etc/eatnow/api.env` elle-même, d'où le `sudo -u www-data` : le
+fichier n'est lisible que par le compte du service. Passer par le shell
+(`env $(grep …)`) échouerait deux fois — la substitution s'exécute avec les
+droits de l'appelant, et `source` casserait sur
+`EATNOW_SMTP_FROM=Eatnow <no-reply@…>`, où bash prend le `<` pour une
+redirection.
 
-Le `env $(grep …)` est indispensable : sans lui la commande tourne sans la
-configuration du service et se plaindra, à tort, qu'aucun hôte n'est
-configuré.
+Elle affiche d'abord les réglages effectivement chargés — hôte, port, compte,
+présence d'un mot de passe, expéditeur — ce qui écarte d'emblée le piège le
+plus courant : un fichier correct que le service n'a jamais relu. En cas
+d'échec, le message du serveur SMTP est repris tel quel, accompagné des
+causes correspondantes.
+
+Deux options utiles : `--env <chemin>` pour un autre fichier, `--no-env` pour
+n'utiliser que l'environnement déjà présent.
 
 ## Architecture d'ensemble
 
