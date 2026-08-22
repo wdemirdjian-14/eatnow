@@ -238,16 +238,33 @@ button { touch-action: manipulation; }
 
 .searchbar {
   display: flex; gap: .5rem; flex-direction: row; align-items: center; margin-top: .6rem;
-  max-width: 720px;
+  max-width: 720px; flex-wrap: wrap;
 }
-.searchbar input { flex: 1; min-width: 0; }
 .searchbar .btn { flex: none; }
+/* Le champ occupe toute la largeur restante : sur un téléphone, coincé entre
+   deux boutons il ne laissait voir que trois mots de la saisie. */
+.searchbar .search-field { flex: 1 1 auto; min-width: 0; position: relative; display: flex; }
 .searchbar input {
   width: 100%; border: 1px solid rgba(255, 255, 255, .3); border-radius: 999px;
-  background: rgba(255, 255, 255, .14); color: #fff; padding: .8rem 1.1rem; font-size: 16px;
+  background: rgba(255, 255, 255, .14); color: #fff; padding: .8rem 2.6rem .8rem 1.1rem;
+  font-size: 16px; min-height: 48px;
 }
 .searchbar input::placeholder { color: rgba(255, 255, 255, .72); }
-.searchbar input:focus { outline: none; border-color: rgba(255, 255, 255, .7); }
+.searchbar input:focus { outline: none; border-color: rgba(255, 255, 255, .7); background: rgba(255, 255, 255, .2); }
+/* Effacer la recherche sans viser la petite croix native du clavier. */
+.searchbar .search-clear {
+  position: absolute; right: .35rem; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 34px; border-radius: 999px; border: 0; cursor: pointer;
+  background: rgba(255, 255, 255, .22); color: #fff; font-size: .95rem; line-height: 1;
+  display: grid; place-items: center;
+}
+.searchbar .search-clear:hover { background: rgba(255, 255, 255, .34); }
+
+/* Sur téléphone « Autour de moi » passe sur sa propre ligne : il mangeait
+   plus de place que le champ de recherche lui-même. */
+@media (max-width: 639px) {
+  .searchbar .btn.sun { flex: 1 0 100%; justify-content: center; min-height: 46px; }
+}
 
 .hero-stats { display: flex; gap: 1.4rem; margin-top: 1.4rem; flex-wrap: wrap; }
 .hero-stats b { display: block; font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; }

@@ -109,12 +109,24 @@ export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte
             >
               <QrIcon />
             </button>
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder={t('home.search', lang)}
-              aria-label={t('home.search', lang)}
-            />
+            <div className="search-field">
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder={t('home.search', lang)}
+                aria-label={t('home.search', lang)}
+                type="search"
+                enterKeyHint="search"
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+              />
+              {q && (
+                <button className="search-clear" onClick={() => setQ('')} aria-label="Effacer la recherche">
+                  ✕
+                </button>
+              )}
+            </div>
             <button className="btn sun" onClick={askLocation} disabled={locating}>
               {locating ? t('home.locating', lang) : `📍 ${t('home.locate', lang)}`}
             </button>
