@@ -86,3 +86,50 @@ export function sendCredentials(
 
   return send(to, titre, text)
 }
+
+/** Réglages effectivement chargés, sans le mot de passe. Sert au diagnostic. */
+export function smtpSummary() {
+  return {
+    configured: smtpConfigured(),
+    host: config.smtp.host,
+    port: config.smtp.port,
+    user: config.smtp.user,
+    from: config.smtp.from,
+    /** `true` dès le port 465 : TLS implicite, comme l'exige Ionos. */
+    secure: config.smtp.port === 465,
+    /** Un mot de passe est-il renseigné ? Sa valeur ne sort jamais. */
+    hasPassword: config.smtp.pass !== '',
+  }
+}
+
+/**
+ * Ouvre une connexion SMTP sans rien envoyer.
+ *
+ * Sépare les pannes de connexion et d'authentification d'un refus du
+ * destinataire : « ça ne marche pas » devient une erreur nommée.
+ */
+export async function verifySmtp(): Promise<MailResult> {
+  if (!smtpConfigured()) return { sent: false, reason: 'smtp-non-configure' }
+  try {
+    await getTransport().verify()
+    return { sent: true }
+  } catch (err) {
+    return { sent: false, reason: 'echec-envoi', detail: (err as Error).message }
+  }
+}
+
+/** Envoie un message de contrôle à l'adresse indiquée. */
+export function sendTest(to: string): Promise<MailResult> {
+  return send(
+    to,
+    'Eatnow — e-mail de contrôle',
+    [
+      "Ce message confirme que l'envoi d'e-mails d'Eatnow fonctionne.",
+      '',
+      `Serveur : ${config.smtp.host}:${config.smtp.port}`,
+      `Expéditeur : ${config.smtp.from}`,
+      '',
+      "— L'équipe Eatnow",
+    ].join('\n'),
+  )
+}

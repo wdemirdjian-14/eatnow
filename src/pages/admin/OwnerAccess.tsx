@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { api, ApiError, type CredentialsResult } from '../../lib/api'
+import { api, ApiError, type CredentialsResult, type MailTestResult, type SmtpSummary } from '../../lib/api'
 import { useStore } from '../../store/store'
 import { lastSeen, stamp } from '../../lib/format'
 import type { Owner, Restaurant } from '../../types'
@@ -21,15 +21,36 @@ export function OwnerAccess({ r, owner }: { r: Restaurant; owner: Owner | undefi
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<CredentialsResult | null>(null)
   const [confirmReset, setConfirmReset] = useState(false)
-  const [mailReady, setMailReady] = useState<boolean | null>(null)
+  const [smtp, setSmtp] = useState<SmtpSummary | null>(null)
+  const [mailTest, setMailTest] = useState<MailTestResult | null>(null)
+  const [testing, setTesting] = useState(false)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    api.mailStatus().then((s) => setMailReady(s.configured)).catch(() => setMailReady(false))
+    api.mailStatus().then(setSmtp).catch(() => setSmtp(null))
   }, [])
+
+  const mailReady = smtp ? smtp.configured : null
 
   // Un e-mail ne part que si le serveur sait en envoyer.
   useEffect(() => { if (mailReady === false) setSendMail(false) }, [mailReady])
+
+  /** Sans destinataire, teste seulement la connexion SMTP. */
+  async function runMailTest(to?: string) {
+    setTesting(true)
+    setMailTest(null)
+    try {
+      setMailTest(await api.mailTest(to))
+    } catch (e) {
+      setMailTest({
+        sent: false, reason: 'echec-envoi',
+        detail: e instanceof ApiError ? e.message : 'Test impossible.',
+        smtp: smtp!,
+      })
+    } finally {
+      setTesting(false)
+    }
+  }
 
   async function run(fn: () => Promise<CredentialsResult>) {
     setBusy(true)
@@ -182,6 +203,39 @@ export function OwnerAccess({ r, owner }: { r: Restaurant; owner: Owner | undefi
           {mailReady === false && <span className="muted"> — indisponible : aucun serveur SMTP configuré</span>}
         </span>
       </label>
+
+      {/* Diagnostic : « l'e-mail ne part pas » doit devenir une erreur nommée. */}
+      <details className="mail-diag">
+        <summary>Réglages et test de l’envoi d’e-mails</summary>
+        {smtp && (
+          <dl className="kv">
+            <div><dt>Serveur</dt><dd className="mono">{smtp.host || '— non configuré'}{smtp.host && `:${smtp.port}`}</dd></div>
+            <div><dt>Chiffrement</dt><dd>{smtp.secure ? 'TLS implicite (port 465)' : 'STARTTLS'}</dd></div>
+            <div><dt>Compte</dt><dd className="mono">{smtp.user || '—'}</dd></div>
+            <div><dt>Mot de passe</dt><dd>{smtp.hasPassword ? 'renseigné' : <span className="badge coral">absent</span>}</dd></div>
+            <div><dt>Expéditeur</dt><dd className="mono tiny">{smtp.from}</dd></div>
+          </dl>
+        )}
+        <div className="row gap-s wrap-flex" style={{ marginTop: '.6rem' }}>
+          <button className="btn outline sm" disabled={testing} onClick={() => void runMailTest()}>
+            {testing ? 'Test…' : 'Tester la connexion'}
+          </button>
+          {owner && (
+            <button className="btn outline sm" disabled={testing} onClick={() => void runMailTest(owner.email)}>
+              Envoyer un e-mail de contrôle à {owner.email}
+            </button>
+          )}
+        </div>
+        {mailTest && (
+          mailTest.sent
+            ? <p className="notice" style={{ marginTop: '.6rem' }}>✅ Réussi.</p>
+            : <p className="notice warn" style={{ marginTop: '.6rem' }}>
+                ⚠️ {mailTest.reason === 'smtp-non-configure'
+                  ? 'Aucun serveur SMTP configuré : renseignez EATNOW_SMTP_HOST dans /etc/eatnow/api.env puis redémarrez l’API.'
+                  : mailTest.detail}
+              </p>
+        )}
+      </details>
 
       <div className="row gap-s wrap-flex">
         {!owner ? (

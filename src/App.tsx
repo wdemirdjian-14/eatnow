@@ -18,6 +18,7 @@ import { OwnerFormules } from './pages/owner/Formules'
 import { OwnerTranslations } from './pages/owner/Translations'
 import { OwnerLanguages } from './pages/owner/Languages'
 import { OwnerQrCode } from './pages/owner/QrCode'
+import { OwnerAccount } from './pages/owner/Account'
 import { Admin } from './pages/admin/Admin'
 import { AdminRestaurant } from './pages/admin/AdminRestaurant'
 
@@ -88,6 +89,7 @@ export default function App() {
             <Route path="traductions" element={<OwnerTranslations />} />
             <Route path="qr-code" element={<OwnerQrCode />} />
             <Route path="langues" element={<OwnerLanguages />} />
+            <Route path="compte" element={<OwnerAccount />} />
           </Route>
 
           <Route path="/admin/login" element={<Login mode="admin" />} />

@@ -365,3 +365,26 @@ export function setOwnerPassword(ownerId: string, hash: string, salt: string): b
   if (r.changes > 0) db.prepare('DELETE FROM sessions WHERE user_id = ?').run(ownerId)
   return r.changes > 0
 }
+
+/**
+ * Change le mot de passe d'un compte, quel que soit son rôle.
+ *
+ * Les autres sessions du compte sont fermées — un appareil resté connecté ne
+ * doit pas survivre à un changement de mot de passe — mais celle qui fait la
+ * demande est épargnée, sinon le titulaire se déconnecterait lui-même en
+ * changeant son mot de passe.
+ */
+export function setUserPassword(
+  userId: string, hash: string, salt: string, keepSessionId?: string,
+): boolean {
+  const r = db
+    .prepare('UPDATE users SET password_hash = ?, password_salt = ? WHERE id = ?')
+    .run(hash, salt, userId)
+  if (r.changes === 0) return false
+  if (keepSessionId) {
+    db.prepare('DELETE FROM sessions WHERE user_id = ? AND id != ?').run(userId, keepSessionId)
+  } else {
+    db.prepare('DELETE FROM sessions WHERE user_id = ?').run(userId)
+  }
+  return true
+}

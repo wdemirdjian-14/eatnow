@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { AddressLookup } from '../../components/AddressLookup'
 import { useStore } from '../../store/store'
 import { fileToPhoto } from '../../lib/photo'
 import { CUISINES, CUISINE_LABEL, type Cuisine } from '../../types'
@@ -102,12 +103,23 @@ export function OwnerFiche() {
           </span>
         </label>
 
+        {/* Choisir une adresse renseigne aussi le code postal, la ville et les
+            coordonnées : c'est ce qui place le restaurant sur la carte. */}
+        <AddressLookup
+          value={r.address}
+          onPick={(hit) => {
+            updateRestaurant(r.id, {
+              address: hit.address,
+              ...(hit.postalCode ? { postalCode: hit.postalCode } : {}),
+              ...(hit.city ? { city: hit.city } : {}),
+              lat: hit.lat,
+              lng: hit.lng,
+            })
+            flash()
+          }}
+        />
+
         <div className="grid-2">
-          <label className="field">
-            <span>Adresse</span>
-            <input className="input" value={r.address}
-              onChange={(e) => { updateRestaurant(r.id, { address: e.target.value }); flash() }} />
-          </label>
           <label className="field">
             <span>Code postal</span>
             <input className="input" value={r.postalCode}

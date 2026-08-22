@@ -1186,3 +1186,28 @@ table.tbl tr:last-child td { border-bottom: none; }
   background: #fff; border: 1px solid var(--line); border-radius: 8px;
   padding: .35rem .6rem; user-select: all; word-break: break-all;
 }
+
+/* ---------------- Recherche d'adresse ---------------- */
+.addr { position: relative; }
+.addr__panel {
+  position: absolute; left: 0; right: 0; top: 100%; z-index: 60; margin-top: .25rem;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow); max-height: 300px; overflow-y: auto;
+}
+.addr__msg { padding: .7rem .8rem; margin: 0; }
+.addr__hit {
+  display: flex; flex-direction: column; gap: .15rem; width: 100%; cursor: pointer;
+  padding: .6rem .8rem; border: 0; border-bottom: 1px solid var(--line-2);
+  background: #fff; color: var(--ink); font: inherit; font-size: .86rem; text-align: left;
+}
+.addr__hit:last-child { border-bottom: none; }
+.addr__hit:hover { background: var(--teal-50); }
+.addr__hit-label { line-height: 1.3; }
+
+/* Diagnostic SMTP, replié par défaut. */
+.mail-diag {
+  border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: .6rem .8rem; background: var(--bg);
+}
+.mail-diag summary { cursor: pointer; font-weight: 600; font-size: .88rem; }
+.mail-diag[open] summary { margin-bottom: .5rem; }

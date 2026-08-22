@@ -10,6 +10,7 @@ const LINKS = [
   { to: '/pro/traductions', icon: '🌍', label: 'Traductions' },
   { to: '/pro/qr-code', icon: '📱', label: 'Mon QR code' },
   { to: '/pro/langues', icon: '🛒', label: 'Acheter des langues' },
+  { to: '/pro/compte', icon: '🔑', label: 'Mon compte' },
 ]
 
 export function OwnerLayout() {

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { AddressLookup } from '../../components/AddressLookup'
 import { useStore } from '../../store/store'
 import { CUISINES, CUISINE_LABEL, type Cuisine } from '../../types'
 import { priceRangeLabel } from '../../lib/format'
@@ -72,11 +73,20 @@ export function NewRestaurantForm({
             <input className="input" value={name} onChange={(e) => setName(e.target.value)}
               placeholder="Le Comptoir Bleu" autoFocus />
           </label>
+          {/* La recherche d'adresse renseigne le code postal, la ville et les
+              coordonnées d'un coup : sans elles le restaurant est introuvable
+              dans la recherche par distance. */}
+          <AddressLookup
+            value={address}
+            onPick={(hit) => {
+              setAddress(hit.address)
+              if (hit.postalCode) setPostalCode(hit.postalCode)
+              if (hit.city) setCity(hit.city)
+              setLat(String(hit.lat))
+              setLng(String(hit.lng))
+            }}
+          />
           <div className="grid-2">
-            <label className="field">
-              <span>Adresse</span>
-              <input className="input" value={address} onChange={(e) => setAddress(e.target.value)} />
-            </label>
             <label className="field">
               <span>Code postal</span>
               <input className="input" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} />
@@ -110,8 +120,11 @@ export function NewRestaurantForm({
             </label>
           </div>
           <p className="tiny muted">
-            Sans coordonnées, le restaurant est placé au centre de Paris et sera mal
-            classé dans la recherche par distance. Elles se corrigent ensuite dans sa fiche.
+            {lat && lng
+              ? '✓ Coordonnées renseignées : le restaurant apparaîtra au bon endroit sur la carte.'
+              : 'Sans coordonnées, le restaurant est placé au centre de Paris et sera mal '
+                + 'classé dans la recherche par distance. Choisissez une adresse ci-dessus '
+                + 'pour les remplir automatiquement.'}
           </p>
 
           <div className="field">

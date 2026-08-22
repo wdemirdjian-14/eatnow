@@ -13,10 +13,11 @@ import {
 import {
   type MenuPayload, attachOwner, createRestaurantWithOwner, dishRestaurant, getRestaurant,
   listCategories, listDishes, listMenus, listOwners, listPurchases, listRestaurants, loginExists,
-  ownerOfRestaurant, purchaseLanguage, replaceMenu, setDishPhoto, setOwnerPassword,
+  ownerOfRestaurant, purchaseLanguage, replaceMenu, setDishPhoto, setOwnerPassword, setUserPassword,
   setRestaurantPhoto, uniqueSlug, updateRestaurant,
 } from './store.js'
-import { sendCredentials, smtpConfigured } from './mail.js'
+import { sendCredentials, sendTest, smtpSummary, verifySmtp } from './mail.js'
+import { geocode } from './geocode.js'
 
 /** Tarif mensuel d'une langue supplémentaire, par plan. Autorité : le serveur. */
 const LANG_PRICE: Record<string, number> = { essai: 12, starter: 12, pro: 9 }
@@ -392,10 +393,85 @@ export function buildApp(): FastifyInstance {
     },
   )
 
-  /** L'envoi d'e-mails est-il configuré sur ce serveur ? */
-  app.get('/api/admin/mail-status', { onRequest: [requireAuth, requireAdminActing] }, async () => ({
-    configured: smtpConfigured(),
-  }))
+  /** Réglages SMTP chargés — sans le mot de passe, dont la valeur ne sort jamais. */
+  app.get('/api/admin/mail-status', { onRequest: [requireAuth, requireAdminActing] }, async () =>
+    smtpSummary(),
+  )
+
+  /**
+   * Diagnostic de l'envoi d'e-mails.
+   *
+   * Sans destinataire, se contente d'ouvrir la connexion : on distingue ainsi
+   * une panne de connexion ou d'authentification d'un refus du destinataire.
+   */
+  app.post<{ Body: { to?: string } }>(
+    '/api/admin/mail-test',
+    { onRequest: [requireAuth, requireAdminActing] },
+    async (req) => {
+      const to = (req.body?.to ?? '').trim()
+      const result = to ? await sendTest(to) : await verifySmtp()
+      req.log.info({ to: to || '(connexion seule)', result }, 'test SMTP')
+      return { ...result, smtp: smtpSummary() }
+    },
+  )
+
+  /**
+   * Géocodage d'une adresse.
+   *
+   * Ouvert à tout compte connecté : le restaurateur en a besoin sur sa fiche,
+   * l'administrateur à la création. Le relais est côté serveur pour respecter
+   * la politique d'usage de Nominatim.
+   */
+  app.get<{ Querystring: { q?: string } }>(
+    '/api/geocode',
+    { onRequest: [requireAuth] },
+    async (req, reply) => {
+      const q = (req.query?.q ?? '').trim()
+      if (q.length < 4) return { results: [] }
+      try {
+        return { results: await geocode(q) }
+      } catch (err) {
+        req.log.warn({ err }, 'géocodage indisponible')
+        return reply.code(502).send({ error: 'Service d’adresses indisponible. Saisissez les coordonnées à la main.' })
+      }
+    },
+  )
+
+  /**
+   * Changement de mot de passe par son titulaire.
+   *
+   * L'ancien mot de passe est exigé : sans lui, un appareil laissé déverrouillé
+   * suffirait à confisquer le compte. Refusé pendant un endossement — un
+   * administrateur qui dépanne ne doit pas pouvoir changer le mot de passe sans
+   * passer par la console, où l'acte est explicite et tracé.
+   */
+  app.post<{ Body: { current?: string; next?: string } }>(
+    '/api/account/password',
+    { onRequest: [requireAuth] },
+    async (req, reply) => {
+      const ctx = req.ctx!
+      if (ctx.impersonating) {
+        return reply.code(403).send({
+          error: 'Changement impossible pendant un endossement. Utilisez la console d’administration.',
+        })
+      }
+
+      const current = req.body?.current ?? ''
+      const next = (req.body?.next ?? '').trim()
+      if (next.length < 8) {
+        return reply.code(400).send({ error: 'Le nouveau mot de passe doit faire au moins 8 caractères.' })
+      }
+
+      const user = findUserByLogin(ctx.acting.login)
+      const ok = user ? await verifyPassword(current, user.password_hash, user.password_salt) : false
+      if (!ok) return reply.code(401).send({ error: 'Mot de passe actuel incorrect.' })
+
+      const { hash, salt } = await hashPassword(next)
+      setUserPassword(ctx.acting.id, hash, salt, ctx.session)
+      req.log.info({ user: ctx.acting.id }, 'mot de passe changé par son titulaire')
+      return { ok: true }
+    },
+  )
 
   // ============================================================
   // Écriture : fiche, carte, langues, photos

@@ -24,7 +24,12 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const method = init.method ?? 'GET'
   const headers = new Headers(init.headers)
   if (method !== 'GET') {
-    headers.set('Content-Type', 'application/json')
+    // Le type de contenu n'est annoncé que s'il y a vraiment un corps :
+    // Fastify rejette (400) un POST déclaré JSON dont le corps est vide, ce
+    // qui cassait la déconnexion et la sortie d'endossement.
+    if (init.body !== undefined && init.body !== null) {
+      headers.set('Content-Type', 'application/json')
+    }
     headers.set('X-Eatnow-Client', '1')
   }
 
@@ -104,6 +109,32 @@ export interface CredentialsResult {
   mail: { sent: boolean; reason?: string; detail?: string }
 }
 
+/** Réglages SMTP chargés côté serveur, sans le mot de passe. */
+export interface SmtpSummary {
+  configured: boolean
+  host: string
+  port: number
+  user: string
+  from: string
+  secure: boolean
+  hasPassword: boolean
+}
+
+export interface MailTestResult {
+  sent: boolean
+  reason?: string
+  detail?: string
+  smtp: SmtpSummary
+}
+
+export interface GeocodeHit {
+  label: string
+  lat: number
+  lng: number
+  postalCode?: string
+  city?: string
+}
+
 export const api = {
   createRestaurant: (payload: NewRestaurant) =>
     request<{ restaurant: Restaurant }>('/api/admin/restaurants', {
@@ -125,7 +156,25 @@ export const api = {
       body: JSON.stringify(payload),
     }),
 
-  mailStatus: () => request<{ configured: boolean }>('/api/admin/mail-status'),
+  mailStatus: () => request<SmtpSummary>('/api/admin/mail-status'),
+
+  /** Diagnostic SMTP. Sans destinataire, teste seulement la connexion. */
+  mailTest: (to?: string) =>
+    request<MailTestResult>('/api/admin/mail-test', {
+      method: 'POST',
+      body: JSON.stringify({ to }),
+    }),
+
+  /** Changement de mot de passe par son titulaire. */
+  changePassword: (current: string, next: string) =>
+    request<{ ok: true }>('/api/account/password', {
+      method: 'POST',
+      body: JSON.stringify({ current, next }),
+    }),
+
+  /** Adresse -> coordonnées, relayé par le serveur. */
+  geocode: (q: string) =>
+    request<{ results: GeocodeHit[] }>(`/api/geocode?q=${encodeURIComponent(q)}`),
 
   login: (login: string, password: string) =>
     request<{ user: SessionUser }>('/api/auth/login', {
