@@ -111,7 +111,63 @@ export function Admin() {
           </label>
         </div>
 
-        <div className="tbl-scroll">
+        {/* Sur téléphone, douze colonnes dans 390 px donnaient un tableau
+            illisible : chaque restaurant devient une carte. Le tableau reste
+            l'outil de balayage à partir de 900 px. */}
+        <div className="admin-cards">
+          {rows.map((x) => (
+            <button key={x.r.id} className="admin-card" onClick={() => nav(`/admin/r/${x.r.id}`)}>
+              <div className="admin-card__top">
+                <span className="admin-card__emoji" aria-hidden>{x.r.emoji}</span>
+                <span className="admin-card__id">
+                  <b>{x.r.name}</b>
+                  <span className="tiny muted">{ownerOf.get(x.r.ownerId)?.email ?? 'aucun compte'}</span>
+                </span>
+                <span className={`badge ${x.r.published ? 'mint' : 'grey'}`}>
+                  {x.r.published ? 'en ligne' : 'hors ligne'}
+                </span>
+              </div>
+
+              <div className="admin-card__facts">
+                <span>{x.r.city} · {x.r.cuisines.map((c) => CUISINE_LABEL[c]).join(', ')}</span>
+                <span className="mono">{priceRangeLabel(x.r.priceRange)} · plan {x.r.plan} · {money(x.mrr)}/mois</span>
+                <span className="mono">{x.dishes} plats · {x.cats} cat. · {x.menus} form.</span>
+                <span title={x.langs.map((l) => LANG_META[l].label).join(', ')}>
+                  {x.langs.map((l) => LANG_META[l].flag).join('')} <span className="tiny muted">({x.langs.length} langues)</span>
+                </span>
+                <span className="tiny muted">Dernière connexion : {lastSeen(ownerOf.get(x.r.ownerId)?.lastLoginAt)}</span>
+              </div>
+
+              {(x.noAllergen > 0 || x.noPrice > 0) && (
+                <span className="badge coral">
+                  {x.noAllergen > 0 && `${x.noAllergen} sans allergène`}
+                  {x.noAllergen > 0 && x.noPrice > 0 && ' · '}
+                  {x.noPrice > 0 && `${x.noPrice} sans prix`}
+                </span>
+              )}
+
+              <div className="admin-card__actions" onClick={(e) => e.stopPropagation()}>
+                <label className="switch">
+                  <input
+                    type="checkbox" checked={x.r.published}
+                    onChange={(e) => updateRestaurant(x.r.id, { published: e.target.checked })}
+                  />
+                  <span className="track" />
+                  <span className="small">Publié</span>
+                </label>
+                <span className="spacer" />
+                <button
+                  className="btn sm"
+                  onClick={() => { void impersonate(x.r.ownerId).then(() => nav('/pro/tableau-de-bord')) }}
+                >
+                  👁️ Ouvrir l’espace
+                </button>
+              </div>
+            </button>
+          ))}
+        </div>
+
+        <div className="tbl-scroll admin-table">
           <table className="tbl">
             <thead>
               <tr>

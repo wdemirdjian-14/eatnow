@@ -198,41 +198,36 @@ export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte
           </div>
         </div>
 
-        {/* La carte précède la liste : on situe les restaurants avant de les
-            lire, et les pastilles numérotées renvoient aux vignettes. */}
-        <MapView
-          restaurants={results.map((x) => x.r)}
-          center={{ lat: pos.lat, lng: pos.lng }}
-          lang={lang}
-          distances={new Map(results.map((x) => [x.r.id, x.d]))}
-          onSearchArea={setArea}
-          onLocate={() => void askLocation()}
-          locating={locating}
-          compact={view === 'liste'}
-        />
-
-        {view === 'liste' && (
-          results.length === 0 ? (
-            <p className="empty">{t('home.none', lang)}</p>
-          ) : (
-            <div className="grid-restos">
-              {results.map(({ r, d }, i) => (
-                <RestaurantCard
-                  key={r.id} r={r} distance={d} lang={lang} rank={i + 1}
-                  dishCount={dishCount.get(r.id) ?? 0}
-                />
-              ))}
-            </div>
-          )
+        {/* Rappel des filtres actifs, toujours visible : sans lui, un filtre
+            posé puis le panneau replié devient invisible et le nombre de
+            résultats paraît faux. Chaque puce se retire d'une tape. */}
+        {activeFilters > 0 && (
+          <div className="active-filters" aria-label="Filtres actifs">
+            {cuisines.map((c) => (
+              <button key={c} className="filter-tag" onClick={() => toggle(cuisines, c, setCuisines)}>
+                {CUISINE_LABEL[c]} <span aria-hidden>✕</span>
+                <span className="sr-only">Retirer le filtre {CUISINE_LABEL[c]}</span>
+              </button>
+            ))}
+            {prices.map((n) => (
+              <button key={n} className="filter-tag mono" onClick={() => toggle(prices, n, setPrices)}>
+                {priceRangeLabel(n)} <span aria-hidden>✕</span>
+                <span className="sr-only">Retirer le filtre de prix</span>
+              </button>
+            ))}
+            {translatedOnly && (
+              <button className="filter-tag" onClick={() => setTranslatedOnly(false)}>
+                🌍 {t('home.translatedOnly', lang)} <span aria-hidden>✕</span>
+              </button>
+            )}
+            <button
+              className="btn ghost sm"
+              onClick={() => { setCuisines([]); setPrices([]); setTranslatedOnly(false) }}
+            >
+              {t('home.reset', lang)}
+            </button>
+          </div>
         )}
-
-        {view === 'carte' && results.length === 0 && (
-          <p className="notice warn">{t('home.none', lang)}</p>
-        )}
-
-        {/* Invitation à installer : utile, mais elle ne doit pas repousser
-            la carte et les résultats sous la pliure. */}
-        <InstallPrompt />
 
         {showFilters && (
         <section className="card filters" aria-label={t('home.filters', lang)}>
@@ -308,8 +303,55 @@ export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte
               </button>
             )}
           </div>
+
+          {/* Le décompte suit la frappe : on voit l'effet d'un filtre avant
+              de refermer le panneau, sans avoir à faire défiler jusqu'aux
+              vignettes. */}
+          <div className="filters__foot">
+            <b aria-live="polite">{results.length} {t('home.results', lang)}</b>
+            <button className="btn sm" onClick={() => setShowFilters(false)}>
+              Voir les résultats
+            </button>
+          </div>
         </section>
         )}
+
+        {/* La carte précède la liste : on situe les restaurants avant de les
+            lire, et les pastilles numérotées renvoient aux vignettes. */}
+        <MapView
+          restaurants={results.map((x) => x.r)}
+          center={{ lat: pos.lat, lng: pos.lng }}
+          lang={lang}
+          distances={new Map(results.map((x) => [x.r.id, x.d]))}
+          onSearchArea={setArea}
+          onLocate={() => void askLocation()}
+          locating={locating}
+          compact={view === 'liste'}
+        />
+
+        {view === 'liste' && (
+          results.length === 0 ? (
+            <p className="empty">{t('home.none', lang)}</p>
+          ) : (
+            <div className="grid-restos">
+              {results.map(({ r, d }, i) => (
+                <RestaurantCard
+                  key={r.id} r={r} distance={d} lang={lang} rank={i + 1}
+                  dishCount={dishCount.get(r.id) ?? 0}
+                />
+              ))}
+            </div>
+          )
+        )}
+
+        {view === 'carte' && results.length === 0 && (
+          <p className="notice warn">{t('home.none', lang)}</p>
+        )}
+
+        {/* Invitation à installer : utile, mais elle ne doit pas repousser
+            la carte et les résultats sous la pliure. */}
+        <InstallPrompt />
+
 
       </main>
 
