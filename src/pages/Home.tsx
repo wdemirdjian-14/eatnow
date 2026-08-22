@@ -8,6 +8,7 @@ import { RestaurantCard } from '../components/RestaurantCard'
 import { Logo } from '../components/Logo'
 import { InstallPrompt } from '../components/InstallPrompt'
 import { MapView, type Bounds } from '../components/MapView'
+import { QrScanner } from '../components/QrScanner'
 
 type Sort = 'distance' | 'rating' | 'price'
 
@@ -29,6 +30,8 @@ export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte
   const [showFilters, setShowFilters] = useState(false)
   /** Zone géographique imposée par la carte ; remplace le filtre de distance. */
   const [area, setArea] = useState<Bounds | null>(null)
+  /** Lecteur de QR code plein écran. */
+  const [scanning, setScanning] = useState(false)
 
   const dishCount = useMemo(() => {
     const m = new Map<string, number>()
@@ -98,6 +101,14 @@ export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte
           <p className="hero-mini">{t('home.tagline', lang)}</p>
 
           <div className="searchbar">
+            {/* Le QR code est le chemin le plus court vers une carte : posé
+                sur la table, il évite toute recherche. */}
+            <button
+              className="scan-btn" onClick={() => setScanning(true)}
+              aria-label={t('home.scan', lang)} title={t('home.scan', lang)}
+            >
+              <QrIcon />
+            </button>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -289,6 +300,22 @@ export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte
         )}
 
       </main>
+
+      {scanning && <QrScanner onClose={() => setScanning(false)} />}
     </>
+  )
+}
+
+/** Pictogramme QR code, dessiné pour rester net à toutes les tailles. */
+function QrIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden focusable="false">
+      <g stroke="currentColor" strokeWidth="2" strokeLinejoin="round">
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      </g>
+      <path d="M14 14h3v3h-3zM18 18h3v3h-3z" fill="currentColor" />
+    </svg>
   )
 }

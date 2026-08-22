@@ -3,6 +3,46 @@
 Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le
 [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [0.6.0] — 2026-08-22
+
+Lecture des QR codes par le client.
+
+### Ajouté
+
+- **Scanner de QR code** — un bouton dans la barre de recherche ouvre la
+  caméra en plein écran. Le client vise le code posé sur la table et la carte
+  du restaurant s'ouvre, sans rien valider (moins de 300 ms dans les essais).
+  Viseur, flash quand l'appareil en dispose, et fermeture immédiate qui coupe
+  le flux : la diode ne reste jamais allumée.
+- **Deux moteurs de décodage** — `BarcodeDetector` natif quand le navigateur
+  le propose (Chrome Android), jsQR en repli pour iOS Safari et les
+  navigateurs de bureau. Analyse bridée à dix images par seconde et réduite à
+  640 px de côté : la batterie du téléphone n'y passe pas.
+- **Repli par la galerie** — si la caméra est refusée ou absente, une photo du
+  QR code est décodée de la même façon. Les refus d'accès sont expliqués en
+  français plutôt que par le nom d'une exception.
+
+### Sécurité
+
+- **Aucune ouverture automatique d'une adresse extérieure.** Seul un lien qui
+  désigne une carte de l'annuaire — ou une adresse de ce même site — provoque
+  une navigation, et le slug lu sert à naviguer à l'intérieur de
+  l'application. Tout autre contenu est affiché tel quel et attend un geste du
+  client, le lien s'ouvrant alors en `noopener noreferrer`. Un autocollant
+  malveillant collé par-dessus celui du restaurant ne peut donc pas emmener le
+  convive ailleurs à son insu.
+- Le vhost autorise désormais la caméra (`Permissions-Policy: camera=(self)`)
+  et les flux `blob:` (`media-src`). Sans ces deux réglages, le navigateur
+  refuse l'accès à la caméra sans même afficher de demande.
+
+### Vérifié
+
+- Trois campagnes dans un Chromium réel avec une caméra simulée : code Eatnow
+  (carte ouverte automatiquement), code étranger (affiché, jamais suivi),
+  image sans code (caméra ouverte, viseur, fermeture propre) — 22 contrôles
+  verts, aucune erreur console.
+- 33/33 tests d'API, 12/12 tests bout en bout.
+
 ## [0.5.0] — 2026-08-21
 
 Carte géographique, refonte de l'interface publique, création de comptes.

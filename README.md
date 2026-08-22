@@ -150,7 +150,7 @@ de connexion, et un badge indique en ligne que la carte restera accessible.
 Les cartes elles-mêmes vivent dans le stockage du navigateur : elles sont donc
 disponibles hors connexion par construction, mais propres à chaque appareil.
 
-## Le QR code du restaurateur
+## Le QR code : côté restaurateur et côté client
 
 L'espace restaurateur expose une page **Mon QR code** : aperçu, lien copiable,
 export SVG (impression sans perte) et PNG, et un **chevalet de table
@@ -161,6 +161,23 @@ Le code pointe vers la carte publique du restaurant. Il utilise le niveau de
 correction d'erreur H (30 % de redondance) pour rester lisible malgré la
 pastille Eatnow au centre et une impression médiocre. Prévoyez au moins 3 cm
 de côté pour un scan confortable.
+
+Côté client, le bouton QR de la barre de recherche ouvre la caméra en plein
+écran : viser le code posé sur la table suffit, la carte s'ouvre sans rien
+valider. Le décodage passe par `BarcodeDetector` quand le navigateur le
+propose (Chrome Android), sinon par jsQR — ce qui couvre iOS Safari. Si la
+caméra est refusée ou absente, une photo du code prise avec l'appareil fait
+le même travail.
+
+**Un code n'ouvre jamais une adresse extérieure tout seul.** Seul un lien qui
+désigne une carte de l'annuaire — ou une adresse de ce même site — provoque
+une navigation, et le slug lu sert à naviguer *à l'intérieur* de
+l'application. Tout autre contenu est affiché tel quel et attend un geste du
+client : un autocollant malveillant collé par-dessus celui du restaurant ne
+peut pas l'emmener ailleurs à son insu.
+
+Le vhost doit autoriser la caméra (`Permissions-Policy: camera=(self)`) :
+sans cet en-tête le navigateur refuse l'accès sans même afficher de demande.
 
 ## Architecture
 
@@ -176,6 +193,7 @@ src/
 │   ├── translate.ts      Moteur de traduction + résolution manuel > auto > source
 │   ├── pwa.ts            Service worker, invite d'installation, connectivité
 │   ├── qr.ts             Génération des QR codes en SVG
+│   ├── qrscan.ts         Lecture des QR codes (caméra, BarcodeDetector/jsQR)
 │   ├── selection.ts      Sélection du client : prix unitaire, options, total
 │   ├── photo.ts          Redimensionnement des photos de plats à l'import
 │   ├── geo.ts            Haversine, géolocalisation, positions de repli

@@ -33,6 +33,7 @@ const DICT = {
   'home.sort.distance': { fr: 'Distance', en: 'Distance', es: 'Distancia', it: 'Distanza', de: 'Entfernung', hy: 'Հեռավորության' },
   'home.sort.rating': { fr: 'Note', en: 'Rating', es: 'Valoración', it: 'Valutazione', de: 'Bewertung', hy: 'Գնահատականի' },
   'home.sort.price': { fr: 'Prix', en: 'Price', es: 'Precio', it: 'Prezzo', de: 'Preis', hy: 'Գնի' },
+  'home.scan': { fr: 'Scanner un QR code', en: 'Scan a QR code', es: 'Escanear un código QR', it: 'Scansiona un QR code', de: 'QR-Code scannen', hy: 'Սկանավորել QR կոդ' },
   'home.position': { fr: 'Position', en: 'Location', es: 'Ubicación', it: 'Posizione', de: 'Standort', hy: 'Դիրք' },
 
   'card.translated': { fr: 'Carte traduite', en: 'Translated menu', es: 'Carta traducida', it: 'Menu tradotto', de: 'Übersetzte Karte', hy: 'Թարգմանված ճաշացանկ' },
