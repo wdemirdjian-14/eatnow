@@ -1,7 +1,7 @@
 {
   "name": "eatnow",
   "private": true,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "description": "Eatnow — trouvez les restaurants autour de vous, avec leur carte traduite dans votre langue.",
   "scripts": {
