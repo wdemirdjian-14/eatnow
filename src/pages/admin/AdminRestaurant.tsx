@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { activeLangs, useStore } from '../../store/store'
 import { ALLERGEN_LABEL, LANG_META, type Lang } from '../../types'
-import { lastSeen, money, stamp } from '../../lib/format'
+import { money } from '../../lib/format'
+import { OwnerAccess } from './OwnerAccess'
 import { originOf, resolve } from '../../lib/translate'
 
 /** Inspection en lecture seule de la carte d'un restaurant, langue par langue. */
@@ -59,52 +60,7 @@ export function AdminRestaurant() {
         </button>
       </div>
 
-      {/* Ce que l'administrateur ne peut pas lire ailleurs : l'état du compte
-          du restaurateur. Aucun mot de passe n'est exposé — le serveur n'en
-          conserve qu'une empreinte, et ne la transmet jamais. */}
-      <section className="card pad stack gap-s">
-        <div className="row gap-s wrap-flex">
-          <h3 style={{ flex: '1 1 auto' }}>Accès et compte</h3>
-          <span className={`badge ${r.published ? 'mint' : 'grey'}`}>
-            {r.published ? 'carte publiée' : 'carte non publiée'}
-          </span>
-          <span className="badge grey">plan {r.plan}</span>
-        </div>
-        <div className="tbl-scroll">
-          <table className="tbl">
-            <tbody>
-              <tr>
-                <th style={{ width: 220 }}>Identifiant de connexion</th>
-                <td className="mono">{owner?.email ?? <span className="muted">aucun compte lié</span>}</td>
-              </tr>
-              <tr><th>Titulaire</th><td>{owner?.name ?? '—'}</td></tr>
-              <tr>
-                <th>Dernière connexion</th>
-                <td>
-                  {owner?.lastLoginAt
-                    ? <>{stamp(owner.lastLoginAt)} <span className="muted small">({lastSeen(owner.lastLoginAt)})</span></>
-                    : <span className="badge coral">jamais connecté</span>}
-                </td>
-              </tr>
-              <tr><th>Compte créé le</th><td>{stamp(owner?.createdAt)}</td></tr>
-              <tr><th>Restaurant inscrit le</th><td>{r.createdAt}</td></tr>
-              <tr><th>Identifiants techniques</th><td className="mono tiny">{r.id} · {r.ownerId} · /{r.slug}</td></tr>
-              <tr>
-                <th>Langues achetées</th>
-                <td>
-                  {r.purchasedLangs.length === 0
-                    ? <span className="muted">aucune — seules {r.sourceLang.toUpperCase()} et EN sont incluses</span>
-                    : r.purchasedLangs.map((l) => `${LANG_META[l].flag} ${LANG_META[l].label}`).join(', ')}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p className="tiny muted">
-          Le mot de passe n’est pas consultable : le serveur n’en garde qu’une empreinte.
-          Pour dépanner un restaurateur, ouvrez son espace plutôt que de lui demander son mot de passe.
-        </p>
-      </section>
+      <OwnerAccess r={r} owner={owner} />
 
       <section className="stat-grid">
         <div className="stat"><b>{dishes.length}</b><span>plats</span></div>

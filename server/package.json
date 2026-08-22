@@ -18,8 +18,10 @@
   "dependencies": {
     "@fastify/cookie": "^9.4.0",
     "@fastify/static": "^7.0.4",
+    "@types/nodemailer": "^8.0.1",
     "better-sqlite3": "^11.3.0",
-    "fastify": "^4.28.1"
+    "fastify": "^4.28.1",
+    "nodemailer": "^9.0.5"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.11",

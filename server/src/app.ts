@@ -1,7 +1,7 @@
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify'
 import cookie from '@fastify/cookie'
 import fastifyStatic from '@fastify/static'
-import { randomUUID } from 'node:crypto'
+import { randomBytes, randomUUID } from 'node:crypto'
 import { writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { config } from './config.js'
@@ -11,10 +11,12 @@ import {
   findUserByLogin, hashPassword, readSession, setImpersonation, touchLastLogin, verifyPassword,
 } from './auth.js'
 import {
-  type MenuPayload, createRestaurantWithOwner, dishRestaurant, getRestaurant, listCategories,
-  listDishes, listMenus, listOwners, listPurchases, listRestaurants, loginExists,
-  purchaseLanguage, replaceMenu, setDishPhoto, setRestaurantPhoto, uniqueSlug, updateRestaurant,
+  type MenuPayload, attachOwner, createRestaurantWithOwner, dishRestaurant, getRestaurant,
+  listCategories, listDishes, listMenus, listOwners, listPurchases, listRestaurants, loginExists,
+  ownerOfRestaurant, purchaseLanguage, replaceMenu, setDishPhoto, setOwnerPassword,
+  setRestaurantPhoto, uniqueSlug, updateRestaurant,
 } from './store.js'
+import { sendCredentials, smtpConfigured } from './mail.js'
 
 /** Tarif mensuel d'une langue supplémentaire, par plan. Autorité : le serveur. */
 const LANG_PRICE: Record<string, number> = { essai: 12, starter: 12, pro: 9 }
@@ -310,6 +312,90 @@ export function buildApp(): FastifyInstance {
       return reply.code(201).send({ restaurant: created })
     },
   )
+
+  /**
+   * Mot de passe lisible mais non devinable.
+   *
+   * Il est dicté au téléphone ou recopié depuis un e-mail : les caractères
+   * ambigus (0/O, 1/l/I) en sont exclus, ce qui vaut mieux qu'un peu
+   * d'entropie de plus et un restaurateur bloqué.
+   */
+  const ALPHABET = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+  const generatePassword = (len = 12) =>
+    Array.from(randomBytes(len), (b) => ALPHABET[b % ALPHABET.length]).join('')
+
+  /** Crée un accès pour un restaurant qui n'en a pas encore. */
+  app.post<{ Params: { id: string }; Body: { name?: string; login?: string; password?: string; email?: boolean } }>(
+    '/api/admin/restaurants/:id/owner',
+    { onRequest: [requireAuth, requireAdminActing] },
+    async (req, reply) => {
+      const restaurant = getRestaurant(req.params.id)
+      if (!restaurant) return reply.code(404).send({ error: 'Restaurant introuvable.' })
+      if (ownerOfRestaurant(restaurant.id)) {
+        return reply.code(409).send({ error: 'Ce restaurant a déjà un accès. Réinitialisez son mot de passe.' })
+      }
+
+      const name = (req.body?.name ?? '').trim()
+      const login = (req.body?.login ?? '').trim()
+      if (!name || !login) {
+        return reply.code(400).send({ error: 'Nom du titulaire et identifiant requis.' })
+      }
+      if (loginExists(login)) {
+        return reply.code(409).send({ error: 'Cet identifiant est déjà pris.' })
+      }
+      const password = req.body?.password?.trim() || generatePassword()
+      if (password.length < 8) {
+        return reply.code(400).send({ error: 'Le mot de passe doit faire au moins 8 caractères.' })
+      }
+
+      const { hash, salt } = await hashPassword(password)
+      const ownerId = randomUUID()
+      attachOwner(restaurant.id, { id: ownerId, name, login, hash, salt })
+
+      const mail = req.body?.email
+        ? await sendCredentials(login, { name, restaurant: restaurant.name, login, password, reset: false })
+        : { sent: false }
+      req.log.info({ restaurant: restaurant.id, owner: ownerId, by: req.ctx!.user.login }, 'accès créé')
+      // Le mot de passe n'est renvoyé qu'ici : il n'est stocké nulle part en
+      // clair et ne pourra plus être relu.
+      return reply.code(201).send({ ownerId, login, password, mail })
+    },
+  )
+
+  /** Réinitialise le mot de passe d'un accès restaurateur. */
+  app.post<{ Params: { id: string }; Body: { password?: string; email?: boolean } }>(
+    '/api/admin/restaurants/:id/owner/password',
+    { onRequest: [requireAuth, requireAdminActing] },
+    async (req, reply) => {
+      const restaurant = getRestaurant(req.params.id)
+      if (!restaurant) return reply.code(404).send({ error: 'Restaurant introuvable.' })
+      const owner = ownerOfRestaurant(restaurant.id)
+      if (!owner) return reply.code(404).send({ error: 'Ce restaurant n’a pas encore d’accès.' })
+
+      const password = req.body?.password?.trim() || generatePassword()
+      if (password.length < 8) {
+        return reply.code(400).send({ error: 'Le mot de passe doit faire au moins 8 caractères.' })
+      }
+
+      const { hash, salt } = await hashPassword(password)
+      if (!setOwnerPassword(owner.id, hash, salt)) {
+        return reply.code(500).send({ error: 'La réinitialisation a échoué.' })
+      }
+
+      const mail = req.body?.email
+        ? await sendCredentials(owner.login, {
+            name: owner.name, restaurant: restaurant.name, login: owner.login, password, reset: true,
+          })
+        : { sent: false }
+      req.log.info({ owner: owner.id, by: req.ctx!.user.login }, 'mot de passe réinitialisé')
+      return { ownerId: owner.id, login: owner.login, password, mail }
+    },
+  )
+
+  /** L'envoi d'e-mails est-il configuré sur ce serveur ? */
+  app.get('/api/admin/mail-status', { onRequest: [requireAuth, requireAdminActing] }, async () => ({
+    configured: smtpConfigured(),
+  }))
 
   // ============================================================
   // Écriture : fiche, carte, langues, photos

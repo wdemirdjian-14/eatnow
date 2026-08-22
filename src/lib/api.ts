@@ -88,12 +88,44 @@ export interface NewRestaurant {
   ownerPassword: string
 }
 
+export interface OwnerInput {
+  name: string
+  login: string
+  password?: string
+  email?: boolean
+}
+
+/** Résultat d'une création d'accès ou d'une réinitialisation. */
+export interface CredentialsResult {
+  ownerId: string
+  login: string
+  /** Transmis une seule fois : le serveur n'en garde qu'une empreinte. */
+  password: string
+  mail: { sent: boolean; reason?: string; detail?: string }
+}
+
 export const api = {
   createRestaurant: (payload: NewRestaurant) =>
     request<{ restaurant: Restaurant }>('/api/admin/restaurants', {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
+
+  /** Crée l'accès d'un restaurant qui n'en a pas. Le mot de passe n'est renvoyé qu'ici. */
+  createOwner: (restaurantId: string, payload: OwnerInput) =>
+    request<CredentialsResult>(`/api/admin/restaurants/${restaurantId}/owner`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  /** Réinitialise le mot de passe de l'accès d'un restaurant. */
+  resetOwnerPassword: (restaurantId: string, payload: { password?: string; email?: boolean }) =>
+    request<CredentialsResult>(`/api/admin/restaurants/${restaurantId}/owner/password`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  mailStatus: () => request<{ configured: boolean }>('/api/admin/mail-status'),
 
   login: (login: string, password: string) =>
     request<{ user: SessionUser }>('/api/auth/login', {
@@ -114,7 +146,16 @@ export const api = {
   stopImpersonating: () =>
     request<{ user: SessionUser }>('/api/auth/stop-impersonating', { method: 'POST' }),
 
-  publicState: () => request<PublicState>('/api/public/state'),
+  /**
+   * Annuaire public.
+   *
+   * `no-store` est indispensable : la réponse porte `max-age=30` pour les
+   * visiteurs, mais le client la recharge juste après une modification
+   * administrateur et lirait sinon une version périmée — un accès créé
+   * n'apparaîtrait qu'une demi-minute plus tard. Le service worker reste la
+   * copie de secours hors connexion.
+   */
+  publicState: () => request<PublicState>('/api/public/state', { cache: 'no-store' }),
 
   sessionState: () => request<SessionState>('/api/state'),
 

@@ -325,3 +325,43 @@ export function dishRestaurant(dishId: string): string | undefined {
     .prepare<[string], { restaurant_id: string }>('SELECT restaurant_id FROM dishes WHERE id = ?')
     .get(dishId)?.restaurant_id
 }
+
+/**
+ * Rattache un nouveau compte restaurateur à un restaurant qui n'en a pas.
+ *
+ * Les deux sens du lien sont écrits dans la même transaction :
+ * `users.restaurant_id` porte le périmètre du compte, `restaurants.owner_id`
+ * désigne son titulaire. Laisser l'un sans l'autre rendrait la fiche
+ * inadministrable ou le compte aveugle.
+ */
+export const attachOwner = db.transaction(
+  (restaurantId: string, owner: { id: string; name: string; login: string; hash: string; salt: string }) => {
+    db.prepare(
+      `INSERT INTO users (id, login, name, role, password_hash, password_salt, restaurant_id)
+       VALUES (?, ?, ?, 'owner', ?, ?, ?)`,
+    ).run(owner.id, owner.login, owner.name, owner.hash, owner.salt, restaurantId)
+    db.prepare('UPDATE restaurants SET owner_id = ? WHERE id = ?').run(owner.id, restaurantId)
+  },
+)
+
+/** Compte restaurateur rattaché à un restaurant, s'il en existe un. */
+export function ownerOfRestaurant(restaurantId: string):
+  { id: string; name: string; login: string } | undefined {
+  return db
+    .prepare<[string], { id: string; name: string; login: string }>(
+      "SELECT id, name, login FROM users WHERE role = 'owner' AND restaurant_id = ? LIMIT 1",
+    )
+    .get(restaurantId)
+}
+
+/** Remplace l'empreinte du mot de passe d'un compte restaurateur. */
+export function setOwnerPassword(ownerId: string, hash: string, salt: string): boolean {
+  const r = db
+    .prepare("UPDATE users SET password_hash = ?, password_salt = ? WHERE id = ? AND role = 'owner'")
+    .run(hash, salt, ownerId)
+  // Les sessions ouvertes avec l'ancien mot de passe doivent tomber : sinon un
+  // appareil resté connecté continuerait d'accéder à l'espace après la reprise
+  // en main du compte.
+  if (r.changes > 0) db.prepare('DELETE FROM sessions WHERE user_id = ?').run(ownerId)
+  return r.changes > 0
+}

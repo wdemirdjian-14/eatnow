@@ -1146,3 +1146,38 @@ table.tbl tr:last-child td { border-bottom: none; }
   padding-top: .7rem; border-top: 1px solid var(--line-2);
 }
 .filters__foot b { flex: 1; }
+
+/* ---------------- Accès restaurateur (console) ---------------- */
+/* Liste descriptive plutôt qu'un tableau : sur téléphone, deux colonnes
+   d'étiquettes et de valeurs se replient proprement l'une sous l'autre. */
+.kv { display: grid; gap: 0; margin: 0; }
+.kv > div {
+  display: grid; gap: .1rem; grid-template-columns: 1fr;
+  padding: .55rem 0; border-bottom: 1px solid var(--line-2);
+}
+.kv > div:last-child { border-bottom: none; }
+.kv dt {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--ink-3);
+}
+.kv dd { margin: 0; }
+@media (min-width: 620px) {
+  .kv > div { grid-template-columns: 220px 1fr; align-items: baseline; gap: .8rem; }
+}
+
+/* Identifiants affichés une seule fois : ils doivent sauter aux yeux. */
+.creds {
+  display: flex; flex-direction: column; gap: .5rem;
+  border: 1px solid var(--teal-300); background: var(--teal-50);
+  border-radius: var(--radius); padding: .85rem;
+}
+.creds__line { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.creds__line > span {
+  font-size: .72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--ink-3); min-width: 96px;
+}
+.creds code {
+  font-size: 1rem; font-weight: 700; letter-spacing: .02em;
+  background: #fff; border: 1px solid var(--line); border-radius: 8px;
+  padding: .35rem .6rem; user-select: all; word-break: break-all;
+}

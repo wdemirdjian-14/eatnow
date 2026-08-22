@@ -48,4 +48,21 @@ export const config = {
 
   /** Taille maximale d'une photo de plat reçue, en octets. */
   maxPhotoBytes: Number(process.env.EATNOW_MAX_PHOTO ?? 3_000_000),
+
+  /**
+   * Envoi d'e-mails (mot de passe transmis au restaurateur).
+   *
+   * Entièrement optionnel : sans hôte SMTP configuré, l'API le dit et la
+   * console affiche le mot de passe à transmettre de vive voix. Mieux vaut un
+   * refus explicite qu'un e-mail silencieusement perdu.
+   */
+  smtp: {
+    host: process.env.EATNOW_SMTP_HOST ?? '',
+    port: Number(process.env.EATNOW_SMTP_PORT ?? 587),
+    user: process.env.EATNOW_SMTP_USER ?? '',
+    pass: process.env.EATNOW_SMTP_PASS ?? '',
+    from: process.env.EATNOW_SMTP_FROM ?? 'Eatnow <ne-pas-repondre@eatnow.walautao.fr>',
+    /** URL publique, pour le lien de connexion dans le message. */
+    appUrl: process.env.EATNOW_APP_URL ?? 'https://eatnow.walautao.fr',
+  },
 } as const
