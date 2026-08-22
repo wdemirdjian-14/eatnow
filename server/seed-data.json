@@ -175,15 +175,15 @@
         "source": "Poissons de petits bateaux, plateaux de fruits de mer et grands blancs.",
         "auto": {
           "en": "Poissons of petits bateaux, plateaux of fruits of mer and grands blancs.",
-          "es": "Poissons de petits bateaux, plateaux de fruits de mer y grands blancs.",
-          "it": "Poissons di petits bateaux, plateaux di fruits di mer e grands blancs.",
-          "de": "Poissons von petits bateaux, plateaux von fruits von mer und grands blancs.",
-          "ru": "Poissons из petits bateaux, plateaux из fruits из mer и grands blancs.",
-          "hy": "Poissons petits bateaux, plateaux fruits mer և grands blancs.",
-          "zh": "Poissons petits bateaux, plateaux fruits mer 和 grands blancs.",
-          "ja": "Poissons の petits bateaux, plateaux の fruits の mer と grands blancs.",
-          "ko": "Poissons petits bateaux, plateaux fruits mer 와 grands blancs.",
-          "ar": "Poissons من petits bateaux, plateaux من fruits من mer و grands blancs."
+          "es": "Poissons de petits bateaux, plateaux de frutas de mer y grands blancs.",
+          "it": "Poissons di petits bateaux, plateaux di frutta di mer e grands blancs.",
+          "de": "Poissons von petits bateaux, plateaux von früchte von mer und grands blancs.",
+          "ru": "Poissons из petits bateaux, plateaux из фрукты из mer и grands blancs.",
+          "hy": "Poissons petits bateaux, plateaux մրգեր mer և grands blancs.",
+          "zh": "Poissons petits bateaux, plateaux 水果 mer 和 grands blancs.",
+          "ja": "Poissons の petits bateaux, plateaux の フルーツ の mer と grands blancs.",
+          "ko": "Poissons petits bateaux, plateaux 과일 mer 와 grands blancs.",
+          "ar": "Poissons من petits bateaux, plateaux من فواكه من mer و grands blancs."
         },
         "manual": {}
       },
@@ -288,6 +288,393 @@
       "published": false,
       "plan": "essai",
       "createdAt": "2026-08-06"
+    },
+    {
+      "id": "r8",
+      "slug": "tandoor-palace",
+      "ownerId": "o8",
+      "name": "Tandoor Palace",
+      "description": {
+        "source": "Cuisine du nord de l’Inde : tandoor, currys mijotés et pains naan cuits au four à charbon.",
+        "auto": {
+          "en": "Cuisine of nord of l’Inde: tandoor, currys slow-cooked and pains naan cuits oven-baked à charbon.",
+          "ar": "Cuisine من nord من l’Inde: tandoor, currys مطهو ببطء و pains نان cuits في الفرن à charbon."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "indienne"
+      ],
+      "priceRange": 2,
+      "address": "18 passage Brady",
+      "postalCode": "75010",
+      "city": "Paris",
+      "lat": 48.8712,
+      "lng": 2.3562,
+      "phone": "01 42 08 55 12",
+      "website": "tandoorpalace.fr",
+      "emoji": "🍛",
+      "hue": 25,
+      "rating": 4.5,
+      "reviews": 389,
+      "hours": "Lun–Dim · 12h–14h30 · 19h–23h",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%22132%22%20r%3D%2246%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22118%22%20r%3D%2230%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22214%22%20cy%3D%22176%22%20r%3D%2226%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [
+        "ar"
+      ],
+      "published": true,
+      "plan": "starter",
+      "createdAt": "2026-02-10"
+    },
+    {
+      "id": "r9",
+      "slug": "bangkok-street-food",
+      "ownerId": "o9",
+      "name": "Bangkok Street Food",
+      "description": {
+        "source": "Cuisine de rue thaïlandaise : currys parfumés, nouilles sautées et parfums de citronnelle.",
+        "auto": {
+          "en": "Cuisine of rue thaïlandaise: currys parfumés, noodles stir-fried and parfums of citronnelle."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "thai"
+      ],
+      "priceRange": 2,
+      "address": "12 rue de Belleville",
+      "postalCode": "75020",
+      "city": "Paris",
+      "lat": 48.8722,
+      "lng": 2.3781,
+      "phone": "01 46 07 32 18",
+      "emoji": "🍜",
+      "hue": 10,
+      "rating": 4.3,
+      "reviews": 267,
+      "hours": "Mar–Dim · 11h30–15h · 18h30–22h30",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23dfeaee%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbfdfd%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22120%22%20r%3D%2252%22%20fill%3D%22%237fb0c4%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22160%22%20cy%3D%22178%22%20r%3D%2228%22%20fill%3D%22%23e5b7a0%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22238%22%20cy%3D%22172%22%20r%3D%2224%22%20fill%3D%22%237ea653%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [],
+      "published": true,
+      "plan": "essai",
+      "createdAt": "2026-04-18"
+    },
+    {
+      "id": "r10",
+      "slug": "golden-wok",
+      "ownerId": "o10",
+      "name": "Golden Wok",
+      "description": {
+        "source": "Cuisine cantonaise traditionnelle : canard laqué, dim sum et woks préparés minute.",
+        "auto": {
+          "en": "Cuisine cantonaise traditionnelle: duck glazed, dim sum and woks préparés minute.",
+          "zh": "Cuisine cantonaise traditionnelle: 鸭肉 脆皮, 点心 和 woks préparés minute.",
+          "ko": "Cuisine cantonaise traditionnelle: 오리 유약을 바른, 딤섬 와 woks préparés minute.",
+          "ja": "Cuisine cantonaise traditionnelle: 鴨 つや焼き, 点心 と woks préparés minute.",
+          "ru": "Cuisine cantonaise traditionnelle: утка глазированный, дим-сам и woks préparés minute."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "chinoise"
+      ],
+      "priceRange": 2,
+      "address": "42 avenue de Choisy",
+      "postalCode": "75013",
+      "city": "Paris",
+      "lat": 48.8267,
+      "lng": 2.3628,
+      "phone": "01 45 85 20 66",
+      "emoji": "🥡",
+      "hue": 45,
+      "rating": 4.4,
+      "reviews": 745,
+      "hours": "Lun–Dim · 11h30–22h30",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22176%22%20cy%3D%22118%22%20r%3D%2234%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22226%22%20cy%3D%22140%22%20r%3D%2240%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22188%22%20cy%3D%22180%22%20r%3D%2230%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [
+        "zh",
+        "ko",
+        "ja",
+        "ru"
+      ],
+      "published": true,
+      "plan": "pro",
+      "createdAt": "2025-08-30"
+    },
+    {
+      "id": "r11",
+      "slug": "smash-brothers-burger",
+      "ownerId": "o11",
+      "name": "Smash Brothers Burger",
+      "description": {
+        "source": "Burgers smash, pain brioché toasté et frites maison recoupées à la commande.",
+        "auto": {
+          "en": "Burgers smash, bread brioché toasté and homemade fries recoupées à la commande.",
+          "es": "Hamburguesas smash, pan brioché toasté y patatas fritas caseras recoupées à la commande.",
+          "pt": "Hambúrgueres smash, pão brioché toasté e batatas fritas caseiras recoupées à la commande.",
+          "nl": "Burgers smash, brood brioché toasté en huisgemaakte friet recoupées à la commande."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "burger"
+      ],
+      "priceRange": 2,
+      "address": "15 rue Oberkampf",
+      "postalCode": "75011",
+      "city": "Paris",
+      "lat": 48.8654,
+      "lng": 2.3742,
+      "phone": "01 43 55 09 27",
+      "website": "smashbrothers.fr",
+      "emoji": "🍔",
+      "hue": 15,
+      "rating": 4.6,
+      "reviews": 891,
+      "hours": "Lun–Dim · 12h–23h",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22120%22%20r%3D%2252%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22160%22%20cy%3D%22178%22%20r%3D%2228%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22238%22%20cy%3D%22172%22%20r%3D%2224%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [
+        "es",
+        "pt",
+        "nl"
+      ],
+      "published": true,
+      "plan": "pro",
+      "createdAt": "2026-06-02"
+    },
+    {
+      "id": "r12",
+      "slug": "ramen-kojiki",
+      "ownerId": "o12",
+      "name": "Ramen Kojiki",
+      "description": {
+        "source": "Ramen-ya de quartier : bouillons mijotés douze heures et nouilles préparées chaque jour.",
+        "auto": {
+          "en": "Ramen-ya of neighbourhood: bouillons slow-cooked douze heures and noodles préparées chaque jour.",
+          "zh": "Ramen-ya 街区: bouillons 慢炖 douze heures 和 面条 préparées chaque jour."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "japonaise"
+      ],
+      "priceRange": 2,
+      "address": "9 rue Sainte-Anne",
+      "postalCode": "75001",
+      "city": "Paris",
+      "lat": 48.8657,
+      "lng": 2.3352,
+      "phone": "01 42 96 14 08",
+      "emoji": "🍜",
+      "hue": 200,
+      "rating": 4.7,
+      "reviews": 623,
+      "hours": "Lun–Sam · 12h–15h · 18h30–22h",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23dfeaee%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbfdfd%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22176%22%20cy%3D%22118%22%20r%3D%2234%22%20fill%3D%22%237ea653%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22226%22%20cy%3D%22140%22%20r%3D%2240%22%20fill%3D%22%23e5b7a0%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22188%22%20cy%3D%22180%22%20r%3D%2230%22%20fill%3D%22%237fb0c4%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [
+        "zh"
+      ],
+      "published": true,
+      "plan": "starter",
+      "createdAt": "2025-12-11"
+    },
+    {
+      "id": "r13",
+      "slug": "pizza-napoli-vera",
+      "ownerId": "o13",
+      "name": "Pizza Napoli Vera",
+      "description": {
+        "source": "Pizzas napolitaines certifiées, pâte levée 48 h et four à bois traditionnel.",
+        "auto": {
+          "en": "Pizzas napolitaines certifiées, pâte levée 48 h and four à bois traditionnel.",
+          "es": "Pizzas napolitaines certifiées, pâte levée 48 h y four à bois traditionnel.",
+          "de": "Pizzen napolitaines certifiées, pâte levée 48 h und four à bois traditionnel.",
+          "pt": "Pizzas napolitaines certifiées, pâte levée 48 h e four à bois traditionnel."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "pizza",
+        "italienne"
+      ],
+      "priceRange": 2,
+      "address": "5 rue du Faubourg Montmartre",
+      "postalCode": "75009",
+      "city": "Paris",
+      "lat": 48.8759,
+      "lng": 2.3428,
+      "phone": "01 47 70 18 44",
+      "website": "napolivera.fr",
+      "emoji": "🍕",
+      "hue": 5,
+      "rating": 4.8,
+      "reviews": 1102,
+      "hours": "Mar–Dim · 12h–14h30 · 19h–23h",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23e3ecdb%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbfdf8%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22120%22%20r%3D%2252%22%20fill%3D%22%23a8c15c%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22160%22%20cy%3D%22178%22%20r%3D%2228%22%20fill%3D%22%235d8c3e%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22238%22%20cy%3D%22172%22%20r%3D%2224%22%20fill%3D%22%23d8663f%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [
+        "es",
+        "de",
+        "pt"
+      ],
+      "published": true,
+      "plan": "pro",
+      "createdAt": "2025-10-05"
+    },
+    {
+      "id": "r14",
+      "slug": "curry-garden",
+      "ownerId": "o14",
+      "name": "Curry Garden",
+      "description": {
+        "source": "Cuisine végétarienne du sud de l’Inde, currys parfumés et pains cuits minute.",
+        "auto": {
+          "en": "Cuisine végétarienne of sud of l’Inde, currys parfumés and pains cuits minute."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "indienne",
+        "vegetarien"
+      ],
+      "priceRange": 1,
+      "address": "20 rue Cail",
+      "postalCode": "75010",
+      "city": "Paris",
+      "lat": 48.8838,
+      "lng": 2.3603,
+      "phone": "01 40 34 27 15",
+      "emoji": "🌶️",
+      "hue": 355,
+      "rating": 4.2,
+      "reviews": 198,
+      "hours": "Lun–Dim · 11h30–15h · 18h30–22h30",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23e3ecdb%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbfdf8%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22176%22%20cy%3D%22118%22%20r%3D%2234%22%20fill%3D%22%23d8663f%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22226%22%20cy%3D%22140%22%20r%3D%2240%22%20fill%3D%22%235d8c3e%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22188%22%20cy%3D%22180%22%20r%3D%2230%22%20fill%3D%22%23a8c15c%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [],
+      "published": false,
+      "plan": "essai",
+      "createdAt": "2026-07-14"
+    },
+    {
+      "id": "r15",
+      "slug": "dragon-d-or",
+      "ownerId": "o15",
+      "name": "Dragon d’Or",
+      "description": {
+        "source": "Spécialiste du dim sum, vapeur et woks préparés à la commande depuis 1998.",
+        "auto": {
+          "en": "Spécialiste of dim sum, steamed and woks préparés à la commande depuis 1998.",
+          "zh": "Spécialiste 点心, 清蒸 和 woks préparés à la commande depuis 1998."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "chinoise"
+      ],
+      "priceRange": 2,
+      "address": "8 rue au Maire",
+      "postalCode": "75003",
+      "city": "Paris",
+      "lat": 48.8645,
+      "lng": 2.3568,
+      "phone": "01 42 78 33 51",
+      "emoji": "🥟",
+      "hue": 358,
+      "rating": 4.5,
+      "reviews": 456,
+      "hours": "Mer–Lun · 11h30–15h · 18h30–22h30",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%22132%22%20r%3D%2246%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22118%22%20r%3D%2230%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22214%22%20cy%3D%22176%22%20r%3D%2226%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [
+        "zh"
+      ],
+      "published": true,
+      "plan": "starter",
+      "createdAt": "2025-07-21"
+    },
+    {
+      "id": "r16",
+      "slug": "le-vegetarien-gourmand",
+      "ownerId": "o16",
+      "name": "Le Végétarien Gourmand",
+      "description": {
+        "source": "Cuisine végétarienne gastronomique, légumes de saison sublimés et cave de vins nature.",
+        "auto": {
+          "en": "Cuisine végétarienne gastronomique, seasonal vegetables sublimés and cellar of natural wines.",
+          "de": "Cuisine végétarienne gastronomique, saisongemüse sublimés und weinkeller von naturweine.",
+          "nl": "Cuisine végétarienne gastronomique, seizoensgroenten sublimés en wijnkelder van natuurwijnen."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "vegetarien"
+      ],
+      "priceRange": 2,
+      "address": "12 rue des Petits Champs",
+      "postalCode": "75002",
+      "city": "Paris",
+      "lat": 48.8654,
+      "lng": 2.3369,
+      "phone": "01 42 96 40 12",
+      "website": "vegetariengourmand.fr",
+      "emoji": "🥬",
+      "hue": 120,
+      "rating": 4.6,
+      "reviews": 312,
+      "hours": "Mar–Sam · 12h–14h · 19h30–22h",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23e3ecdb%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbfdf8%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%22132%22%20r%3D%2246%22%20fill%3D%22%235d8c3e%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22118%22%20r%3D%2230%22%20fill%3D%22%23a8c15c%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22214%22%20cy%3D%22176%22%20r%3D%2226%22%20fill%3D%22%23d8663f%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [
+        "de",
+        "nl"
+      ],
+      "published": true,
+      "plan": "pro",
+      "createdAt": "2026-01-27"
+    },
+    {
+      "id": "r17",
+      "slug": "chez-bebert",
+      "ownerId": "o17",
+      "name": "Chez Bebert",
+      "description": {
+        "source": "Bistrot familial depuis 1962 : plats mijotés, terrines maison et cave de vin nature.",
+        "auto": {
+          "en": "Bistro familial depuis 1962: main courses slow-cooked, terrines homemade and cellar of wine nature.",
+          "it": "Bistrot familial depuis 1962: secondi stufate, terrines della casa e cantina di vino nature."
+        },
+        "manual": {}
+      },
+      "cuisines": [
+        "bistrot",
+        "francaise"
+      ],
+      "priceRange": 2,
+      "address": "33 rue de Charonne",
+      "postalCode": "75011",
+      "city": "Paris",
+      "lat": 48.8542,
+      "lng": 2.3789,
+      "phone": "01 43 71 52 09",
+      "emoji": "🥘",
+      "hue": 30,
+      "rating": 4.4,
+      "reviews": 289,
+      "hours": "Lun–Ven · 12h–14h30 · 19h–22h30",
+      "sourceLang": "fr",
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22176%22%20cy%3D%22118%22%20r%3D%2234%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22226%22%20cy%3D%22140%22%20r%3D%2240%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22188%22%20cy%3D%22180%22%20r%3D%2230%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "purchasedLangs": [
+        "it"
+      ],
+      "published": true,
+      "plan": "starter",
+      "createdAt": "2025-05-19"
     }
   ],
   "categories": [
@@ -640,6 +1027,443 @@
         "source": "Desserts",
         "auto": {
           "en": "Desserts"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r8c1",
+      "restaurantId": "r8",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters",
+          "ar": "المقبلات"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r8c2",
+      "restaurantId": "r8",
+      "name": {
+        "source": "Plats",
+        "auto": {
+          "en": "Main courses",
+          "ar": "الأطباق الرئيسية"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r8c3",
+      "restaurantId": "r8",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts",
+          "ar": "الحلويات"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r9c1",
+      "restaurantId": "r9",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r9c2",
+      "restaurantId": "r9",
+      "name": {
+        "source": "Plats",
+        "auto": {
+          "en": "Main courses"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r9c3",
+      "restaurantId": "r9",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r10c1",
+      "restaurantId": "r10",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters",
+          "zh": "前菜",
+          "ko": "전채",
+          "ja": "前菜",
+          "ru": "Закуски"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r10c2",
+      "restaurantId": "r10",
+      "name": {
+        "source": "Plats",
+        "auto": {
+          "en": "Main courses",
+          "zh": "主菜",
+          "ko": "메인",
+          "ja": "メイン",
+          "ru": "Основные блюда"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r10c3",
+      "restaurantId": "r10",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts",
+          "zh": "甜点",
+          "ko": "디저트",
+          "ja": "デザート",
+          "ru": "Десерты"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r11c1",
+      "restaurantId": "r11",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters",
+          "es": "Entrantes",
+          "pt": "Entradas",
+          "nl": "Voorgerechten"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r11c2",
+      "restaurantId": "r11",
+      "name": {
+        "source": "Burgers",
+        "auto": {
+          "en": "Burgers",
+          "es": "Hamburguesas",
+          "pt": "Hambúrgueres",
+          "nl": "Burgers"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r11c3",
+      "restaurantId": "r11",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts",
+          "es": "Postres",
+          "pt": "Sobremesas",
+          "nl": "Nagerechten"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r11c4",
+      "restaurantId": "r11",
+      "name": {
+        "source": "Boissons",
+        "auto": {
+          "en": "Drinks",
+          "es": "Bebidas",
+          "pt": "Bebidas",
+          "nl": "Dranken"
+        },
+        "manual": {}
+      },
+      "order": 3
+    },
+    {
+      "id": "r12c1",
+      "restaurantId": "r12",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters",
+          "zh": "前菜"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r12c2",
+      "restaurantId": "r12",
+      "name": {
+        "source": "Plats",
+        "auto": {
+          "en": "Main courses",
+          "zh": "主菜"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r12c3",
+      "restaurantId": "r12",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts",
+          "zh": "甜点"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r13c1",
+      "restaurantId": "r13",
+      "name": {
+        "source": "Antipasti",
+        "auto": {
+          "en": "Antipasti",
+          "es": "Antipasti",
+          "de": "Antipasti",
+          "pt": "Antipasti"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r13c2",
+      "restaurantId": "r13",
+      "name": {
+        "source": "Pizzas",
+        "auto": {
+          "en": "Pizzas",
+          "es": "Pizzas",
+          "de": "Pizzen",
+          "pt": "Pizzas"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r13c3",
+      "restaurantId": "r13",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts",
+          "es": "Postres",
+          "de": "Desserts",
+          "pt": "Sobremesas"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r14c1",
+      "restaurantId": "r14",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r14c2",
+      "restaurantId": "r14",
+      "name": {
+        "source": "Plats",
+        "auto": {
+          "en": "Main courses"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r14c3",
+      "restaurantId": "r14",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r15c1",
+      "restaurantId": "r15",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters",
+          "zh": "前菜"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r15c2",
+      "restaurantId": "r15",
+      "name": {
+        "source": "Plats",
+        "auto": {
+          "en": "Main courses",
+          "zh": "主菜"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r15c3",
+      "restaurantId": "r15",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts",
+          "zh": "甜点"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r16c1",
+      "restaurantId": "r16",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters",
+          "de": "Vorspeisen",
+          "nl": "Voorgerechten"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r16c2",
+      "restaurantId": "r16",
+      "name": {
+        "source": "Plats",
+        "auto": {
+          "en": "Main courses",
+          "de": "Hauptgerichte",
+          "nl": "Hoofdgerechten"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r16c3",
+      "restaurantId": "r16",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts",
+          "de": "Desserts",
+          "nl": "Nagerechten"
+        },
+        "manual": {}
+      },
+      "order": 2
+    },
+    {
+      "id": "r16c4",
+      "restaurantId": "r16",
+      "name": {
+        "source": "Boissons",
+        "auto": {
+          "en": "Drinks",
+          "de": "Getränke",
+          "nl": "Dranken"
+        },
+        "manual": {}
+      },
+      "order": 3
+    },
+    {
+      "id": "r17c1",
+      "restaurantId": "r17",
+      "name": {
+        "source": "Entrées",
+        "auto": {
+          "en": "Starters",
+          "it": "Antipasti"
+        },
+        "manual": {}
+      },
+      "order": 0
+    },
+    {
+      "id": "r17c2",
+      "restaurantId": "r17",
+      "name": {
+        "source": "Plats",
+        "auto": {
+          "en": "Main courses",
+          "it": "Secondi"
+        },
+        "manual": {}
+      },
+      "order": 1
+    },
+    {
+      "id": "r17c3",
+      "restaurantId": "r17",
+      "name": {
+        "source": "Desserts",
+        "auto": {
+          "en": "Desserts",
+          "it": "Dolci"
         },
         "manual": {}
       },
@@ -1095,7 +1919,7 @@
           "es": "Risotto con setas",
           "it": "Risotto ai funghi",
           "de": "Risotto mit pilze",
-          "ja": "Risotto 添え きのこ"
+          "ja": "リゾット 添え きのこ"
         },
         "manual": {}
       },
@@ -1680,11 +2504,11 @@
       "description": {
         "source": "Pavé de saumon laqué, sésame torréfié.",
         "auto": {
-          "en": "Pavé of salmon laqué, sésame torréfié.",
-          "es": "Pavé de salmón laqué, sésame torréfié.",
-          "zh": "Pavé 三文鱼 laqué, sésame torréfié.",
-          "ko": "Pavé 연어 laqué, sésame torréfié.",
-          "it": "Pavé di salmone laqué, sésame torréfié."
+          "en": "Pavé of salmon glazed, sésame torréfié.",
+          "es": "Pavé de salmón glaseado, sésame torréfié.",
+          "zh": "Pavé 三文鱼 脆皮, sésame torréfié.",
+          "ko": "Pavé 연어 유약을 바른, sésame torréfié.",
+          "it": "Pavé di salmone glassato, sésame torréfié."
         },
         "manual": {}
       },
@@ -1861,8 +2685,8 @@
         "auto": {
           "en": "Aubergine grilled with miso",
           "es": "Berenjena a la parrilla con miso",
-          "zh": "茄子 烤 配 miso",
-          "ko": "가지 구이 곁들인 miso",
+          "zh": "茄子 烤 配 味噌",
+          "ko": "가지 구이 곁들인 미소",
           "it": "Melanzana alla griglia al miso"
         },
         "manual": {}
@@ -1872,8 +2696,8 @@
         "auto": {
           "en": "Aubergine melting, miso sucré, sésame.",
           "es": "Berenjena fundente, miso sucré, sésame.",
-          "zh": "茄子 入口即化, miso sucré, sésame.",
-          "ko": "가지 부드러운, miso sucré, sésame.",
+          "zh": "茄子 入口即化, 味噌 sucré, sésame.",
+          "ko": "가지 부드러운, 미소 sucré, sésame.",
           "it": "Melanzana fondente, miso sucré, sésame."
         },
         "manual": {}
@@ -1910,11 +2734,11 @@
       "description": {
         "source": "Riz sauté, crevettes, œuf et légumes.",
         "auto": {
-          "en": "Rice sauté, prawns, egg and vegetables.",
-          "es": "Arroz sauté, gambas, huevo y verduras.",
-          "zh": "米饭 sauté, 虾, 鸡蛋 和 蔬菜.",
-          "ko": "밥 sauté, 새우, 계란 와 채소.",
-          "it": "Riso sauté, gamberi, uovo e verdure."
+          "en": "Rice stir-fried, prawns, egg and vegetables.",
+          "es": "Arroz salteado, gambas, huevo y verduras.",
+          "zh": "米饭 炒, 虾, 鸡蛋 和 蔬菜.",
+          "ko": "밥 볶음, 새우, 계란 와 채소.",
+          "it": "Riso saltato, gamberi, uovo e verdure."
         },
         "manual": {}
       },
@@ -1977,8 +2801,8 @@
         "auto": {
           "en": "Ice cream with thé matcha",
           "es": "Helado con thé matcha",
-          "zh": "冰淇淋 配 thé matcha",
-          "ko": "아이스크림 곁들인 thé matcha",
+          "zh": "冰淇淋 配 thé 抹茶",
+          "ko": "아이스크림 곁들인 thé 말차",
           "it": "Gelato al thé matcha"
         },
         "manual": {}
@@ -1988,8 +2812,8 @@
         "auto": {
           "en": "Ice cream matcha and haricot red.",
           "es": "Helado matcha y haricot tinto.",
-          "zh": "冰淇淋 matcha 和 haricot 红.",
-          "ko": "아이스크림 matcha 와 haricot 레드.",
+          "zh": "冰淇淋 抹茶 和 haricot 红.",
+          "ko": "아이스크림 말차 와 haricot 레드.",
           "it": "Gelato matcha e haricot rosso."
         },
         "manual": {}
@@ -2013,8 +2837,8 @@
       "name": {
         "source": "Houmous aux pois chiches",
         "auto": {
-          "en": "Houmous with chickpeas",
-          "ar": "Houmous مع حمص"
+          "en": "Hummus with chickpeas",
+          "ar": "حمص مع حمص"
         },
         "manual": {}
       },
@@ -2273,7 +3097,7 @@
         "source": "Assortiment de pâtisseries au miel et fruits à coque.",
         "auto": {
           "en": "Assortment of pâtisseries with honey and fruits à coque.",
-          "ar": "تشكيلة من pâtisseries مع عسل و fruits à coque."
+          "ar": "تشكيلة من pâtisseries مع عسل و فواكه à coque."
         },
         "manual": {}
       },
@@ -2919,6 +3743,2748 @@
       "dishOfDay": false,
       "order": 3,
       "options": []
+    },
+    {
+      "id": "r8d1",
+      "restaurantId": "r8",
+      "categoryId": "r8c1",
+      "name": {
+        "source": "Samoussas aux légumes",
+        "auto": {
+          "en": "Samosas with vegetables",
+          "ar": "سمبوسة مع خضروات"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Samoussas croustillants, farcis de légumes et de coriandre.",
+        "auto": {
+          "en": "Samosas croustillants, farcis of vegetables and of coriander.",
+          "ar": "سمبوسة croustillants, farcis من خضروات و من كزبرة."
+        },
+        "manual": {}
+      },
+      "price": 6.5,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23e3ecdb%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbfdf8%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%22132%22%20r%3D%2246%22%20fill%3D%22%235d8c3e%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22118%22%20r%3D%2230%22%20fill%3D%22%23a8c15c%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22214%22%20cy%3D%22176%22%20r%3D%2226%22%20fill%3D%22%23d8663f%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "options": []
+    },
+    {
+      "id": "r8d2",
+      "restaurantId": "r8",
+      "categoryId": "r8c1",
+      "name": {
+        "source": "Poulet tikka",
+        "auto": {
+          "en": "Chicken tikka",
+          "ar": "دجاج تكة"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Poulet mariné au yaourt et aux épices tandoori, cuit au four.",
+        "auto": {
+          "en": "Chicken marinated with yaourt and with épices tandoori, cuit oven-baked.",
+          "ar": "دجاج متبل مع yaourt و مع épices tandoori, cuit في الفرن."
+        },
+        "manual": {}
+      },
+      "price": 12,
+      "allergens": [
+        "lait"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r8d3",
+      "restaurantId": "r8",
+      "categoryId": "r8c2",
+      "name": {
+        "source": "Curry d’agneau korma",
+        "auto": {
+          "en": "Curry d’agneau korma",
+          "ar": "كاري d’agneau كورما"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Agneau mijoté dans une sauce korma à la noix de coco.",
+        "auto": {
+          "en": "Lamb slow-cooked dans une sauce korma à la noix of coco.",
+          "ar": "لحم ضأن مطهو ببطء dans une صلصة كورما à la noix من coco."
+        },
+        "manual": {}
+      },
+      "price": 19,
+      "allergens": [
+        "fruits-a-coque",
+        "lait"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 2,
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22120%22%20r%3D%2252%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22160%22%20cy%3D%22178%22%20r%3D%2228%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22238%22%20cy%3D%22172%22%20r%3D%2224%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "options": []
+    },
+    {
+      "id": "r8d4",
+      "restaurantId": "r8",
+      "categoryId": "r8c2",
+      "name": {
+        "source": "Curry de poulet tikka masala",
+        "auto": {
+          "en": "Curry of chicken tikka masala",
+          "ar": "كاري من دجاج تكة ماسالا"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Poulet grillé, sauce tomate crémeuse et épices tikka masala.",
+        "auto": {
+          "en": "Chicken grilled, sauce tomato crémeuse and épices tikka masala.",
+          "ar": "دجاج مشوي, صلصة طماطم crémeuse و épices تكة ماسالا."
+        },
+        "manual": {}
+      },
+      "price": 17,
+      "allergens": [
+        "lait"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": true,
+      "order": 3,
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22176%22%20cy%3D%22118%22%20r%3D%2234%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22226%22%20cy%3D%22140%22%20r%3D%2240%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22188%22%20cy%3D%22180%22%20r%3D%2230%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "options": []
+    },
+    {
+      "id": "r8d5",
+      "restaurantId": "r8",
+      "categoryId": "r8c2",
+      "name": {
+        "source": "Dahl de lentilles corail",
+        "auto": {
+          "en": "Dal of lentils red",
+          "ar": "دال من عدس أحمر"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Lentilles corail mijotées au lait de coco et au curcuma.",
+        "auto": {
+          "en": "Lentils red mijotées with coconut milk and with turmeric.",
+          "ar": "عدس أحمر mijotées مع حليب جوز الهند و مع كركم."
+        },
+        "manual": {}
+      },
+      "price": 13,
+      "allergens": [],
+      "tags": [
+        "vegetarien",
+        "vegan",
+        "sans-gluten"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": []
+    },
+    {
+      "id": "r8d6",
+      "restaurantId": "r8",
+      "categoryId": "r8c2",
+      "name": {
+        "source": "Riz basmati",
+        "auto": {
+          "en": "Rice basmati",
+          "ar": "أرز بسمتي"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Riz basmati parfumé, cuit à la vapeur.",
+        "auto": {
+          "en": "Rice basmati parfumé, cuit à la steamed.",
+          "ar": "أرز بسمتي parfumé, cuit à la مطهو بالبخار."
+        },
+        "manual": {}
+      },
+      "price": 4,
+      "allergens": [],
+      "tags": [
+        "vegetarien",
+        "vegan",
+        "sans-gluten"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r8d7",
+      "restaurantId": "r8",
+      "categoryId": "r8c2",
+      "name": {
+        "source": "Naan au fromage",
+        "auto": {
+          "en": "Naan with cheese",
+          "ar": "نان مع جبن"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Pain naan garni de fromage fondant, cuit au tandoor.",
+        "auto": {
+          "en": "Bread naan garni of cheese fondant, cuit with tandoor.",
+          "ar": "خبز نان garni من جبن fondant, cuit مع tandoor."
+        },
+        "manual": {}
+      },
+      "price": 5.5,
+      "allergens": [
+        "gluten",
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r8d8",
+      "restaurantId": "r8",
+      "categoryId": "r8c2",
+      "name": {
+        "source": "Naan nature",
+        "auto": {
+          "en": "Naan nature",
+          "ar": "نان nature"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Pain naan traditionnel, cuit au four à charbon.",
+        "auto": {
+          "en": "Bread naan traditionnel, cuit oven-baked à charbon.",
+          "ar": "خبز نان traditionnel, cuit في الفرن à charbon."
+        },
+        "manual": {}
+      },
+      "price": 4,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 7,
+      "options": []
+    },
+    {
+      "id": "r8d9",
+      "restaurantId": "r8",
+      "categoryId": "r8c3",
+      "name": {
+        "source": "Lassi à la mangue",
+        "auto": {
+          "en": "Lassi à la mango",
+          "ar": "لاسي à la مانجو"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Boisson au yaourt et à la mangue fraîche.",
+        "auto": {
+          "en": "Boisson with yaourt and à la mango fraîche.",
+          "ar": "Boisson مع yaourt و à la مانجو fraîche."
+        },
+        "manual": {}
+      },
+      "price": 5,
+      "allergens": [
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 8,
+      "options": []
+    },
+    {
+      "id": "r8d10",
+      "restaurantId": "r8",
+      "categoryId": "r8c3",
+      "name": {
+        "source": "Gulab jamun",
+        "auto": {
+          "en": "Gulab jamun",
+          "ar": "جولاب جامون"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Petits beignets de lait sucrés, sirop à la cardamome.",
+        "auto": {
+          "en": "Petits fritters of lait sucrés, sirop à la cardamom.",
+          "ar": "Petits فطائر مقلية من lait sucrés, sirop à la هيل."
+        },
+        "manual": {}
+      },
+      "price": 6,
+      "allergens": [
+        "lait",
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 9,
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23f1e3e6%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fefbfb%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%22132%22%20r%3D%2246%22%20fill%3D%22%235b3326%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22118%22%20r%3D%2230%22%20fill%3D%22%23d99a86%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22214%22%20cy%3D%22176%22%20r%3D%2226%22%20fill%3D%22%23f0d7a8%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "options": []
+    },
+    {
+      "id": "r9d1",
+      "restaurantId": "r9",
+      "categoryId": "r9c1",
+      "name": {
+        "source": "Nems au poulet",
+        "auto": {
+          "en": "Spring rolls with chicken"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Rouleaux croustillants au poulet et vermicelles, sauce sucrée.",
+        "auto": {
+          "en": "Rouleaux croustillants with chicken and vermicelles, sauce sucrée."
+        },
+        "manual": {}
+      },
+      "price": 7,
+      "allergens": [
+        "gluten",
+        "oeufs"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r9d2",
+      "restaurantId": "r9",
+      "categoryId": "r9c1",
+      "name": {
+        "source": "Salade de papaye verte",
+        "auto": {
+          "en": "Salad of papaya verte"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Papaye verte râpée, cacahuètes, citron vert et piment.",
+        "auto": {
+          "en": "Papaya verte râpée, peanuts, lemon green and piment."
+        },
+        "manual": {}
+      },
+      "price": 8.5,
+      "allergens": [
+        "arachides"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan",
+        "epice"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r9d3",
+      "restaurantId": "r9",
+      "categoryId": "r9c2",
+      "name": {
+        "source": "Curry vert au poulet",
+        "auto": {
+          "en": "Curry green with chicken"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Poulet, aubergines thaïes et lait de coco, curry vert épicé.",
+        "auto": {
+          "en": "Chicken, aubergines thaïes and coconut milk, curry green spicy."
+        },
+        "manual": {}
+      },
+      "price": 16,
+      "allergens": [],
+      "tags": [
+        "epice"
+      ],
+      "available": true,
+      "dishOfDay": true,
+      "order": 2,
+      "options": []
+    },
+    {
+      "id": "r9d4",
+      "restaurantId": "r9",
+      "categoryId": "r9c2",
+      "name": {
+        "source": "Curry rouge aux crevettes",
+        "auto": {
+          "en": "Curry red with prawns"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Crevettes, lait de coco et curry rouge parfumé au basilic.",
+        "auto": {
+          "en": "Prawns, coconut milk and curry red parfumé with basil."
+        },
+        "manual": {}
+      },
+      "price": 18,
+      "allergens": [
+        "crustaces"
+      ],
+      "tags": [
+        "epice"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r9d5",
+      "restaurantId": "r9",
+      "categoryId": "r9c2",
+      "name": {
+        "source": "Pad thaï aux crevettes",
+        "auto": {
+          "en": "Pad thai with prawns"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Nouilles de riz sautées, crevettes, cacahuètes et citron vert.",
+        "auto": {
+          "en": "Noodles of rice stir-fried, prawns, peanuts and lemon green."
+        },
+        "manual": {}
+      },
+      "price": 15,
+      "allergens": [
+        "crustaces",
+        "arachides",
+        "oeufs"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": [
+        {
+          "id": "r9d5g1",
+          "name": {
+            "source": "Niveau d’épice",
+            "auto": {
+              "en": "Spice level"
+            },
+            "manual": {}
+          },
+          "required": true,
+          "multiple": false,
+          "choices": [
+            {
+              "id": "r9d5g1c1",
+              "label": {
+                "source": "Doux",
+                "auto": {
+                  "en": "Mild"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            },
+            {
+              "id": "r9d5g1c2",
+              "label": {
+                "source": "Moyen",
+                "auto": {
+                  "en": "Medium"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            },
+            {
+              "id": "r9d5g1c3",
+              "label": {
+                "source": "Très épicé",
+                "auto": {
+                  "en": "Very spicy"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r9d6",
+      "restaurantId": "r9",
+      "categoryId": "r9c2",
+      "name": {
+        "source": "Nouilles sautées au bœuf",
+        "auto": {
+          "en": "Noodles stir-fried with beef"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Nouilles de riz, bœuf sauté, légumes croquants et sauce soja.",
+        "auto": {
+          "en": "Noodles of rice, beef stir-fried, vegetables crunchy and sauce soja."
+        },
+        "manual": {}
+      },
+      "price": 15.5,
+      "allergens": [
+        "soja",
+        "gluten"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r9d7",
+      "restaurantId": "r9",
+      "categoryId": "r9c3",
+      "name": {
+        "source": "Riz au lait de coco",
+        "auto": {
+          "en": "Rice with coconut milk"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Riz gluant sucré au lait de coco et mangue.",
+        "auto": {
+          "en": "Rice gluant sucré with coconut milk and mango."
+        },
+        "manual": {}
+      },
+      "price": 7.5,
+      "allergens": [],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r9d8",
+      "restaurantId": "r9",
+      "categoryId": "r9c3",
+      "name": {
+        "source": "Beignets de banane",
+        "auto": {
+          "en": "Fritters of banana"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Beignets croustillants de banane, miel et sésame.",
+        "auto": {
+          "en": "Fritters croustillants of banana, honey and sésame."
+        },
+        "manual": {}
+      },
+      "price": 6.5,
+      "allergens": [
+        "gluten",
+        "sesame"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 7,
+      "options": []
+    },
+    {
+      "id": "r10d1",
+      "restaurantId": "r10",
+      "categoryId": "r10c1",
+      "name": {
+        "source": "Nems au porc",
+        "auto": {
+          "en": "Spring rolls with pork",
+          "zh": "春卷 配 猪肉",
+          "ko": "스프링롤 곁들인 돼지고기",
+          "ja": "春巻き 添え 豚肉",
+          "ru": "Спринг-роллы с свинина"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Rouleaux croustillants au porc et légumes, sauce aigre-douce.",
+        "auto": {
+          "en": "Rouleaux croustillants with pork and vegetables, sauce sweet and sour.",
+          "zh": "Rouleaux croustillants 配 猪肉 和 蔬菜, 酱 糖醋.",
+          "ko": "Rouleaux croustillants 곁들인 돼지고기 와 채소, 소스 새콤달콤한.",
+          "ja": "Rouleaux croustillants 添え 豚肉 と 野菜, ソース 甘酢.",
+          "ru": "Rouleaux croustillants с свинина и овощи, соус кисло-сладкий."
+        },
+        "manual": {}
+      },
+      "price": 6.5,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r10d2",
+      "restaurantId": "r10",
+      "categoryId": "r10c1",
+      "name": {
+        "source": "Raviolis vapeur aux crevettes",
+        "auto": {
+          "en": "Dumplings steamed with prawns",
+          "zh": "饺子 清蒸 配 虾",
+          "ko": "만두 찜 곁들인 새우",
+          "ja": "餃子 蒸し 添え エビ",
+          "ru": "Равиоли на пару с креветки"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Raviolis vapeur farcis aux crevettes et ciboule.",
+        "auto": {
+          "en": "Dumplings steamed farcis with prawns and ciboule.",
+          "zh": "饺子 清蒸 farcis 配 虾 和 ciboule.",
+          "ko": "만두 찜 farcis 곁들인 새우 와 ciboule.",
+          "ja": "餃子 蒸し farcis 添え エビ と ciboule.",
+          "ru": "Равиоли на пару farcis с креветки и ciboule."
+        },
+        "manual": {}
+      },
+      "price": 8.5,
+      "allergens": [
+        "crustaces",
+        "gluten"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r10d3",
+      "restaurantId": "r10",
+      "categoryId": "r10c2",
+      "name": {
+        "source": "Canard laqué",
+        "auto": {
+          "en": "Duck glazed",
+          "zh": "鸭肉 脆皮",
+          "ko": "오리 유약을 바른",
+          "ja": "鴨 つや焼き",
+          "ru": "Утка глазированный"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Canard laqué croustillant, sauce hoisin et crêpes chinoises.",
+        "auto": {
+          "en": "Duck glazed crispy, sauce hoisin and crêpes chinoises.",
+          "zh": "鸭肉 脆皮 香脆, 酱 hoisin 和 crêpes chinoises.",
+          "ko": "오리 유약을 바른 바삭한, 소스 hoisin 와 crêpes chinoises.",
+          "ja": "鴨 つや焼き カリカリ, ソース hoisin と crêpes chinoises.",
+          "ru": "Утка глазированный хрустящий, соус hoisin и crêpes chinoises."
+        },
+        "manual": {}
+      },
+      "price": 22,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": true,
+      "order": 2,
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%22132%22%20r%3D%2246%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22118%22%20r%3D%2230%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22214%22%20cy%3D%22176%22%20r%3D%2226%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "options": []
+    },
+    {
+      "id": "r10d4",
+      "restaurantId": "r10",
+      "categoryId": "r10c2",
+      "name": {
+        "source": "Bœuf sauce aigre-douce",
+        "auto": {
+          "en": "Beef sauce sweet and sour",
+          "zh": "牛肉 酱 糖醋",
+          "ko": "소고기 소스 새콤달콤한",
+          "ja": "牛肉 ソース 甘酢",
+          "ru": "Говядина соус кисло-сладкий"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Bœuf sauté, poivrons et ananas, sauce aigre-douce.",
+        "auto": {
+          "en": "Beef stir-fried, poivrons and pineapple, sauce sweet and sour.",
+          "zh": "牛肉 炒, poivrons 和 菠萝, 酱 糖醋.",
+          "ko": "소고기 볶음, poivrons 와 파인애플, 소스 새콤달콤한.",
+          "ja": "牛肉 炒め, poivrons と パイナップル, ソース 甘酢.",
+          "ru": "Говядина обжаренный, poivrons и ананас, соус кисло-сладкий."
+        },
+        "manual": {}
+      },
+      "price": 17,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r10d5",
+      "restaurantId": "r10",
+      "categoryId": "r10c2",
+      "name": {
+        "source": "Poulet sauce aigre-douce",
+        "auto": {
+          "en": "Chicken sauce sweet and sour",
+          "zh": "鸡肉 酱 糖醋",
+          "ko": "닭고기 소스 새콤달콤한",
+          "ja": "鶏肉 ソース 甘酢",
+          "ru": "Курица соус кисло-сладкий"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Poulet croustillant, sauce aigre-douce et légumes.",
+        "auto": {
+          "en": "Chicken crispy, sauce sweet and sour and vegetables.",
+          "zh": "鸡肉 香脆, 酱 糖醋 和 蔬菜.",
+          "ko": "닭고기 바삭한, 소스 새콤달콤한 와 채소.",
+          "ja": "鶏肉 カリカリ, ソース 甘酢 と 野菜.",
+          "ru": "Курица хрустящий, соус кисло-сладкий и овощи."
+        },
+        "manual": {}
+      },
+      "price": 15.5,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": []
+    },
+    {
+      "id": "r10d6",
+      "restaurantId": "r10",
+      "categoryId": "r10c2",
+      "name": {
+        "source": "Riz cantonais",
+        "auto": {
+          "en": "Rice cantonese",
+          "zh": "米饭 广式",
+          "ko": "밥 광둥식",
+          "ja": "ご飯 広東風",
+          "ru": "Рис кантонский"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Riz sauté, œuf, jambon et petits légumes.",
+        "auto": {
+          "en": "Rice stir-fried, egg, ham and petits vegetables.",
+          "zh": "米饭 炒, 鸡蛋, 火腿 和 petits 蔬菜.",
+          "ko": "밥 볶음, 계란, 햄 와 petits 채소.",
+          "ja": "ご飯 炒め, 卵, ハム と petits 野菜.",
+          "ru": "Рис обжаренный, яйцо, ветчина и petits овощи."
+        },
+        "manual": {}
+      },
+      "price": 9,
+      "allergens": [
+        "oeufs",
+        "soja"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r10d7",
+      "restaurantId": "r10",
+      "categoryId": "r10c2",
+      "name": {
+        "source": "Nouilles sautées aux légumes",
+        "auto": {
+          "en": "Noodles stir-fried with vegetables",
+          "zh": "面条 炒 配 蔬菜",
+          "ko": "면 볶은 곁들인 채소",
+          "ja": "麺 炒め 添え 野菜",
+          "ru": "Лапша обжаренные с овощи"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Nouilles de blé sautées, légumes croquants et sauce soja.",
+        "auto": {
+          "en": "Noodles of wheat stir-fried, vegetables crunchy and sauce soja.",
+          "zh": "面条 小麦 炒, 蔬菜 爽脆 和 酱 soja.",
+          "ko": "면 밀 볶은, 채소 아삭한 와 소스 soja.",
+          "ja": "麺 の 小麦 炒め, 野菜 シャキシャキ と ソース soja.",
+          "ru": "Лапша из пшеница обжаренные, овощи хрустящие и соус soja."
+        },
+        "manual": {}
+      },
+      "price": 13,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r10d8",
+      "restaurantId": "r10",
+      "categoryId": "r10c3",
+      "name": {
+        "source": "Beignets de sésame",
+        "auto": {
+          "en": "Fritters of sésame",
+          "zh": "油炸饼 sésame",
+          "ko": "튀김 sésame",
+          "ja": "揚げ物 の sésame",
+          "ru": "Пончики из sésame"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Boules de sésame frites, farcies de pâte de haricot rouge.",
+        "auto": {
+          "en": "Scoops of sésame fries, farcies of pâte of haricot red.",
+          "zh": "球 sésame 薯条, farcies pâte haricot 红.",
+          "ko": "스쿱 sésame 감자튀김, farcies pâte haricot 레드.",
+          "ja": "スクープ の sésame フライドポテト, farcies の pâte の haricot 赤.",
+          "ru": "Шарика из sésame картофель фри, farcies из pâte из haricot красный."
+        },
+        "manual": {}
+      },
+      "price": 6,
+      "allergens": [
+        "sesame",
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 7,
+      "options": []
+    },
+    {
+      "id": "r11d1",
+      "restaurantId": "r11",
+      "categoryId": "r11c1",
+      "name": {
+        "source": "Frites maison",
+        "auto": {
+          "en": "Homemade fries",
+          "es": "Patatas fritas caseras",
+          "pt": "Batatas fritas caseiras",
+          "nl": "Huisgemaakte friet"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Frites maison croustillantes, sel de mer.",
+        "auto": {
+          "en": "Homemade fries croustillantes, sel of mer.",
+          "es": "Patatas fritas caseras croustillantes, sel de mer.",
+          "pt": "Batatas fritas caseiras croustillantes, sel de mer.",
+          "nl": "Huisgemaakte friet croustillantes, sel van mer."
+        },
+        "manual": {}
+      },
+      "price": 4.5,
+      "allergens": [],
+      "tags": [
+        "vegetarien",
+        "vegan",
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r11d2",
+      "restaurantId": "r11",
+      "categoryId": "r11c1",
+      "name": {
+        "source": "Rondelles d’oignon frites",
+        "auto": {
+          "en": "Onion rings fries",
+          "es": "Aros de cebolla patatas fritas",
+          "pt": "Argolas de cebola batatas fritas",
+          "nl": "Uienringen friet"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Rondelles d’oignon panées et frites, sauce burger.",
+        "auto": {
+          "en": "Onion rings panées and fries, sauce burger.",
+          "es": "Aros de cebolla panées y patatas fritas, salsa hamburguesa.",
+          "pt": "Argolas de cebola panées e batatas fritas, molho hambúrguer.",
+          "nl": "Uienringen panées en friet, saus burger."
+        },
+        "manual": {}
+      },
+      "price": 6,
+      "allergens": [
+        "gluten",
+        "oeufs",
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r11d3",
+      "restaurantId": "r11",
+      "categoryId": "r11c2",
+      "name": {
+        "source": "Cheeseburger classique",
+        "auto": {
+          "en": "Cheeseburger classique",
+          "es": "Cheeseburger classique",
+          "pt": "Cheeseburger classique",
+          "nl": "Cheeseburger classique"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Steak haché, cheddar fondant, pain brioché et sauce burger.",
+        "auto": {
+          "en": "Steak haché, cheddar fondant, bread brioché and sauce burger.",
+          "es": "Filete haché, cheddar fondant, pan brioché y salsa hamburguesa.",
+          "pt": "Bife haché, cheddar fondant, pão brioché e molho hambúrguer.",
+          "nl": "Steak haché, cheddar fondant, brood brioché en saus burger."
+        },
+        "manual": {}
+      },
+      "price": 13.5,
+      "allergens": [
+        "gluten",
+        "lait",
+        "oeufs"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 2,
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22176%22%20cy%3D%22118%22%20r%3D%2234%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22226%22%20cy%3D%22140%22%20r%3D%2240%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22188%22%20cy%3D%22180%22%20r%3D%2230%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "options": [
+        {
+          "id": "r11d3g1",
+          "name": {
+            "source": "Cuisson",
+            "auto": {
+              "en": "Cooking",
+              "es": "Punto",
+              "pt": "Ponto",
+              "nl": "Bakwijze"
+            },
+            "manual": {}
+          },
+          "required": true,
+          "multiple": false,
+          "choices": [
+            {
+              "id": "r11d3g1c1",
+              "label": {
+                "source": "Saignant",
+                "auto": {
+                  "en": "Rare",
+                  "es": "Poco hecho",
+                  "pt": "Mal passado",
+                  "nl": "Rood"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            },
+            {
+              "id": "r11d3g1c2",
+              "label": {
+                "source": "À point",
+                "auto": {
+                  "en": "Medium",
+                  "es": "Al punto",
+                  "pt": "Ao ponto",
+                  "nl": "Medium"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            },
+            {
+              "id": "r11d3g1c3",
+              "label": {
+                "source": "Bien cuit",
+                "auto": {
+                  "en": "Well done",
+                  "es": "Muy hecho",
+                  "pt": "Bem passado",
+                  "nl": "Doorbakken"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r11d4",
+      "restaurantId": "r11",
+      "categoryId": "r11c2",
+      "name": {
+        "source": "Burger bacon et oignons caramélisés",
+        "auto": {
+          "en": "Burger bacon and onions caramelized",
+          "es": "Hamburguesa panceta y cebollas caramelizadas",
+          "pt": "Hambúrguer bacon e cebolas caramelizadas",
+          "nl": "Burger bacon en uien gekarameliseerd"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Steak haché, bacon croustillant, oignons caramélisés et cheddar.",
+        "auto": {
+          "en": "Steak haché, bacon crispy, onions caramelized and cheddar.",
+          "es": "Filete haché, panceta crujiente, cebollas caramelizadas y cheddar.",
+          "pt": "Bife haché, bacon crocante, cebolas caramelizadas e cheddar.",
+          "nl": "Steak haché, bacon krokant, uien gekarameliseerd en cheddar."
+        },
+        "manual": {}
+      },
+      "price": 15.5,
+      "allergens": [
+        "gluten",
+        "lait"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": true,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r11d5",
+      "restaurantId": "r11",
+      "categoryId": "r11c2",
+      "name": {
+        "source": "Burger au poulet croustillant",
+        "auto": {
+          "en": "Burger with chicken crispy",
+          "es": "Hamburguesa con pollo crujiente",
+          "pt": "Hambúrguer com frango crocante",
+          "nl": "Burger met kip krokant"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Poulet pané croustillant, salade, tomate et sauce burger.",
+        "auto": {
+          "en": "Chicken pané crispy, salad, tomato and sauce burger.",
+          "es": "Pollo pané crujiente, ensalada, tomate y salsa hamburguesa.",
+          "pt": "Frango pané crocante, salada, tomate e molho hambúrguer.",
+          "nl": "Kip pané krokant, salade, tomaat en saus burger."
+        },
+        "manual": {}
+      },
+      "price": 14,
+      "allergens": [
+        "gluten",
+        "oeufs"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": []
+    },
+    {
+      "id": "r11d6",
+      "restaurantId": "r11",
+      "categoryId": "r11c2",
+      "name": {
+        "source": "Burger végétarien",
+        "auto": {
+          "en": "Burger végétarien",
+          "es": "Hamburguesa végétarien",
+          "pt": "Hambúrguer végétarien",
+          "nl": "Burger végétarien"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Galette de légumes, cheddar et sauce burger, pain brioché.",
+        "auto": {
+          "en": "Galette of vegetables, cheddar and sauce burger, bread brioché.",
+          "es": "Galette de verduras, cheddar y salsa hamburguesa, pan brioché.",
+          "pt": "Galette de legumes, cheddar e molho hambúrguer, pão brioché.",
+          "nl": "Galette van groenten, cheddar en saus burger, brood brioché."
+        },
+        "manual": {}
+      },
+      "price": 13,
+      "allergens": [
+        "gluten",
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r11d7",
+      "restaurantId": "r11",
+      "categoryId": "r11c3",
+      "name": {
+        "source": "Cookie au chocolat",
+        "auto": {
+          "en": "Cookie with chocolate",
+          "es": "Galleta con chocolate",
+          "pt": "Biscoito com chocolate",
+          "nl": "Koekje met chocolade"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Cookie moelleux au chocolat noir.",
+        "auto": {
+          "en": "Cookie moelleux with chocolate dark.",
+          "es": "Galleta moelleux con chocolate negro.",
+          "pt": "Biscoito moelleux com chocolate preto.",
+          "nl": "Koekje moelleux met chocolade puur."
+        },
+        "manual": {}
+      },
+      "price": 4.5,
+      "allergens": [
+        "gluten",
+        "oeufs",
+        "lait"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r11d8",
+      "restaurantId": "r11",
+      "categoryId": "r11c4",
+      "name": {
+        "source": "Milkshake vanille",
+        "auto": {
+          "en": "Milkshake vanilla",
+          "es": "Batido vainilla",
+          "pt": "Batido baunilha",
+          "nl": "Milkshake vanille"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Milkshake glacé à la vanille.",
+        "auto": {
+          "en": "Milkshake ice cream à la vanilla.",
+          "es": "Batido helado à la vainilla.",
+          "pt": "Batido gelado à la baunilha.",
+          "nl": "Milkshake ijs à la vanille."
+        },
+        "manual": {}
+      },
+      "price": 6,
+      "allergens": [
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 7,
+      "options": []
+    },
+    {
+      "id": "r12d1",
+      "restaurantId": "r12",
+      "categoryId": "r12c1",
+      "name": {
+        "source": "Gyoza au porc",
+        "auto": {
+          "en": "Gyoza with pork",
+          "zh": "煎饺 配 猪肉"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Raviolis japonais poêlés, farcis au porc et au chou.",
+        "auto": {
+          "en": "Dumplings japanese poêlés, farcis with pork and with chou.",
+          "zh": "饺子 日式 poêlés, farcis 配 猪肉 和 配 chou."
+        },
+        "manual": {}
+      },
+      "price": 7.5,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r12d2",
+      "restaurantId": "r12",
+      "categoryId": "r12c1",
+      "name": {
+        "source": "Edamame",
+        "auto": {
+          "en": "Edamame",
+          "zh": "毛豆"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Fèves de soja vapeur, fleur de sel.",
+        "auto": {
+          "en": "Fèves of soja steamed, fleur de sel.",
+          "zh": "Fèves soja 清蒸, 盐之花."
+        },
+        "manual": {}
+      },
+      "price": 4.5,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan",
+        "sans-gluten"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r12d3",
+      "restaurantId": "r12",
+      "categoryId": "r12c2",
+      "name": {
+        "source": "Ramen au porc et œuf mariné",
+        "auto": {
+          "en": "Ramen with pork and marinated egg",
+          "zh": "拉面 配 猪肉 和 溏心蛋"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Bouillon tonkotsu, porc confit, œuf mariné et nouilles fraîches.",
+        "auto": {
+          "en": "Bouillon tonkotsu, pork confit, marinated egg and noodles fraîches.",
+          "zh": "Bouillon tonkotsu, 猪肉 油封, 溏心蛋 和 面条 fraîches."
+        },
+        "manual": {}
+      },
+      "price": 15,
+      "allergens": [
+        "gluten",
+        "oeufs",
+        "soja"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": true,
+      "order": 2,
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23efe2d2%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbf6ef%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%22132%22%20r%3D%2246%22%20fill%3D%22%238a4b2a%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22118%22%20r%3D%2230%22%20fill%3D%22%23c98243%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22214%22%20cy%3D%22176%22%20r%3D%2226%22%20fill%3D%22%235d7a3a%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "options": []
+    },
+    {
+      "id": "r12d4",
+      "restaurantId": "r12",
+      "categoryId": "r12c2",
+      "name": {
+        "source": "Ramen miso au poulet",
+        "auto": {
+          "en": "Ramen miso with chicken",
+          "zh": "拉面 味噌 配 鸡肉"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Bouillon miso, poulet grillé, maïs et nouilles fraîches.",
+        "auto": {
+          "en": "Bouillon miso, chicken grilled, maïs and noodles fraîches.",
+          "zh": "Bouillon 味噌, 鸡肉 烤, maïs 和 面条 fraîches."
+        },
+        "manual": {}
+      },
+      "price": 14,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r12d5",
+      "restaurantId": "r12",
+      "categoryId": "r12c2",
+      "name": {
+        "source": "Ramen végétarien",
+        "auto": {
+          "en": "Ramen végétarien",
+          "zh": "拉面 végétarien"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Bouillon miso végétal, tofu, légumes et nouilles fraîches.",
+        "auto": {
+          "en": "Bouillon miso végétal, tofu, vegetables and noodles fraîches.",
+          "zh": "Bouillon 味噌 végétal, 豆腐, 蔬菜 和 面条 fraîches."
+        },
+        "manual": {}
+      },
+      "price": 13.5,
+      "allergens": [
+        "gluten",
+        "soja"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": []
+    },
+    {
+      "id": "r12d6",
+      "restaurantId": "r12",
+      "categoryId": "r12c2",
+      "name": {
+        "source": "Riz au curry japonais",
+        "auto": {
+          "en": "Rice with curry japanese",
+          "zh": "米饭 配 咖喱 日式"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Riz, curry japonais doux et légumes mijotés.",
+        "auto": {
+          "en": "Rice, curry japanese mild and vegetables slow-cooked.",
+          "zh": "米饭, 咖喱 日式 微辣 和 蔬菜 慢炖."
+        },
+        "manual": {}
+      },
+      "price": 12,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r12d7",
+      "restaurantId": "r12",
+      "categoryId": "r12c3",
+      "name": {
+        "source": "Mochi glacé",
+        "auto": {
+          "en": "Mochi ice cream",
+          "zh": "麻糬 冰淇淋"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Mochi fourré à la glace vanille et matcha.",
+        "auto": {
+          "en": "Mochi fourré à la ice cream vanilla and matcha.",
+          "zh": "麻糬 fourré à la 冰淇淋 香草 和 抹茶."
+        },
+        "manual": {}
+      },
+      "price": 6.5,
+      "allergens": [
+        "lait",
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r13d1",
+      "restaurantId": "r13",
+      "categoryId": "r13c1",
+      "name": {
+        "source": "Bruschetta tomate et basilic",
+        "auto": {
+          "en": "Bruschetta tomato and basil",
+          "es": "Bruschetta tomate y albahaca",
+          "de": "Bruschetta tomate und basilikum",
+          "pt": "Bruschetta tomate e manjericão"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Pain grillé, tomates fraîches, basilic et huile d’olive.",
+        "auto": {
+          "en": "Bread grilled, tomatoes fraîches, basil and olive oil.",
+          "es": "Pan a la parrilla, tomates fraîches, albahaca y aceite de oliva.",
+          "de": "Brot gegrillt, tomaten fraîches, basilikum und olivenöl.",
+          "pt": "Pão grelhado, tomates fraîches, manjericão e azeite."
+        },
+        "manual": {}
+      },
+      "price": 7,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r13d2",
+      "restaurantId": "r13",
+      "categoryId": "r13c1",
+      "name": {
+        "source": "Burrata et jambon",
+        "auto": {
+          "en": "Burrata and ham",
+          "es": "Burrata y jamón",
+          "de": "Burrata und schinken",
+          "pt": "Burrata e fiambre"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Burrata crémeuse et jambon affiné.",
+        "auto": {
+          "en": "Burrata crémeuse and ham affiné.",
+          "es": "Burrata crémeuse y jamón affiné.",
+          "de": "Burrata crémeuse und schinken affiné.",
+          "pt": "Burrata crémeuse e fiambre affiné."
+        },
+        "manual": {}
+      },
+      "price": 13,
+      "allergens": [
+        "lait"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r13d3",
+      "restaurantId": "r13",
+      "categoryId": "r13c2",
+      "name": {
+        "source": "Pizza margherita",
+        "auto": {
+          "en": "Pizza margherita",
+          "es": "Pizza margarita",
+          "de": "Pizza margherita",
+          "pt": "Pizza margherita"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Tomate San Marzano, mozzarella fior di latte et basilic frais.",
+        "auto": {
+          "en": "Tomato San Marzano, mozzarella fior di latte and basil fresh.",
+          "es": "Tomate San Marzano, mozzarella fior di latte y albahaca fresco.",
+          "de": "Tomate San Marzano, mozzarella fior di latte und basilikum frisch.",
+          "pt": "Tomate San Marzano, mozzarella fior di latte e manjericão fresco."
+        },
+        "manual": {}
+      },
+      "price": 12,
+      "allergens": [
+        "gluten",
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": true,
+      "order": 2,
+      "photo": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20300%22%3E%3Crect%20width%3D%22400%22%20height%3D%22300%22%20fill%3D%22%23e3ecdb%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22%23fbfdf8%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%22112%22%20fill%3D%22none%22%20stroke%3D%22%230000000f%22%20stroke-width%3D%222%22%2F%3E%3Ccircle%20cx%3D%22200%22%20cy%3D%22150%22%20r%3D%2292%22%20fill%3D%22none%22%20stroke%3D%22%2300000010%22%20stroke-width%3D%221.5%22%2F%3E%3Cg%3E%3Ccircle%20cx%3D%22168%22%20cy%3D%22132%22%20r%3D%2246%22%20fill%3D%22%235d8c3e%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22232%22%20cy%3D%22118%22%20r%3D%2230%22%20fill%3D%22%23a8c15c%22%20opacity%3D%22.92%22%2F%3E%3Ccircle%20cx%3D%22214%22%20cy%3D%22176%22%20r%3D%2226%22%20fill%3D%22%23d8663f%22%20opacity%3D%22.92%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+      "options": []
+    },
+    {
+      "id": "r13d4",
+      "restaurantId": "r13",
+      "categoryId": "r13c2",
+      "name": {
+        "source": "Pizza napolitaine",
+        "auto": {
+          "en": "Pizza neapolitan",
+          "es": "Pizza napolitana",
+          "de": "Pizza neapolitanisch",
+          "pt": "Pizza napolitana"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Tomate, mozzarella, anchois, câpres et origan.",
+        "auto": {
+          "en": "Tomato, mozzarella, anchovies, capers and oregano.",
+          "es": "Tomate, mozzarella, anchoas, alcaparras y orégano.",
+          "de": "Tomate, mozzarella, sardellen, kapern und oregano.",
+          "pt": "Tomate, mozzarella, anchovas, alcaparras e orégão."
+        },
+        "manual": {}
+      },
+      "price": 14,
+      "allergens": [
+        "gluten",
+        "lait",
+        "poissons"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r13d5",
+      "restaurantId": "r13",
+      "categoryId": "r13c2",
+      "name": {
+        "source": "Pizza reine",
+        "auto": {
+          "en": "Pizza ham & mushroom",
+          "es": "Pizza reina",
+          "de": "Pizza königin",
+          "pt": "Pizza rainha"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Tomate, mozzarella, jambon et champignons.",
+        "auto": {
+          "en": "Tomato, mozzarella, ham and mushrooms.",
+          "es": "Tomate, mozzarella, jamón y setas.",
+          "de": "Tomate, mozzarella, schinken und pilze.",
+          "pt": "Tomate, mozzarella, fiambre e cogumelos."
+        },
+        "manual": {}
+      },
+      "price": 14.5,
+      "allergens": [
+        "gluten",
+        "lait"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": []
+    },
+    {
+      "id": "r13d6",
+      "restaurantId": "r13",
+      "categoryId": "r13c2",
+      "name": {
+        "source": "Pizza calzone",
+        "auto": {
+          "en": "Pizza calzone",
+          "es": "Pizza calzone",
+          "de": "Pizza calzone",
+          "pt": "Pizza calzone"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Pizza pliée, mozzarella, jambon et champignons.",
+        "auto": {
+          "en": "Pizza pliée, mozzarella, ham and mushrooms.",
+          "es": "Pizza pliée, mozzarella, jamón y setas.",
+          "de": "Pizza pliée, mozzarella, schinken und pilze.",
+          "pt": "Pizza pliée, mozzarella, fiambre e cogumelos."
+        },
+        "manual": {}
+      },
+      "price": 15,
+      "allergens": [
+        "gluten",
+        "lait"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r13d7",
+      "restaurantId": "r13",
+      "categoryId": "r13c3",
+      "name": {
+        "source": "Tiramisu",
+        "auto": {
+          "en": "Tiramisu",
+          "es": "Tiramisu",
+          "de": "Tiramisu",
+          "pt": "Tiramisu"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Mascarpone, café et cacao.",
+        "auto": {
+          "en": "Mascarpone, coffee and cacao.",
+          "es": "Mascarpone, café y cacao.",
+          "de": "Mascarpone, kaffee und cacao.",
+          "pt": "Mascarpone, café e cacao."
+        },
+        "manual": {}
+      },
+      "price": 7.5,
+      "allergens": [
+        "lait",
+        "oeufs",
+        "gluten"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r13d8",
+      "restaurantId": "r13",
+      "categoryId": "r13c3",
+      "name": {
+        "source": "Panna cotta",
+        "auto": {
+          "en": "Panna cotta",
+          "es": "Panna cotta",
+          "de": "Panna Cotta",
+          "pt": "Panna cotta"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Crème cuite vanille, coulis de fruits rouges.",
+        "auto": {
+          "en": "Cream cuite vanilla, coulis of fruits rouges.",
+          "es": "Nata cuite vainilla, coulis de frutas rouges.",
+          "de": "Sahne cuite vanille, coulis von früchte rouges.",
+          "pt": "Natas cuite baunilha, coulis de frutas rouges."
+        },
+        "manual": {}
+      },
+      "price": 7,
+      "allergens": [
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 7,
+      "options": []
+    },
+    {
+      "id": "r14d1",
+      "restaurantId": "r14",
+      "categoryId": "r14c1",
+      "name": {
+        "source": "Samoussas aux pois chiches",
+        "auto": {
+          "en": "Samosas with chickpeas"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Samoussas croustillants farcis de pois chiches.",
+        "auto": {
+          "en": "Samosas croustillants farcis of chickpeas."
+        },
+        "manual": {}
+      },
+      "price": 6,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r14d2",
+      "restaurantId": "r14",
+      "categoryId": "r14c1",
+      "name": {
+        "source": "Paneer tikka",
+        "auto": {
+          "en": "Paneer tikka"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Fromage paneer mariné et grillé au tandoor.",
+        "auto": {
+          "en": "Cheese paneer marinated and grilled with tandoor."
+        },
+        "manual": {}
+      },
+      "price": 10.5,
+      "allergens": [
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r14d3",
+      "restaurantId": "r14",
+      "categoryId": "r14c2",
+      "name": {
+        "source": "Curry de légumes",
+        "auto": {
+          "en": "Curry of vegetables"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Légumes de saison mijotés dans une sauce épicée.",
+        "auto": {
+          "en": "Seasonal vegetables slow-cooked dans une spicy sauce."
+        },
+        "manual": {}
+      },
+      "price": 13,
+      "allergens": [],
+      "tags": [
+        "vegetarien",
+        "vegan",
+        "sans-gluten"
+      ],
+      "available": true,
+      "dishOfDay": true,
+      "order": 2,
+      "options": []
+    },
+    {
+      "id": "r14d4",
+      "restaurantId": "r14",
+      "categoryId": "r14c2",
+      "name": {
+        "source": "Riz biryani au poulet",
+        "auto": {
+          "en": "Rice biryani with chicken"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Riz basmati parfumé, poulet mariné et épices biryani.",
+        "auto": {
+          "en": "Rice basmati parfumé, chicken marinated and épices biryani."
+        },
+        "manual": {}
+      },
+      "price": 15.5,
+      "allergens": [],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r14d5",
+      "restaurantId": "r14",
+      "categoryId": "r14c2",
+      "name": {
+        "source": "Dahl de lentilles corail",
+        "auto": {
+          "en": "Dal of lentils red"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Lentilles corail mijotées au curcuma et cumin.",
+        "auto": {
+          "en": "Lentils red mijotées with turmeric and cumin."
+        },
+        "manual": {}
+      },
+      "price": 11,
+      "allergens": [],
+      "tags": [
+        "vegetarien",
+        "vegan",
+        "sans-gluten"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": []
+    },
+    {
+      "id": "r14d6",
+      "restaurantId": "r14",
+      "categoryId": "r14c2",
+      "name": {
+        "source": "Naan à l’ail",
+        "auto": {
+          "en": "Naan à l’ail"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Pain naan garni d’ail et de coriandre fraîche.",
+        "auto": {
+          "en": "Bread naan garni d’ail and of coriander fraîche."
+        },
+        "manual": {}
+      },
+      "price": 4.5,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r14d7",
+      "restaurantId": "r14",
+      "categoryId": "r14c3",
+      "name": {
+        "source": "Riz au lait à la cardamome",
+        "auto": {
+          "en": "Rice with lait à la cardamom"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Riz au lait parfumé à la cardamome et pistaches.",
+        "auto": {
+          "en": "Rice with lait parfumé à la cardamom and pistachios."
+        },
+        "manual": {}
+      },
+      "price": 5.5,
+      "allergens": [
+        "lait",
+        "fruits-a-coque"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r15d1",
+      "restaurantId": "r15",
+      "categoryId": "r15c1",
+      "name": {
+        "source": "Dim sum assortis",
+        "auto": {
+          "en": "Dim sum assorted",
+          "zh": "点心 什锦"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Sélection de raviolis vapeur et beignets, sauce soja.",
+        "auto": {
+          "en": "Selection of dumplings steamed and fritters, sauce soja.",
+          "zh": "精选 饺子 清蒸 和 油炸饼, 酱 soja."
+        },
+        "manual": {}
+      },
+      "price": 12,
+      "allergens": [
+        "gluten",
+        "crustaces",
+        "soja"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r15d2",
+      "restaurantId": "r15",
+      "categoryId": "r15c1",
+      "name": {
+        "source": "Raviolis vapeur au poulet",
+        "auto": {
+          "en": "Dumplings steamed with chicken",
+          "zh": "饺子 清蒸 配 鸡肉"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Raviolis vapeur farcis au poulet et ciboule.",
+        "auto": {
+          "en": "Dumplings steamed farcis with chicken and ciboule.",
+          "zh": "饺子 清蒸 farcis 配 鸡肉 和 ciboule."
+        },
+        "manual": {}
+      },
+      "price": 8,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r15d3",
+      "restaurantId": "r15",
+      "categoryId": "r15c1",
+      "name": {
+        "source": "Nems aux légumes",
+        "auto": {
+          "en": "Spring rolls with vegetables",
+          "zh": "春卷 配 蔬菜"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Rouleaux croustillants aux légumes, sauce aigre-douce.",
+        "auto": {
+          "en": "Rouleaux croustillants with vegetables, sauce sweet and sour.",
+          "zh": "Rouleaux croustillants 配 蔬菜, 酱 糖醋."
+        },
+        "manual": {}
+      },
+      "price": 6.5,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 2,
+      "options": []
+    },
+    {
+      "id": "r15d4",
+      "restaurantId": "r15",
+      "categoryId": "r15c2",
+      "name": {
+        "source": "Porc au caramel",
+        "auto": {
+          "en": "Pork with caramel",
+          "zh": "猪肉 配 焦糖"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Porc mijoté sauce caramel et gingembre.",
+        "auto": {
+          "en": "Pork slow-cooked sauce caramel and ginger.",
+          "zh": "猪肉 慢炖 酱 焦糖 和 姜."
+        },
+        "manual": {}
+      },
+      "price": 16,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": true,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r15d5",
+      "restaurantId": "r15",
+      "categoryId": "r15c2",
+      "name": {
+        "source": "Bœuf au gingembre",
+        "auto": {
+          "en": "Beef with ginger",
+          "zh": "牛肉 配 姜"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Bœuf sauté, gingembre frais et oignons verts.",
+        "auto": {
+          "en": "Beef stir-fried, ginger fresh and onions verts.",
+          "zh": "牛肉 炒, 姜 新鲜 和 洋葱 verts."
+        },
+        "manual": {}
+      },
+      "price": 17.5,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": []
+    },
+    {
+      "id": "r15d6",
+      "restaurantId": "r15",
+      "categoryId": "r15c2",
+      "name": {
+        "source": "Riz sauté aux crevettes",
+        "auto": {
+          "en": "Rice stir-fried with prawns",
+          "zh": "米饭 炒 配 虾"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Riz sauté, crevettes, œuf et petits légumes.",
+        "auto": {
+          "en": "Rice stir-fried, prawns, egg and petits vegetables.",
+          "zh": "米饭 炒, 虾, 鸡蛋 和 petits 蔬菜."
+        },
+        "manual": {}
+      },
+      "price": 14,
+      "allergens": [
+        "crustaces",
+        "oeufs",
+        "soja"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r15d7",
+      "restaurantId": "r15",
+      "categoryId": "r15c3",
+      "name": {
+        "source": "Beignets à l’ananas",
+        "auto": {
+          "en": "Fritters à l’ananas",
+          "zh": "油炸饼 à l’ananas"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Beignets croustillants d’ananas, miel.",
+        "auto": {
+          "en": "Fritters croustillants d’ananas, honey.",
+          "zh": "油炸饼 croustillants d’ananas, 蜂蜜."
+        },
+        "manual": {}
+      },
+      "price": 6,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r16d1",
+      "restaurantId": "r16",
+      "categoryId": "r16c1",
+      "name": {
+        "source": "Houmous et falafel",
+        "auto": {
+          "en": "Hummus and falafel",
+          "de": "Hummus und falafel",
+          "nl": "Hummus en falafel"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Houmous maison, falafel croustillants et pain pita.",
+        "auto": {
+          "en": "Hummus homemade, falafel croustillants and bread pita.",
+          "de": "Hummus hausgemacht, falafel croustillants und brot pita.",
+          "nl": "Hummus huisgemaakt, falafel croustillants en brood pita."
+        },
+        "manual": {}
+      },
+      "price": 9.5,
+      "allergens": [
+        "gluten",
+        "sesame"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r16d2",
+      "restaurantId": "r16",
+      "categoryId": "r16c1",
+      "name": {
+        "source": "Salade de quinoa",
+        "auto": {
+          "en": "Salad of quinoa",
+          "de": "Salat von quinoa",
+          "nl": "Salade van quinoa"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Quinoa, légumes croquants et vinaigrette au citron.",
+        "auto": {
+          "en": "Quinoa, vegetables crunchy and vinaigrette with lemon.",
+          "de": "Quinoa, gemüse knackig und vinaigrette mit zitrone.",
+          "nl": "Quinoa, groenten knapperig en vinaigrette met citroen."
+        },
+        "manual": {}
+      },
+      "price": 11,
+      "allergens": [],
+      "tags": [
+        "vegetarien",
+        "vegan",
+        "sans-gluten"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r16d3",
+      "restaurantId": "r16",
+      "categoryId": "r16c2",
+      "name": {
+        "source": "Risotto aux champignons",
+        "auto": {
+          "en": "Risotto with mushrooms",
+          "de": "Risotto mit pilze",
+          "nl": "Risotto met champignons"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Riz carnaroli crémeux, champignons de saison et parmesan.",
+        "auto": {
+          "en": "Rice carnaroli crémeux, mushrooms of season and parmesan.",
+          "de": "Reis carnaroli crémeux, pilze von saison und parmesan.",
+          "nl": "Rijst carnaroli crémeux, champignons van seizoen en parmezaan."
+        },
+        "manual": {}
+      },
+      "price": 17,
+      "allergens": [
+        "lait",
+        "celeri"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": true,
+      "order": 2,
+      "options": []
+    },
+    {
+      "id": "r16d4",
+      "restaurantId": "r16",
+      "categoryId": "r16c2",
+      "name": {
+        "source": "Curry de légumes au tofu",
+        "auto": {
+          "en": "Curry of vegetables with tofu",
+          "de": "Curry von gemüse mit tofu",
+          "nl": "Curry van groenten met tofu"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Légumes de saison et tofu mijotés au lait de coco.",
+        "auto": {
+          "en": "Seasonal vegetables and tofu slow-cooked with coconut milk.",
+          "de": "Saisongemüse und tofu geschmort mit kokosmilch.",
+          "nl": "Seizoensgroenten en tofu gestoofd met kokosmelk."
+        },
+        "manual": {}
+      },
+      "price": 16,
+      "allergens": [
+        "soja"
+      ],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r16d5",
+      "restaurantId": "r16",
+      "categoryId": "r16c2",
+      "name": {
+        "source": "Burger de légumes",
+        "auto": {
+          "en": "Burger of vegetables",
+          "de": "Burger von gemüse",
+          "nl": "Burger van groenten"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Galette de légumes maison, cheddar et pain brioché.",
+        "auto": {
+          "en": "Galette of vegetables homemade, cheddar and bread brioché.",
+          "de": "Galette von gemüse hausgemacht, cheddar und brot brioché.",
+          "nl": "Galette van groenten huisgemaakt, cheddar en brood brioché."
+        },
+        "manual": {}
+      },
+      "price": 15,
+      "allergens": [
+        "gluten",
+        "lait"
+      ],
+      "tags": [
+        "vegetarien"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": []
+    },
+    {
+      "id": "r16d6",
+      "restaurantId": "r16",
+      "categoryId": "r16c3",
+      "name": {
+        "source": "Tarte aux fruits de saison",
+        "auto": {
+          "en": "Tart with fruits of season",
+          "de": "Tarte mit früchte von saison",
+          "nl": "Taart met fruit van seizoen"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Pâte sablée, crème d’amande et fruits de saison.",
+        "auto": {
+          "en": "Pâte sablée, cream d’amande and fruits of season.",
+          "de": "Pâte sablée, sahne d’amande und früchte von saison.",
+          "nl": "Pâte sablée, room d’amande en fruit van seizoen."
+        },
+        "manual": {}
+      },
+      "price": 8,
+      "allergens": [
+        "gluten",
+        "fruits-a-coque",
+        "oeufs",
+        "lait"
+      ],
+      "tags": [
+        "vegetarien",
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r16d7",
+      "restaurantId": "r16",
+      "categoryId": "r16c4",
+      "name": {
+        "source": "Jus de betterave",
+        "auto": {
+          "en": "Juice of beetroot",
+          "de": "Saft von rote Bete",
+          "nl": "Sap van bieten"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Jus pressé minute, betterave, pomme et gingembre.",
+        "auto": {
+          "en": "Juice freshly pressed, beetroot, apple and ginger.",
+          "de": "Saft frisch gepresst, rote Bete, apfel und ingwer.",
+          "nl": "Sap vers geperst, bieten, appel en gember."
+        },
+        "manual": {}
+      },
+      "price": 6,
+      "allergens": [],
+      "tags": [
+        "vegetarien",
+        "vegan"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
+    },
+    {
+      "id": "r17d1",
+      "restaurantId": "r17",
+      "categoryId": "r17c1",
+      "name": {
+        "source": "Œuf mayonnaise",
+        "auto": {
+          "en": "Egg mayonnaise",
+          "it": "Uovo maionese"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Œuf dur, mayonnaise maison et ciboulette.",
+        "auto": {
+          "en": "Egg dur, mayonnaise homemade and chives.",
+          "it": "Uovo dur, maionese della casa e erba cipollina."
+        },
+        "manual": {}
+      },
+      "price": 6,
+      "allergens": [
+        "oeufs"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 0,
+      "options": []
+    },
+    {
+      "id": "r17d2",
+      "restaurantId": "r17",
+      "categoryId": "r17c1",
+      "name": {
+        "source": "Terrine de campagne",
+        "auto": {
+          "en": "Terrine of country-style",
+          "it": "Terrina di di campagna"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Terrine de campagne maison, cornichons et pain grillé.",
+        "auto": {
+          "en": "Terrine of country-style homemade, gherkins and bread grilled.",
+          "it": "Terrina di di campagna della casa, cetriolini e pane alla griglia."
+        },
+        "manual": {}
+      },
+      "price": 8.5,
+      "allergens": [
+        "gluten"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 1,
+      "options": []
+    },
+    {
+      "id": "r17d3",
+      "restaurantId": "r17",
+      "categoryId": "r17c2",
+      "name": {
+        "source": "Blanquette de veau",
+        "auto": {
+          "en": "Veal stew of veal",
+          "it": "Blanquette di vitello"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Veau mijoté, riz et légumes de saison.",
+        "auto": {
+          "en": "Veal slow-cooked, rice and seasonal vegetables.",
+          "it": "Vitello stufato, riso e verdure di stagione."
+        },
+        "manual": {}
+      },
+      "price": 19.5,
+      "allergens": [
+        "lait",
+        "celeri"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": true,
+      "order": 2,
+      "options": []
+    },
+    {
+      "id": "r17d4",
+      "restaurantId": "r17",
+      "categoryId": "r17c2",
+      "name": {
+        "source": "Confit de canard",
+        "auto": {
+          "en": "Confit of duck",
+          "it": "Confit di anatra"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Cuisse de canard confite, pommes de terre sarladaises.",
+        "auto": {
+          "en": "Cuisse of duck confite, potatoes sarlat-style.",
+          "it": "Cuisse di anatra confite, patate alla sarladese."
+        },
+        "manual": {}
+      },
+      "price": 22,
+      "allergens": [],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 3,
+      "options": []
+    },
+    {
+      "id": "r17d5",
+      "restaurantId": "r17",
+      "categoryId": "r17c2",
+      "name": {
+        "source": "Steak frites",
+        "auto": {
+          "en": "Steak fries",
+          "it": "Bistecca patatine fritte"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Steak grillé, frites maison et beurre maître d’hôtel.",
+        "auto": {
+          "en": "Steak grilled, homemade fries and butter maître d’hôtel.",
+          "it": "Bistecca alla griglia, patatine fatte in casa e burro maître d’hôtel."
+        },
+        "manual": {}
+      },
+      "price": 21,
+      "allergens": [
+        "lait"
+      ],
+      "tags": [],
+      "available": true,
+      "dishOfDay": false,
+      "order": 4,
+      "options": [
+        {
+          "id": "r17d5g1",
+          "name": {
+            "source": "Cuisson",
+            "auto": {
+              "en": "Cooking",
+              "it": "Cottura"
+            },
+            "manual": {}
+          },
+          "required": true,
+          "multiple": false,
+          "choices": [
+            {
+              "id": "r17d5g1c1",
+              "label": {
+                "source": "Bleu",
+                "auto": {
+                  "en": "Blue",
+                  "it": "Al sangue estremo"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            },
+            {
+              "id": "r17d5g1c2",
+              "label": {
+                "source": "Saignant",
+                "auto": {
+                  "en": "Rare",
+                  "it": "Al sangue"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            },
+            {
+              "id": "r17d5g1c3",
+              "label": {
+                "source": "À point",
+                "auto": {
+                  "en": "Medium",
+                  "it": "Media cottura"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            },
+            {
+              "id": "r17d5g1c4",
+              "label": {
+                "source": "Bien cuit",
+                "auto": {
+                  "en": "Well done",
+                  "it": "Ben cotta"
+                },
+                "manual": {}
+              },
+              "priceDelta": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "r17d6",
+      "restaurantId": "r17",
+      "categoryId": "r17c3",
+      "name": {
+        "source": "Mousse au chocolat",
+        "auto": {
+          "en": "Mousse with chocolate",
+          "it": "Mousse al cioccolato"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Mousse au chocolat noir, maison.",
+        "auto": {
+          "en": "Mousse with chocolate dark, homemade.",
+          "it": "Mousse al cioccolato fondente, della casa."
+        },
+        "manual": {}
+      },
+      "price": 6.5,
+      "allergens": [
+        "oeufs",
+        "lait"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 5,
+      "options": []
+    },
+    {
+      "id": "r17d7",
+      "restaurantId": "r17",
+      "categoryId": "r17c3",
+      "name": {
+        "source": "Île flottante",
+        "auto": {
+          "en": "Floating island",
+          "it": "Isola galleggiante"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Blancs en neige, crème anglaise et caramel.",
+        "auto": {
+          "en": "Whipped egg whites, custard and caramel.",
+          "it": "Albumi montati, crema inglese e caramello."
+        },
+        "manual": {}
+      },
+      "price": 7,
+      "allergens": [
+        "oeufs",
+        "lait"
+      ],
+      "tags": [
+        "maison"
+      ],
+      "available": true,
+      "dishOfDay": false,
+      "order": 6,
+      "options": []
     }
   ],
   "menus": [
@@ -3116,6 +6682,119 @@
         "r5d5"
       ],
       "order": 0
+    },
+    {
+      "id": "r8m1",
+      "restaurantId": "r8",
+      "name": {
+        "source": "Menu tandoor",
+        "auto": {
+          "en": "Menu tandoor",
+          "ar": "Menu tandoor"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Entrée, curry au choix, naan et riz.",
+        "auto": {
+          "en": "Starter, curry of your choice, naan and rice.",
+          "ar": "مقبلات, كاري حسب الاختيار, نان و أرز."
+        },
+        "manual": {}
+      },
+      "price": 24,
+      "dishIds": [
+        "r8d1",
+        "r8d4"
+      ],
+      "order": 0
+    },
+    {
+      "id": "r11m1",
+      "restaurantId": "r11",
+      "name": {
+        "source": "Menu smash",
+        "auto": {
+          "en": "Menu smash",
+          "es": "Menu smash",
+          "pt": "Menu smash",
+          "nl": "Menu smash"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Burger au choix, frites et boisson.",
+        "auto": {
+          "en": "Burger of your choice, fries and boisson.",
+          "es": "Hamburguesa a elegir, patatas fritas y boisson.",
+          "pt": "Hambúrguer à escolha, batatas fritas e boisson.",
+          "nl": "Burger naar keuze, friet en boisson."
+        },
+        "manual": {}
+      },
+      "price": 18,
+      "dishIds": [
+        "r11d3",
+        "r11d1"
+      ],
+      "order": 0
+    },
+    {
+      "id": "r13m1",
+      "restaurantId": "r13",
+      "name": {
+        "source": "Formule pranzo",
+        "auto": {
+          "en": "Formule pranzo",
+          "es": "Formule pranzo",
+          "de": "Formule pranzo",
+          "pt": "Formule pranzo"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Antipasto et pizza au choix, midi en semaine.",
+        "auto": {
+          "en": "Antipasto and pizza of your choice, lunch en semaine.",
+          "es": "Antipasto y pizza a elegir, mediodía en semaine.",
+          "de": "Antipasto und pizza nach Wahl, mittag en semaine.",
+          "pt": "Antipasto e pizza à escolha, almoço en semaine."
+        },
+        "manual": {}
+      },
+      "price": 18,
+      "dishIds": [
+        "r13d1",
+        "r13d3"
+      ],
+      "order": 0
+    },
+    {
+      "id": "r17m1",
+      "restaurantId": "r17",
+      "name": {
+        "source": "Menu du bistrot",
+        "auto": {
+          "en": "Menu of bistro",
+          "it": "Menu di bistrot"
+        },
+        "manual": {}
+      },
+      "description": {
+        "source": "Entrée, plat et dessert, servi midi et soir.",
+        "auto": {
+          "en": "Starter, dish and dessert, served lunch and soir.",
+          "it": "Antipasto, piatto e dolce, servito pranzo e soir."
+        },
+        "manual": {}
+      },
+      "price": 26,
+      "dishIds": [
+        "r17d2",
+        "r17d3",
+        "r17d6"
+      ],
+      "order": 0
     }
   ],
   "owners": [
@@ -3167,6 +6846,76 @@
       "email": "diego@burritoloco.fr",
       "password": "eatnow",
       "restaurantId": "r7"
+    },
+    {
+      "id": "o8",
+      "name": "Priya Sharma",
+      "email": "priya@tandoorpalace.fr",
+      "password": "eatnow",
+      "restaurantId": "r8"
+    },
+    {
+      "id": "o9",
+      "name": "Siriporn Watthana",
+      "email": "siriporn@bangkokstreetfood.fr",
+      "password": "eatnow",
+      "restaurantId": "r9"
+    },
+    {
+      "id": "o10",
+      "name": "Li Wei",
+      "email": "liwei@goldenwok.fr",
+      "password": "eatnow",
+      "restaurantId": "r10"
+    },
+    {
+      "id": "o11",
+      "name": "Thomas Faure",
+      "email": "thomas@smashbrothers.fr",
+      "password": "eatnow",
+      "restaurantId": "r11"
+    },
+    {
+      "id": "o12",
+      "name": "Kenji Sato",
+      "email": "kenji@ramenkojiki.fr",
+      "password": "eatnow",
+      "restaurantId": "r12"
+    },
+    {
+      "id": "o13",
+      "name": "Giulia Romano",
+      "email": "giulia@napolivera.fr",
+      "password": "eatnow",
+      "restaurantId": "r13"
+    },
+    {
+      "id": "o14",
+      "name": "Ravi Kumar",
+      "email": "ravi@currygarden.fr",
+      "password": "eatnow",
+      "restaurantId": "r14"
+    },
+    {
+      "id": "o15",
+      "name": "Chen Mei",
+      "email": "chen@dragondor.fr",
+      "password": "eatnow",
+      "restaurantId": "r15"
+    },
+    {
+      "id": "o16",
+      "name": "Claire Dubuisson",
+      "email": "claire@vegetariengourmand.fr",
+      "password": "eatnow",
+      "restaurantId": "r16"
+    },
+    {
+      "id": "o17",
+      "name": "Robert Fontaine",
+      "email": "robert@chezbebert.fr",
+      "password": "eatnow",
+      "restaurantId": "r17"
     }
   ]
 }

@@ -185,7 +185,7 @@ sans cet en-tête le navigateur refuse l'accès sans même afficher de demande.
 src/
 ├── types.ts              Modèle de données (langues, allergènes, options, sélection)
 ├── data/
-│   ├── seed.ts           7 restaurants de démonstration, 44 plats, options, formules
+│   ├── seed.ts           17 restaurants de démonstration, 120 plats, options, formules
 │   └── dishArt.ts        Illustrations de démonstration pour le champ photo
 ├── store/store.tsx       État applicatif + persistance localStorage + actions
 ├── lib/
