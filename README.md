@@ -53,6 +53,34 @@ table, devant une carte qu'il ne comprend pas.
 Le modèle économique est vendu au restaurateur : un plan mensuel + des langues
 supplémentaires facturées à l'unité.
 
+## Tester l'envoi d'e-mails depuis le serveur
+
+Quand un e-mail ne part pas, la cause est presque toujours la configuration,
+pas le code. Cette commande la lit et la met à l'épreuve sans passer par
+l'application :
+
+```bash
+cd /var/www/eatnow/api
+
+# Connexion et authentification seulement, aucun message envoyé
+sudo -u www-data env $(grep -v '^#' /etc/eatnow/api.env | xargs) \
+  node dist/cli/mail-test.js
+
+# Envoi réel à une adresse
+sudo -u www-data env $(grep -v '^#' /etc/eatnow/api.env | xargs) \
+  node dist/cli/mail-test.js vous@exemple.fr
+```
+
+Elle affiche d'abord les réglages effectivement chargés — hôte, port,
+compte, présence d'un mot de passe, expéditeur — ce qui écarte d'emblée le
+piège le plus courant : un fichier correct que le service n'a jamais relu.
+En cas d'échec, le message du serveur SMTP est repris tel quel, accompagné
+des causes correspondantes.
+
+Le `env $(grep …)` est indispensable : sans lui la commande tourne sans la
+configuration du service et se plaindra, à tort, qu'aucun hôte n'est
+configuré.
+
 ## Architecture d'ensemble
 
 ```
