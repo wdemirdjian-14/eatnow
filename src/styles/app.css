@@ -1045,3 +1045,57 @@ table.tbl tr:last-child td { border-bottom: none; }
   display: inline-flex; align-items: center; justify-content: center;
 }
 .searchbar .scan-btn:hover { background: rgba(255, 255, 255, .24); }
+
+/* ---------------- Sélecteur de langue du bandeau ---------------- */
+/* Un bouton, pas un `select` natif : dans l'application installée sur iPhone
+   le menu système ne s'ouvrait qu'une fois sur deux. */
+.lang-btn {
+  display: inline-flex; align-items: center; gap: .35rem; cursor: pointer;
+  min-height: 44px; padding: .4rem .7rem; border-radius: 999px;
+  border: 1px solid var(--line); background: #fff; color: var(--ink);
+  font-family: inherit; font-size: .92rem; font-weight: 600; line-height: 1;
+  max-width: 168px;
+}
+.lang-btn:hover { border-color: var(--teal-400); background: var(--teal-50); }
+.lang-btn__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lang-btn__caret { color: var(--teal-600); font-size: .72rem; flex: none; }
+@media (max-width: 419px) { .lang-btn__name { display: none; } }
+
+.lang-sheet__backdrop {
+  /* Au-dessus des contrôles Leaflet, que la bibliothèque place à 1000, et
+     sous le lecteur de QR code (2000) qui reste l'écran le plus prioritaire. */
+  position: fixed; inset: 0; z-index: 1500; background: rgba(3, 40, 46, .5);
+  display: flex; align-items: flex-end; justify-content: center; animation: fade .2s ease;
+}
+@media (min-width: 640px) { .lang-sheet__backdrop { align-items: center; padding: 1.5rem; } }
+.lang-sheet {
+  background: var(--surface); width: 100%; max-height: 86vh; overflow-y: auto;
+  border-radius: 20px 20px 0 0; padding: 1rem 1rem calc(1rem + var(--safe-b));
+  animation: slideUp .25s ease;
+}
+@media (min-width: 640px) {
+  .lang-sheet { max-width: 520px; border-radius: 20px; animation: fade .2s ease; }
+}
+.lang-sheet__head { display: flex; align-items: center; gap: .5rem; margin-bottom: .8rem; }
+.lang-sheet__head h3 { flex: 1; min-width: 0; }
+.lang-sheet__grid { display: grid; gap: .5rem; grid-template-columns: 1fr; }
+@media (min-width: 480px) { .lang-sheet__grid { grid-template-columns: 1fr 1fr; } }
+
+.lang-opt {
+  display: flex; align-items: center; gap: .7rem; width: 100%; cursor: pointer;
+  min-height: 56px; padding: .6rem .8rem; border-radius: var(--radius);
+  border: 1px solid var(--line); background: #fff; color: var(--ink);
+  font-family: inherit; font-size: .95rem; text-align: left;
+}
+.lang-opt:hover { border-color: var(--teal-400); background: var(--teal-50); }
+.lang-opt[aria-pressed='true'] { border-color: var(--teal-600); background: var(--teal-50); }
+.lang-opt__flag { font-size: 1.5rem; flex: none; line-height: 1; }
+.lang-opt__txt { display: flex; flex-direction: column; gap: .1rem; flex: 1; min-width: 0; }
+.lang-opt__txt b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lang-opt__check { color: var(--teal-600); font-weight: 800; flex: none; }
+
+/* Ligne de tableau menant à une fiche : viser le seul bouton d'action était
+   pénible sur un tableau large. */
+.tbl-row-link { cursor: pointer; }
+.tbl-row-link:hover { background: var(--teal-50); }
+.tbl-row-link:focus-visible { outline: 3px solid var(--teal-400); outline-offset: -3px; }

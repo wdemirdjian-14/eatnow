@@ -8,7 +8,7 @@ import { config } from './config.js'
 import { db, purgeExpiredSessions } from './db.js'
 import {
   SESSION_COOKIE, type SessionContext, canEditRestaurant, createSession, destroySession,
-  findUserByLogin, hashPassword, readSession, setImpersonation, verifyPassword,
+  findUserByLogin, hashPassword, readSession, setImpersonation, touchLastLogin, verifyPassword,
 } from './auth.js'
 import {
   type MenuPayload, createRestaurantWithOwner, dishRestaurant, getRestaurant, listCategories,
@@ -116,6 +116,7 @@ export function buildApp(): FastifyInstance {
       return reply.code(401).send({ error: 'Identifiants incorrects.' })
     }
 
+    touchLastLogin(user.id)
     const sid = createSession(user.id)
     reply.setCookie(SESSION_COOKIE, sid, {
       httpOnly: true,

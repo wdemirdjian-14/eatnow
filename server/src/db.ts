@@ -129,6 +129,8 @@ const MIGRATIONS: string[] = [
   `,
   // 2 — photo de couverture du restaurant
   `ALTER TABLE restaurants ADD COLUMN photo TEXT;`,
+  // 3 — dernière connexion, affichée dans la console d'administration
+  `ALTER TABLE users ADD COLUMN last_login_at TEXT;`,
 ]
 
 /**

@@ -69,6 +69,17 @@ export function destroySession(id: string): void {
   db.prepare('DELETE FROM sessions WHERE id = ?').run(id)
 }
 
+/**
+ * Horodate la connexion d'un compte.
+ *
+ * Seule une authentification par mot de passe la met à jour : un endossement
+ * administrateur ne doit pas laisser croire que le restaurateur s'est connecté
+ * lui-même.
+ */
+export function touchLastLogin(userId: string): void {
+  db.prepare("UPDATE users SET last_login_at = datetime('now') WHERE id = ?").run(userId)
+}
+
 /** Résout une session valide, en tenant compte d'un éventuel endossement. */
 export function readSession(id: string | undefined): SessionContext | null {
   if (!id) return null

@@ -174,9 +174,14 @@ export interface Restaurant {
 export interface Owner {
   id: string
   name: string
+  /** Identifiant de connexion du restaurateur. */
   email: string
   password: string
   restaurantId: string
+  /** Création du compte, renseignée par le serveur. */
+  createdAt?: string
+  /** Dernière connexion par mot de passe ; absente si le compte n'a jamais servi. */
+  lastLoginAt?: string
 }
 
 export interface PurchaseLine {

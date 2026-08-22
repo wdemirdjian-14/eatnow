@@ -96,13 +96,27 @@ export function listMenus(): unknown[] {
     }))
 }
 
+/**
+ * Comptes restaurateurs.
+ *
+ * Aucune empreinte de mot de passe n'en sort : la console d'administration
+ * affiche l'identifiant de connexion et l'activité du compte, jamais de quoi
+ * se faire passer pour lui.
+ */
 export function listOwners(): unknown[] {
   return db
-    .prepare<[], { id: string; name: string; login: string; restaurant_id: string | null }>(
-      "SELECT id, name, login, restaurant_id FROM users WHERE role = 'owner' ORDER BY name",
+    .prepare<[], {
+      id: string; name: string; login: string; restaurant_id: string | null
+      created_at: string; last_login_at: string | null
+    }>(
+      `SELECT id, name, login, restaurant_id, created_at, last_login_at
+       FROM users WHERE role = 'owner' ORDER BY name`,
     )
     .all()
-    .map((o) => ({ id: o.id, name: o.name, email: o.login, restaurantId: o.restaurant_id ?? '' }))
+    .map((o) => ({
+      id: o.id, name: o.name, email: o.login, restaurantId: o.restaurant_id ?? '',
+      createdAt: o.created_at, lastLoginAt: o.last_login_at ?? undefined,
+    }))
 }
 
 export function listPurchases(restaurantId?: string): unknown[] {

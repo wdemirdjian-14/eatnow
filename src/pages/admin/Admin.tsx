@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { activeLangs, LANG_PRICE, useStore } from '../../store/store'
 import { CUISINE_LABEL, LANG_META, type Lang } from '../../types'
-import { money, priceRangeLabel } from '../../lib/format'
+import { lastSeen, money, priceRangeLabel } from '../../lib/format'
 import { NewRestaurantForm } from './NewRestaurantForm'
 
 const PLAN_PRICE = { essai: 0, starter: 29, pro: 59 } as const
@@ -39,6 +39,11 @@ export function Admin() {
       })
       .sort((a, b) => b.mrr - a.mrr)
   }, [state, q, onlyPublished])
+
+  const ownerOf = useMemo(
+    () => new Map(state.owners.map((o) => [o.id, o])),
+    [state.owners],
+  )
 
   const totals = {
     restaurants: state.restaurants.length,
@@ -111,15 +116,28 @@ export function Admin() {
             <thead>
               <tr>
                 <th>Restaurant</th><th>Ville</th><th>Cuisine</th><th>Prix</th>
-                <th>Carte</th><th>Langues</th><th>Conformité</th><th>Plan</th><th>MRR</th><th>En ligne</th><th />
+                <th>Carte</th><th>Langues</th><th>Conformité</th><th>Plan</th><th>MRR</th>
+                <th>Dernière connexion</th><th>En ligne</th><th />
               </tr>
             </thead>
             <tbody>
               {rows.map((x) => (
-                <tr key={x.r.id}>
+                /* Toute la ligne mène à la fiche d'administration : viser le
+                   seul bouton « Inspecter » était pénible sur un tableau large.
+                   Les cellules de contrôle (publication, actions) arrêtent la
+                   propagation pour rester utilisables sur place. */
+                <tr
+                  key={x.r.id} className="tbl-row-link" tabIndex={0} role="link"
+                  onClick={() => nav(`/admin/r/${x.r.id}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nav(`/admin/r/${x.r.id}`) }
+                  }}
+                >
                   <td>
                     <b>{x.r.emoji} {x.r.name}</b>
-                    <div className="tiny muted">inscrit le {x.r.createdAt}</div>
+                    <div className="tiny muted">
+                      {ownerOf.get(x.r.ownerId)?.email ?? '—'} · inscrit le {x.r.createdAt}
+                    </div>
                   </td>
                   <td>{x.r.city}</td>
                   <td className="small">{x.r.cuisines.map((c) => CUISINE_LABEL[c]).join(', ')}</td>
@@ -140,7 +158,8 @@ export function Admin() {
                   </td>
                   <td><span className="badge grey">{x.r.plan}</span></td>
                   <td className="mono">{money(x.mrr)}</td>
-                  <td>
+                  <td className="small">{lastSeen(ownerOf.get(x.r.ownerId)?.lastLoginAt)}</td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <label className="switch">
                       <input
                         type="checkbox" checked={x.r.published}
@@ -150,7 +169,7 @@ export function Admin() {
                       <span className="sr-only">Publier {x.r.name}</span>
                     </label>
                   </td>
-                  <td>
+                  <td onClick={(e) => e.stopPropagation()}>
                     <div className="row gap-xs">
                       <Link className="btn outline sm" to={`/admin/r/${x.r.id}`}>Inspecter</Link>
                       <button
