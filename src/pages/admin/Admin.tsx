@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { activeLangs, LANG_PRICE, useStore } from '../../store/store'
 import { CUISINE_LABEL, LANG_META, type Lang } from '../../types'
@@ -8,12 +8,31 @@ import { NewRestaurantForm } from './NewRestaurantForm'
 const PLAN_PRICE = { essai: 0, starter: 29, pro: 59 } as const
 
 export function Admin() {
-  const { session, state, updateRestaurant, impersonate } = useStore()
+  const { session, state, updateRestaurant, impersonate, isImpersonating, stopImpersonating } = useStore()
   const nav = useNavigate()
   const [q, setQ] = useState('')
   const [onlyPublished, setOnlyPublished] = useState(false)
   const [creating, setCreating] = useState(false)
   const [created, setCreated] = useState<string | null>(null)
+
+  /**
+   * Revenir à la console, c'est quitter l'espace du restaurateur.
+   *
+   * Sans cela un endossement resté ouvert — parce que « Quitter » a échoué, ou
+   * que l'onglet a été fermé en cours de route — rendait la console
+   * inutilisable : elle s'affichait, mais chaque action se heurtait à
+   * « réservé aux administrateurs, hors endossement », sans indiquer quoi
+   * faire. L'état se répare désormais de lui-même.
+   */
+  const healed = useRef(false)
+  useEffect(() => {
+    // Uniquement à l'arrivée sur la page : sinon l'endossement lancé depuis
+    // cette même console serait annulé dans la foulée, avant que la
+    // navigation vers l'espace du restaurateur n'ait eu lieu.
+    if (healed.current) return
+    healed.current = true
+    if (isImpersonating) void stopImpersonating()
+  }, [isImpersonating, stopImpersonating])
 
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase()

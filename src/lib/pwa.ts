@@ -133,6 +133,13 @@ export function registerServiceWorker(onUpdate: (apply: () => void) => void): vo
         // Une version est déjà prête et attend la fermeture des onglets.
         if (reg.waiting && navigator.serviceWorker.controller) notify(reg.waiting)
 
+        // Une application installée est reprise, pas rechargée : sans cette
+        // vérification au retour au premier plan, elle peut servir un ancien
+        // cache pendant des jours sans jamais interroger le serveur.
+        const checkForUpdate = () => { if (!document.hidden) void reg.update() }
+        document.addEventListener('visibilitychange', checkForUpdate)
+        window.addEventListener('focus', checkForUpdate)
+
         reg.addEventListener('updatefound', () => {
           const installing = reg.installing
           if (!installing) return

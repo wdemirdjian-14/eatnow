@@ -23,6 +23,9 @@ export function Footer() {
           <span>·</span>
           <span>MVP v{APP_VERSION}</span>
           <span>·</span>
+          {/* Le commit, seul moyen de savoir ce qu'un appareil exécute vraiment. */}
+          <span className="mono" title="Version exécutée par cet appareil">{__BUILD_ID__}</span>
+          <span>·</span>
           <span>Données hébergées sur le serveur Eatnow</span>
         </div>
       </div>
