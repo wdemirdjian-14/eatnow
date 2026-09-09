@@ -60,10 +60,12 @@ export function RestaurantCard({
         <div className="resto-foot">
           {r.published ? (
             <span className="flag-row" title={`Carte traduite en ${langs.length} langues`}>
-              {langs.slice(0, 7).map((l) => (
+              {/* Quatre drapeaux tiennent sur une ligne à côté du nombre de
+                  plats ; au-delà le compteur dit le reste. */}
+              {langs.slice(0, 4).map((l) => (
                 <span key={l} className="flag-chip">{LANG_META[l].flag}</span>
               ))}
-              {langs.length > 7 && <span className="flag-chip more">+{langs.length - 7}</span>}
+              {langs.length > 4 && <span className="flag-chip more">+{langs.length - 4}</span>}
             </span>
           ) : (
             <span className="badge grey">Carte non traduite</span>

@@ -7,11 +7,13 @@ import { Sheet } from './Sheet'
 
 /** Récapitulatif modifiable de la sélection en cours. */
 export function SelectionSheet({
-  lines, lang, restaurant, onClose, onQty, onClear, onValidate,
+  lines, lang, restaurant, numbers, onClose, onQty, onClear, onValidate,
 }: {
   lines: ResolvedLine[]
   lang: Lang
   restaurant: Restaurant
+  /** Numéros d'appel des plats, tels qu'ils figurent sur la carte. */
+  numbers?: Map<string, number>
   onClose: () => void
   onQty: (lineId: string, qty: number) => void
   onClear: () => void
@@ -30,7 +32,12 @@ export function SelectionSheet({
           {lines.map((l) => (
             <div key={l.line.id} className="sel-line">
               <div style={{ minWidth: 0 }}>
-                <b>{T(l.dish.name)}</b>
+                <b>
+                  {numbers?.get(l.dish.id) !== undefined && (
+                    <span className="dish-no">{String(numbers.get(l.dish.id)).padStart(2, '0')}</span>
+                  )}
+                  {T(l.dish.name)}
+                </b>
                 {l.choices.length > 0 && (
                   <div className="small muted">
                     {l.choices.map((c) => T(c.choice.label)).join(' · ')}

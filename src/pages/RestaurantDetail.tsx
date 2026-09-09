@@ -41,7 +41,27 @@ export function RestaurantDetail() {
     const cats = state.categories.filter((c) => c.restaurantId === r.id).sort((a, b) => a.order - b.order)
     const dishes = state.dishes.filter((d) => d.restaurantId === r.id).sort((a, b) => a.order - b.order)
     const menus = state.menus.filter((m) => m.restaurantId === r.id).sort((a, b) => a.order - b.order)
-    return { cats, dishes, menus, dayDishes: dishes.filter((d) => d.dishOfDay && d.available) }
+
+    /**
+     * Numéro d'appel de chaque plat, continu sur toute la carte.
+     *
+     * C'est ce qui permet de commander sans partager de langue : le client
+     * montre « 03 » au serveur, qui lit le même 03 sur sa carte. La
+     * numérotation suit l'ordre des catégories puis des plats, et ne
+     * redémarre pas à chaque catégorie — sinon deux plats porteraient le même
+     * numéro et le geste perdrait tout son sens.
+     */
+    const numbers = new Map<string, number>()
+    let n = 0
+    for (const c of cats) {
+      for (const d of dishes) {
+        if (d.categoryId === c.id) numbers.set(d.id, ++n)
+      }
+    }
+    // Filet : un plat dont la catégorie a disparu garde malgré tout un numéro.
+    for (const d of dishes) if (!numbers.has(d.id)) numbers.set(d.id, ++n)
+
+    return { cats, dishes, menus, numbers, dayDishes: dishes.filter((d) => d.dishOfDay && d.available) }
   }, [r, state])
 
   const myLines = useMemo(
@@ -259,6 +279,7 @@ export function RestaurantDetail() {
                   translated={translated} expanded={openDish === `day-${d.id}`}
                   onToggle={() => setOpenDish(openDish === `day-${d.id}` ? null : `day-${d.id}`)}
                   onAdd={() => handleAdd(d)} inSelection={inSelection(d.id)}
+                  num={data.numbers.get(d.id)}
                 />
               ))}
             </section>
@@ -301,6 +322,7 @@ export function RestaurantDetail() {
                     translated={translated} expanded={openDish === d.id}
                     onToggle={() => setOpenDish(openDish === d.id ? null : d.id)}
                     onAdd={() => handleAdd(d)} inSelection={inSelection(d.id)}
+                    num={data.numbers.get(d.id)}
                   />
                 ))}
               </section>
@@ -337,6 +359,7 @@ export function RestaurantDetail() {
 
       {overlay === 'selection' && (
         <SelectionSheet
+          numbers={data.numbers}
           lines={myLines} lang={shown} restaurant={r}
           onClose={() => setOverlay('none')}
           onQty={setSelectionQty}
@@ -347,6 +370,7 @@ export function RestaurantDetail() {
 
       {overlay === 'order' && (
         <OrderView
+          numbers={data.numbers}
           lines={myLines} lang={shown} restaurant={r}
           onClose={() => setOverlay('none')}
           onBack={() => setOverlay('selection')}
@@ -360,7 +384,7 @@ export function RestaurantDetail() {
 
 /** Une ligne de la carte : texte traduit, révélation du texte original, ajout. */
 function MenuItem({
-  dish, shown, sourceLang, translated, expanded, onToggle, onAdd, inSelection,
+  dish, shown, sourceLang, translated, expanded, onToggle, onAdd, inSelection, num,
 }: {
   dish: Dish
   shown: Lang
@@ -370,6 +394,8 @@ function MenuItem({
   onToggle: () => void
   onAdd: () => void
   inSelection: boolean
+  /** Numéro d'appel, montré au serveur. */
+  num?: number
 }) {
   const T = (f: Parameters<typeof resolve>[0]) => resolve(f, shown, sourceLang)
   const price = basePrice(dish)
@@ -385,9 +411,15 @@ function MenuItem({
         style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', color: 'inherit', textAlign: 'inherit', cursor: translated ? 'pointer' : 'default', minWidth: 0 }}
       >
         <span className="menu-item__name">
-          {T(dish.name)}
-          {dish.dishOfDay && <span className="paper-badge day">⭐</span>}
-          {dish.promoPrice !== undefined && <span className="paper-badge hot">%</span>}
+          {num !== undefined && <span className="dish-no" aria-label={`Plat numéro ${num}`}>{String(num).padStart(2, '0')}</span>}
+          {/* Le libellé est enveloppé pour rester un seul élément flexible :
+              sans cela il formait un bloc anonyme qui repoussait le numéro
+              sur sa propre ligne. */}
+          <span className="menu-item__label">
+            {T(dish.name)}
+            {dish.dishOfDay && <span className="paper-badge day">⭐</span>}
+            {dish.promoPrice !== undefined && <span className="paper-badge hot">%</span>}
+          </span>
         </span>
         {T(dish.description) && <span className="menu-item__desc">{T(dish.description)}</span>}
         <span className="menu-item__chips">

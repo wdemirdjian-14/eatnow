@@ -10,11 +10,13 @@ import { Sheet } from './Sheet'
  * celle du client et celle de la carte, pour être montrée au serveur.
  */
 export function OrderView({
-  lines, lang, restaurant, onClose, onBack,
+  lines, lang, restaurant, numbers, onClose, onBack,
 }: {
   lines: ResolvedLine[]
   lang: Lang
   restaurant: Restaurant
+  /** Numéros d'appel des plats, tels qu'ils figurent sur la carte. */
+  numbers?: Map<string, number>
   onClose: () => void
   onBack: () => void
 }) {
@@ -34,6 +36,11 @@ export function OrderView({
       {lines.map((l) => (
         <div key={l.line.id} className="order-line">
           <div className="row gap-s" style={{ marginBottom: '.35rem' }}>
+            {/* Le numéro se lit sans connaître la langue : c'est lui que le
+                serveur retrouve sur sa propre carte. */}
+            {numbers?.get(l.dish.id) !== undefined && (
+              <span className="dish-no lg">{String(numbers.get(l.dish.id)).padStart(2, '0')}</span>
+            )}
             <span className="paper-badge">× {l.line.qty}</span>
             <span className="spacer" />
             <b className="mono">{money(l.total, lang)}</b>
