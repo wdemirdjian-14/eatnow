@@ -69,12 +69,12 @@ export function OwnerLanguages() {
         </div>
         <div className="grid-2">
           {PLANS.map((p) => (
-            <div key={p.id} className="lang-card" style={r.plan === p.id ? { borderColor: 'var(--teal-500)' } : undefined}>
+            <div key={p.id} className="lang-card" style={r.plan === p.id ? { borderColor: 'var(--brand-500)' } : undefined}>
               <div className="row gap-s">
                 <b style={{ flex: 1 }}>{p.name}</b>
                 {r.plan === p.id && <span className="badge solid">Votre plan</span>}
               </div>
-              <span className="price-tag" style={{ fontSize: '1.2rem', color: 'var(--teal-700)', fontWeight: 800 }}>
+              <span className="price-tag" style={{ fontSize: '1.2rem', color: 'var(--brand-700)', fontWeight: 800 }}>
                 {p.price === 0 ? 'Gratuit' : `${money(p.price)} / mois`}
               </span>
               <ul className="small muted stack gap-xs" style={{ margin: 0, paddingInlineStart: '1.1rem' }}>
@@ -102,7 +102,7 @@ export function OwnerLanguages() {
                   {isIncluded && <span className="badge">Incluse</span>}
                 </div>
                 {isOwned ? (
-                  <span className="small" style={{ color: 'var(--teal-700)', fontWeight: 700 }}>
+                  <span className="small" style={{ color: 'var(--brand-700)', fontWeight: 700 }}>
                     ✅ Carte traduite et publiée
                   </span>
                 ) : (
@@ -117,7 +117,7 @@ export function OwnerLanguages() {
       </section>
 
       {pending && (
-        <section className="card pad stack gap-s" style={{ borderColor: 'var(--teal-400)' }}>
+        <section className="card pad stack gap-s" style={{ borderColor: 'var(--brand-400)' }}>
           <h3>Confirmer l’ajout de {LANG_META[pending].native} {LANG_META[pending].flag}</h3>
           <p className="small muted">
             Votre carte ({state.dishes.filter((d) => d.restaurantId === r.id).length} plats) sera traduite

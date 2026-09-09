@@ -4,6 +4,7 @@ import { useStore } from '../store/store'
 import { t } from '../i18n/ui'
 import { LanguagePicker } from './LanguagePicker'
 import { SyncStatus } from './SyncStatus'
+import { UserIcon } from './icons'
 
 export function Header() {
   const { session, logout, lang, isImpersonating } = useStore()
@@ -13,7 +14,7 @@ export function Header() {
     <header className="site-header">
       <div className="wrap inner">
         <Link to="/" className="brand">
-          <Logo size={38} id="hdr" className="mark" />
+          <Logo size={38} id="hdr" className="mark" tone="light" />
           <span>Eat<em>now</em></span>
         </Link>
 
@@ -23,7 +24,7 @@ export function Header() {
           {session.role === 'guest' && (
             <>
               <NavLink to="/pro" className="btn ghost sm" title={t('nav.pro', lang)}>
-                <span aria-hidden>👤</span>
+                <UserIcon size={18} />
                 <span className="hide-mobile">{t('nav.pro', lang)}</span>
               </NavLink>
               <NavLink to="/admin/login" className="btn outline sm hide-mobile">

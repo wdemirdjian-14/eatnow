@@ -127,8 +127,16 @@ export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte
                 </button>
               )}
             </div>
-            <button className="btn sun" onClick={askLocation} disabled={locating}>
-              {locating ? t('home.locating', lang) : `📍 ${t('home.locate', lang)}`}
+            {/* Sur téléphone le libellé disparaît : les maquettes alignent la
+                recherche et la géolocalisation sur une seule ligne. */}
+            <button
+              className="btn sun locate-btn" onClick={askLocation} disabled={locating}
+              title={t('home.locate', lang)} aria-label={t('home.locate', lang)}
+            >
+              <PinIcon />
+              <span className="locate-btn__label">
+                {locating ? t('home.locating', lang) : t('home.locate', lang)}
+              </span>
             </button>
           </div>
 
@@ -361,6 +369,15 @@ export function Home({ initialView = 'liste' }: { initialView?: 'liste' | 'carte
 }
 
 /** Pictogramme QR code, dessiné pour rester net à toutes les tailles. */
+/** Goutte de localisation, reprise du repère des maquettes. */
+function PinIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden focusable="false">
+      <path d="M12 2.4a7.2 7.2 0 0 0-7.2 7.2c0 5.1 6.35 11.4 6.62 11.66a.83.83 0 0 0 1.16 0c.27-.26 6.62-6.56 6.62-11.66A7.2 7.2 0 0 0 12 2.4Zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4Z" />
+    </svg>
+  )
+}
+
 function QrIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden focusable="false">

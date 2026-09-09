@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from 'react-router-dom'
 import { useStore } from '../store/store'
 import { useFavorites } from '../lib/favorites'
+import { HomeIcon, MapIcon, StarIcon, UserIcon } from './icons'
 
 /**
  * Navigation principale sur mobile, en bas de l'écran.
@@ -25,17 +26,17 @@ export function TabBar() {
   return (
     <nav className="tabbar" aria-label="Navigation principale">
       <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
-        <span aria-hidden>🏠</span><span>Accueil</span>
+        <HomeIcon /><span>Accueil</span>
       </NavLink>
       <NavLink to="/carte" className={({ isActive }) => (isActive ? 'active' : '')}>
-        <span aria-hidden>🗺️</span><span>Carte</span>
+        <MapIcon /><span>Carte</span>
       </NavLink>
       <NavLink to="/favoris" className={({ isActive }) => (isActive ? 'active' : '')}>
-        <span aria-hidden>⭐</span>
+        <StarIcon />
         <span>Favoris{ids.length > 0 && <b className="tabbar__count">{ids.length}</b>}</span>
       </NavLink>
       <NavLink to={compte} className={({ isActive }) => (isActive ? 'active' : '')}>
-        <span aria-hidden>👤</span><span>Compte</span>
+        <UserIcon /><span>Compte</span>
       </NavLink>
     </nav>
   )

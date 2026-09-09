@@ -150,7 +150,7 @@ export function OwnerAccess({ r, owner }: { r: Restaurant; owner: Owner | undefi
             </button>
             <a className="btn outline sm" href={mailto(result)}>✉️ Écrire au restaurateur</a>
           </div>
-          {result.mail.sent && <p className="tiny" style={{ color: 'var(--teal-700)' }}>✓ E-mail envoyé à {result.login}.</p>}
+          {result.mail.sent && <p className="tiny" style={{ color: 'var(--brand-700)' }}>✓ E-mail envoyé à {result.login}.</p>}
           {!result.mail.sent && result.mail.reason === 'echec-envoi' && (
             <p className="tiny" style={{ color: 'var(--coral-dark)' }}>
               ⚠️ L’e-mail n’est pas parti ({result.mail.detail}). Transmettez le mot de passe autrement.

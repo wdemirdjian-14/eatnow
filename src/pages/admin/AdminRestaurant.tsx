@@ -116,7 +116,7 @@ export function AdminRestaurant() {
           if (!list.length) return null
           return (
             <div key={c.id} className="stack gap-xs">
-              <h4 style={{ color: 'var(--teal-700)', marginTop: '.6rem' }}>
+              <h4 style={{ color: 'var(--brand-700)', marginTop: '.6rem' }}>
                 {resolve(c.name, shown, r.sourceLang)}
               </h4>
               <div className="tbl-scroll">

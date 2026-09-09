@@ -34,7 +34,7 @@ export function qrMatrix(text: string): boolean[][] {
  * seul `path` : le fichier reste léger et s'imprime sans artefacts de bord.
  */
 export function qrSvg(text: string, options: QrOptions = {}): string {
-  const { size = 512, margin = 4, dark = '#03282e', light = '#ffffff', center = null } = options
+  const { size = 512, margin = 4, dark = '#4A0710', light = '#ffffff', center = null } = options
 
   const m = qrMatrix(text)
   const n = m.length
@@ -70,10 +70,10 @@ export function qrSvg(text: string, options: QrOptions = {}): string {
 
 /** Marque Eatnow simplifiée, dessinée dans un carré de 200 × 200. */
 export const QR_CENTER_MARK =
-  '<circle cx="100" cy="100" r="96" fill="#0E7C86"/>' +
+  '<circle cx="100" cy="100" r="96" fill="#C50C29"/>' +
   '<circle cx="100" cy="100" r="78" fill="none" stroke="#F4C95D" stroke-width="7"/>' +
   '<path d="M100 46a54 54 0 1 1-54 54 40 40 0 1 0 40-40 26 26 0 0 0-26 26" ' +
-  'fill="none" stroke="#F6FBFB" stroke-width="12" stroke-linecap="round"/>'
+  'fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round"/>'
 
 /** Convertit un SVG en PNG via un canvas, pour les usages hors web. */
 export function svgToPngBlob(svg: string, size: number): Promise<Blob> {

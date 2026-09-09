@@ -76,8 +76,8 @@ export function Login({ mode }: { mode: 'owner' | 'admin' }) {
 
         <p className="tiny muted">
           {mode === 'owner'
-            ? <>Vous cherchez la console admin ? <Link to="/admin/login" style={{ color: 'var(--teal-700)', fontWeight: 600 }}>Par ici</Link>.</>
-            : <>Vous êtes restaurateur ? <Link to="/pro" style={{ color: 'var(--teal-700)', fontWeight: 600 }}>Connexion restaurateur</Link>.</>}
+            ? <>Vous cherchez la console admin ? <Link to="/admin/login" style={{ color: 'var(--brand-700)', fontWeight: 600 }}>Par ici</Link>.</>
+            : <>Vous êtes restaurateur ? <Link to="/pro" style={{ color: 'var(--brand-700)', fontWeight: 600 }}>Connexion restaurateur</Link>.</>}
         </p>
       </div>
     </main>

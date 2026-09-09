@@ -274,7 +274,7 @@ export function Admin() {
               <div style={{ flex: 1, background: 'var(--line-2)', borderRadius: 999, height: 10 }}>
                 <div style={{
                   width: `${(n / Math.max(...langUsage.map((x) => x[1]))) * 100}%`,
-                  background: 'var(--teal-500)', height: '100%', borderRadius: 999,
+                  background: 'var(--brand-500)', height: '100%', borderRadius: 999,
                 }} />
               </div>
               <b className="mono">{n}</b>

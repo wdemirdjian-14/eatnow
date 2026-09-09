@@ -34,7 +34,7 @@ if [ ! -e "${BASE}/current" ]; then
   mkdir -p "${BASE}/releases/bootstrap"
   cat > "${BASE}/releases/bootstrap/index.html" <<'HTML'
 <!doctype html><meta charset="utf-8"><title>Eatnow</title>
-<style>body{font-family:system-ui;display:grid;place-items:center;height:100vh;margin:0;background:#0e7c86;color:#fff}</style>
+<style>body{font-family:system-ui;display:grid;place-items:center;height:100vh;margin:0;background:#C50C29;color:#fff}</style>
 <h1>Eatnow — déploiement en cours</h1>
 HTML
   ln -sfn "${BASE}/releases/bootstrap" "${BASE}/current"

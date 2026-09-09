@@ -10,7 +10,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { chromium } from 'playwright'
 
-const TEAL = '#0e7c86'
+const BRAND = '#C50C29'
 const logo = readFileSync('public/logo.svg', 'utf8')
 const favicon = readFileSync('public/favicon.svg', 'utf8')
 
@@ -32,9 +32,9 @@ const TARGETS = [
   { file: 'public/icon-192.png', size: 192, svg: favicon, opts: {} },
   { file: 'public/icon-512.png', size: 512, svg: logo, opts: {} },
   // Zone de sécurité : 10 % de marge de chaque côté, fond plein.
-  { file: 'public/icon-maskable-512.png', size: 512, svg: favicon, opts: { padding: 64, background: TEAL } },
+  { file: 'public/icon-maskable-512.png', size: 512, svg: favicon, opts: { padding: 64, background: BRAND } },
   // iOS n'applique pas de masque et n'aime pas la transparence.
-  { file: 'public/apple-touch-icon.png', size: 180, svg: favicon, opts: { padding: 12, background: TEAL } },
+  { file: 'public/apple-touch-icon.png', size: 180, svg: favicon, opts: { padding: 12, background: BRAND } },
 ]
 
 const browser = await chromium.launch({

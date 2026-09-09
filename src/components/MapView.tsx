@@ -96,7 +96,7 @@ export function MapView({
         .addTo(lg)
     })
     L.circleMarker([center.lat, center.lng], {
-      radius: 7, color: '#fff', weight: 3, fillColor: '#0e7c86', fillOpacity: 1,
+      radius: 7, color: '#fff', weight: 3, fillColor: '#C50C29', fillOpacity: 1,
     }).addTo(lg)
   }, [restaurants, center.lat, center.lng, markerIcon])
 
